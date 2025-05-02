@@ -1,0 +1,17 @@
+name: "📚 documentation: Actualización de Documentación"
+description: "Actualizar o mejorar la documentación del proyecto."
+title: "[Documentation] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # **📚 documentation: Actualización de Documentación**
+
+  - type: textarea
+    id: documentation-description
+    attributes:
+      label: "Descripción de los Cambios"
+      description: "Explica los cambios de documentación requeridos y cómo impactan la comprensión del proyecto."
+    validations:
+      required: true

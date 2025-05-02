@@ -1,0 +1,42 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  commits-syntax-checker:
+    uses: ./.github/workflows/commits.yml
+
+  lint:
+    needs: commits-syntax-checker
+    uses: ./.github/workflows/lint.yml
+
+  tests:
+    needs: lint
+    uses: ./.github/workflows/tests.yml
+
+  codacy:
+    needs: tests
+    # TODO: Cambiar cuando implemente los tests
+    if: false 
+    uses: ./.github/workflows/codacy.yml
+    secrets:
+      CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+  validate-main-branch:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    steps:
+      - run: echo "Push to main branch detected."
+
+  deploy:
+    needs: validate-main-branch
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

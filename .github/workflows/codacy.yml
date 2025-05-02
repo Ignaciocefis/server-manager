@@ -1,0 +1,44 @@
+name: Codacy CI
+
+on:
+  workflow_call:
+    secrets:
+      CODACY_PROJECT_TOKEN:
+        required: true
+
+jobs:
+
+  codacy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Debug Enviroment Variable
+      run: echo "Token- $CODACY_PROJECT_TOKEN"
+      env:
+        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18
+
+    - name: Install pnpm
+      run: npm install -g pnpm
+        
+    - name: Install dependencies
+      run: |
+        pnpm store prune
+        pnpm install
+
+    - name: Test and coverage
+      run: pnpm jest --coverage
+
+    - name: Upload coverage to Codacy
+      run: |
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
+      env:
+        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}

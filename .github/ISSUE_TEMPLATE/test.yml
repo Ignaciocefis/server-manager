@@ -1,0 +1,41 @@
+name: "✅ test: Agregar/Actualizar Pruebas"
+description: "Agregar o mejorar pruebas del proyecto."
+title: "[Test] "
+labels: ["test"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # **✅ test: Agregar/Actualizar Pruebas**
+  
+  - type: textarea
+    id: test-description
+    attributes:
+      label: "Descripción de las Pruebas"
+      description: "Explica las pruebas que deseas agregar o mejorar y su impacto en el proyecto."
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-modules
+    attributes:
+      label: "Módulos Afectados"
+      description: "Lista de los módulos afectados por las pruebas."
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-cases
+    attributes:
+      label: "Casos de Prueba"
+      description: "Archivo o descripción de los casos de prueba que se agregarán o actualizarán."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-comments
+    attributes:
+      label: "Comentarios Adicionales"
+      description: "Cualquier comentario adicional que desees agregar sobre las pruebas."
+    validations:
+      required: false
