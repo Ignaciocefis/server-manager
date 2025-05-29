@@ -43,7 +43,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={link.name}>
                   <div className="grid grid-cols-[2rem_auto] items-center">
                     <SidebarMenuButton
-                      className={`flex items-center gap-2 w-52 peer ${
+                      className={`flex items-center gap-2 w-56 -ml-2 peer ${
                         pathName === link.href
                           ? "bg-gray-app-300 transition-colors"
                           : ""
@@ -71,7 +71,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={link.name}>
                   <div className="grid grid-cols-[2rem_auto] items-center">
                     <SidebarMenuButton
-                      className={`flex items-center gap-2 w-52 peer ${
+                      className={`flex items-center gap-2 w-56 -ml-2 peer ${
                         pathName === link.href
                           ? "bg-gray-app-300 transition-colors"
                           : ""
@@ -96,7 +96,7 @@ export function AppSidebar() {
         <div className="mt-auto">
           <hr className="bg-gray-app-600 w-4/5 mx-auto" />
           <SidebarGroup>
-            <SidebarMenu className="pl-4 gap-2 w-56">
+            <SidebarMenu className="pl-4 gap-2 w-60 -ml-2">
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <Image
