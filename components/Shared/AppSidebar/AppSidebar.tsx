@@ -15,6 +15,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { adminLinks, userLinks } from "./AppSidebar.data";
 import { LogOut } from "lucide-react";
+import { AppImage } from "../AppImage";
 
 export function AppSidebar() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -27,13 +28,7 @@ export function AppSidebar() {
         <div>
           <SidebarHeader className="flex flex-col items-center pt-5">
             <Link href="/">
-              <Image
-                src="/logo-minerva.png"
-                alt="Logo Minerva"
-                width={100}
-                height={45}
-                className="object-contain mx-auto"
-              />
+              <AppImage width={100} height={45} />
             </Link>
           </SidebarHeader>
           <hr className="bg-gray-app-600 w-4/5 mx-auto mt-4" />
