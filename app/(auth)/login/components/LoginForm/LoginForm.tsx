@@ -1,8 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -15,9 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { signInSchema } from "@/lib/zod";
+
 import { formSchema } from "./LoginForm.form";
 
 export function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -26,8 +34,34 @@ export function LoginForm() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const result = signInSchema.safeParse(values);
+
+    if (!result.success) {
+      toast.error("Valores inválidos");
+      return;
+    }
+
+    const { email, password } = result.data;
+
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl,
+      });
+
+      if (res?.error) {
+        toast.error("Email o contraseña incorrectos");
+      } else {
+        toast.success("Inicio de sesión exitoso");
+        router.push(res.url || "/");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Ha ocurrido un error inesperado");
+    }
   };
 
   return (
