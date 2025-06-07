@@ -8,7 +8,9 @@ export async function middleware(request: NextRequest) {
   const session = await auth();
   const { pathname } = request.nextUrl;
 
-  const isPublic = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+  const isPublic =
+    PUBLIC_PATHS.some((path) => pathname.startsWith(path)) ||
+    pathname.match(/\.(png|jpg|jpeg|gif|svg|ico)$/);
 
   if (!session && !isPublic) {
     const loginUrl = new URL("/login", request.url);
