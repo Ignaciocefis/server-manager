@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { adminLinks, userLinks } from "./AppSidebar.data";
 import { LogOut } from "lucide-react";
 import { AppImage } from "../AppImage";
+import { signOut } from "next-auth/react";
 
 export function AppSidebar() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -105,9 +106,11 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton>
+                <SidebarMenuButton
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                >
                   <LogOut className="mr-2 w-6 h-6" />
-                  <Link href="/settings">Cerrar sesión</Link>
+                  <span>Cerrar sesión</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
