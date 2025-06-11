@@ -1,6 +1,6 @@
 "use client";
 
-import { Category } from "@/types/category";
+import { Category } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 export function useHasCategory(categories: Category | Category[]): boolean {
