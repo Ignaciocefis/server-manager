@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { Category } from "@/types/category";
+import { Category } from "@prisma/client";
 
 export async function hasCategory(categories: Category | Category[]): Promise<boolean> {
   const session = await auth();
