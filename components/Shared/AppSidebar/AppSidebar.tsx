@@ -28,7 +28,7 @@ export function AppSidebar() {
       <SidebarContent className="bg-gray-app-600 text-gray-app-100 flex flex-col justify-between">
         <div>
           <SidebarHeader className="pt-5">
-            <div className="flex items-center justify-between w-4/5 pl-3 -ml-1">
+            <div className="hidden md:block items-center justify-between w-4/5 pl-3 -ml-1">
               <SidebarTrigger className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white transition-colors" />
             </div>
           </SidebarHeader>
