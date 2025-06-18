@@ -8,14 +8,12 @@ export function AppImage({
   height?: number;
 }) {
   return (
-    <div className="flex justify-center">
-      <Image
-        src="/logo-minerva.png"
-        alt="Logo Minerva. App para la gestión de servidores de Minerva Machine Learning"
-        width={width}
-        height={height}
-        className="object-contain"
-      />
-    </div>
+    <Image
+      src="/logo-minerva.png"
+      alt="Logo Minerva. App para la gestión de servidores de Minerva Machine Learning"
+      width={width}
+      height={height}
+      className="object-contain align-middle"
+    />
   );
 }

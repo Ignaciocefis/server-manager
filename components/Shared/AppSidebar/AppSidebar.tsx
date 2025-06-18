@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
@@ -15,7 +16,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { adminLinks, userLinks } from "./AppSidebar.data";
 import { LogOut } from "lucide-react";
-import { AppImage } from "../AppImage";
 import { signOut } from "next-auth/react";
 
 export function AppSidebar() {
@@ -27,10 +27,10 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent className="bg-gray-app-600 text-gray-app-100 flex flex-col justify-between">
         <div>
-          <SidebarHeader className="flex flex-col items-center pt-5">
-            <Link href="/">
-              <AppImage width={100} height={45} />
-            </Link>
+          <SidebarHeader className="pt-5">
+            <div className="flex items-center justify-between w-4/5 pl-3 -ml-1">
+              <SidebarTrigger className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white transition-colors" />
+            </div>
           </SidebarHeader>
           <hr className="bg-gray-app-600 w-4/5 mx-auto mt-4" />
           <SidebarGroup>
