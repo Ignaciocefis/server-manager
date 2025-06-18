@@ -1,12 +1,7 @@
 import Image from "next/image";
+import { AppImageProps } from "./AppImage.types";
 
-export function AppImage({
-  width = 100,
-  height = 45,
-}: {
-  width?: number;
-  height?: number;
-}) {
+export function AppImage({ width = 100, height = 45 }: AppImageProps) {
   return (
     <Image
       src="/logo-minerva.png"
