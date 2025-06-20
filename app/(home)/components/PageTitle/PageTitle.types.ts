@@ -5,7 +5,7 @@ export interface PageTitleProps {
   dialogAction?: {
     label: string;
     icon?: ReactNode;
-    content: ReactNode;
+    content: ReactNode | ((props: { closeDialog: () => void }) => ReactNode);
   };
   secondaryAction?: {
     label: string;

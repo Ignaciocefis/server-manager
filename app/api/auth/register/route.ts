@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { generateRandomPassword } from "@/lib/auth/generatePassword";
-import { sendEmailCreateAccount } from "@/lib/auth/mailer/mailer";
+import { sendEmailCreateAccount } from "@/lib/auth/resend/resend";
 
 export async function POST(request: Request) {
   const { email, name, firstSurname, secondSurname, category } = await request.json();
@@ -31,16 +31,6 @@ export async function POST(request: Request) {
     }
 
     const generatedPassword = generateRandomPassword();
-    const userCreated = await db.user.create({
-      data: {
-        email,
-        password: await bcrypt.hash(generatedPassword, 10),
-        name,
-        firstSurname,
-        secondSurname,
-        category,
-      },
-    });
 
     const emailSent = await sendEmailCreateAccount({
       to: email,
@@ -53,6 +43,17 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    const userCreated = await db.user.create({
+      data: {
+        email,
+        password: await bcrypt.hash(generatedPassword, 10),
+        name,
+        firstSurname,
+        secondSurname,
+        category,
+      },
+    });
 
     return NextResponse.json(
       { message: "Usuario creado correctamente", user: userCreated },
