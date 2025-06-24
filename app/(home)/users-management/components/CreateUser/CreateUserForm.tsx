@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { CircleMinus, CirclePlus } from "lucide-react";
+import { CircleMinus, CirclePlus, User } from "lucide-react";
 import axios from "axios";
 
 export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
@@ -63,13 +63,34 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
+        <div className="md:col-span-2 flex justify-end pr-6">
+          <h2 className="flex items-center gap-2 text-2xl font-semibold text-right">
+            <User className="w-6 h-6" />
+            Añadir nuevo usuario
+          </h2>
+        </div>
+
         <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-lg">Correo electrónico</FormLabel>
+                <FormControl>
+                  <Input type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg">Nombre</FormLabel>
+                <FormLabel>Nombre</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -105,20 +126,6 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Correo electrónico</FormLabel>
-                <FormControl>
-                  <Input type="email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
 
         <div className="space-y-6">
@@ -134,14 +141,14 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10 w-full">
                       <SelectValue placeholder="Selecciona una categoría" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="ADMIN">Administrador</SelectItem>
                     <SelectItem value="JUNIOR">Junior</SelectItem>
                     <SelectItem value="RESEARCHER">Investigador</SelectItem>
+                    <SelectItem value="ADMIN">Administrador</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
