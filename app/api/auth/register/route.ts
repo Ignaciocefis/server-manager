@@ -53,6 +53,16 @@ export async function POST(request: Request) {
         secondSurname,
         category,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        firstSurname: true,
+        secondSurname: true,
+        category: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     return NextResponse.json(
