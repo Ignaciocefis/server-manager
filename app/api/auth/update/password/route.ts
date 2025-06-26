@@ -1,10 +1,16 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { formSchema } from "@/lib/schemas/auth/changePassword.schema";
 import bcrypt, { compare } from "bcryptjs";
 import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
-  const { currentPassword, newPassword } = await req.json();
+  const body = await req.json();
+
+  const data = formSchema.parse(body);
+
+  const { currentPassword, newPassword } = data;
+
 
   const session = await auth();
   const userId = session?.user?.id;
