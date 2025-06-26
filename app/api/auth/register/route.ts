@@ -5,10 +5,14 @@ import { db } from "@/lib/db";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { generateRandomPassword } from "@/lib/auth/generatePassword";
 import { sendEmailCreateAccount } from "@/lib/auth/resend/resend";
+import { formSchema } from "@/lib/schemas/auth/register.schema";
 
 export async function POST(request: Request) {
-  const { email, name, firstSurname, secondSurname, category } = await request.json();
+  const body = await request.json();
+  
+  const data = formSchema.parse(body);
 
+  const { email, name, firstSurname, secondSurname, category } = data;
   try {
     const isAdmin = await hasCategory("ADMIN");
 

@@ -1,9 +1,14 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { formSchema } from "@/lib/schemas/auth/updateProfile.schema";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
-  const { name, firstSurname, secondSurname } = await request.json();
+  const body = await request.json();
+
+  const data = formSchema.parse(body);
+
+  const { name, firstSurname, secondSurname } = data;
 
   try {
     const session = await auth();

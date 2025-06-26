@@ -13,12 +13,12 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { ProfileSheetProps } from "./ProfileSheet.types";
-import { formSchema } from "@/app/(home)/users-management/components/CreateUser/CreateUserForm.form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import axios from "axios";
 import { toast } from "sonner";
 import { ChangePassword } from "../ChangePassword";
+import { formSchema } from "@/lib/schemas/auth/register.schema";
 
 export function ProfileSheet({ user }: ProfileSheetProps) {
   const [isEditing, setIsEditing] = useState(false);
