@@ -9,16 +9,22 @@ declare module "next-auth" {
       name: string;
       email: string;
       category: Category;
+      firstSurname: string;
+      secondSurname?: string;
     };
   }
 
   interface User {
     category: Category;
+    firstSurname: string;
+    secondSurname?: string;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     category?: Category;
+    firstSurname: string;
+    secondSurname?: string;
   }
 }
