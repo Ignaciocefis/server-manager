@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { formSchema } from "./CreateUserForm.form";
+import { formSchema } from "@/lib/schemas/auth/register.schema";
 import {
   Form,
   FormControl,

@@ -13,14 +13,16 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { ProfileSheetProps } from "./ProfileSheet.types";
-import { formSchema } from "@/app/(home)/users-management/components/CreateUser/CreateUserForm.form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import axios from "axios";
 import { toast } from "sonner";
+import { ChangePassword } from "../ChangePassword";
+import { formSchema } from "@/lib/schemas/auth/register.schema";
 
 export function ProfileSheet({ user }: ProfileSheetProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -168,16 +170,16 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
 
           <div className="w-11/12 mt-6 flex flex-col gap-4">
             {isEditing ? (
-              <>
+              <div className="w-full mt-6 flex flex-col gap-4">
                 <Button
                   type="submit"
-                  className="w-full bg-gray-app-600 text-white hover:bg-gray-app-500"
+                  className="w-full bg-green-app-500 hover:bg-green-app-500-transparent text-white"
                 >
                   Guardar cambios
                 </Button>
                 <Button
                   type="button"
-                  className="w-full border border-gray-300 text-gray-700 bg-white hover:bg-gray-100"
+                  className="w-full bg-red-app-500 hover:bg-red-app-500-transparent text-white"
                   onClick={() => {
                     form.reset();
                     setIsEditing(false);
@@ -185,22 +187,35 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                 >
                   Cancelar
                 </Button>
-              </>
+              </div>
             ) : (
-              <Button
-                type="button"
-                className="w-full bg-gray-app-600 text-white hover:bg-gray-app-500"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsEditing(true);
-                }}
-              >
-                Editar Perfil
-              </Button>
+              <div className="w-full mt-6 flex flex-col gap-4">
+                <Button
+                  type="button"
+                  className="w-full bg-gray-app-600 text-white hover:bg-gray-app-500"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsEditing(true);
+                  }}
+                >
+                  Editar Perfil
+                </Button>
+                <Button
+                  type="button"
+                  className="w-full bg-gray-app-600 text-white hover:bg-gray-app-500"
+                  onClick={() => setIsPasswordDialogOpen(true)}
+                >
+                  Cambiar contraseña
+                </Button>
+              </div>
             )}
           </div>
         </form>
       </Form>
+      <ChangePassword
+        open={isPasswordDialogOpen}
+        onOpenChange={setIsPasswordDialogOpen}
+      />
     </SheetContent>
   );
 }

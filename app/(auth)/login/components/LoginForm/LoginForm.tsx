@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signInSchema } from "@/lib/zod";
+import { signInSchema } from "@/lib/schemas/auth/login.schema";
 
 import { formSchema } from "./LoginForm.form";
 
