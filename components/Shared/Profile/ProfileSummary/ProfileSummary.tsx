@@ -32,7 +32,7 @@ export function ProfileSummary() {
     setOpen(isOpen);
   };
 
-  if (!user) return <span>Loading...</span>;
+  if (!user) return <span>Cargando perfil...</span>;
 
   const { name, category, firstSurname, secondSurname } = user;
   const fullName = getFullName(firstSurname, secondSurname, name);
