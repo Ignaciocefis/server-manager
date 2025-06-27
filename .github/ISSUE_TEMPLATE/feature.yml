@@ -17,6 +17,14 @@ body:
       required: true
 
   - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "Criterios de Aceptación"
+      description: "Define los criterios que deben cumplirse para considerar la funcionalidad como completa."
+    validations:
+      required: false
+
+  - type: textarea
     id: affected-modules
     attributes:
       label: "Módulos Afectados"
