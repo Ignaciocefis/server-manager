@@ -1,10 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { CreateUserForm } from "./CreateUserForm";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export function CreateUserDialog() {
   const [open, setOpen] = useState(false);
@@ -18,6 +24,14 @@ export function CreateUserDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="md:col-span-2 flex justify-end pr-6 gap-2 items-center">
+            <User className="w-6 h-6" />
+            <span className="text-2xl font-semibold text-right">
+              Añadir nuevo usuario
+            </span>
+          </DialogTitle>
+        </DialogHeader>
         <CreateUserForm closeDialog={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
