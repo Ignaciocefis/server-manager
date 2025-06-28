@@ -52,7 +52,7 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
 
   useEffect(() => {
     if (selectedCategory === "JUNIOR") {
-      axios.get("/api/researchers").then((res) => {
+      axios.get("/api/researcher/allResearchers").then((res) => {
         setResearchers(res.data.researchers || []);
       });
     }
