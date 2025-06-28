@@ -19,6 +19,7 @@ export async function GET() {
       secondSurname: true,
       email: true,
       category: true,
+      assignedToId: true,
     },
   });
 

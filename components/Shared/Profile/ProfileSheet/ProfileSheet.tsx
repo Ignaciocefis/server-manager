@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProfileSheetProps } from "./ProfileSheet.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
@@ -23,6 +23,7 @@ import { formSchema } from "@/lib/schemas/auth/register.schema";
 export function ProfileSheet({ user }: ProfileSheetProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [researcherName, setResearcherName] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,8 +33,33 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
       secondSurname: user.secondSurname || "",
       email: user.email,
       category: user.category,
+      assignedToId: user.assignedToId || null,
     },
   });
+
+  const category = form.watch("category");
+  const assignedToId = form.watch("assignedToId");
+
+  useEffect(() => {
+    const fetchResearcher = async () => {
+      if (category === "JUNIOR" && assignedToId) {
+        try {
+          const res = await axios.get(
+            `/api/researcher/findResearcher?id=${assignedToId}`
+          );
+          const researcher = res.data.user;
+          setResearcherName(`${researcher.name} ${researcher.firstSurname}`);
+        } catch (error) {
+          console.error("Error al cargar el investigador:", error);
+          setResearcherName("No disponible");
+        }
+      } else {
+        setResearcherName(null);
+      }
+    };
+
+    fetchResearcher();
+  }, [category, assignedToId]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -156,7 +182,7 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                     <select
                       {...field}
                       disabled
-                      className={`w-full bg-gray-app-100 text-gray-app-400 px-3 py-2 rounded text-sm border ${isEditing ? "border-gray-300" : "border-transparent"}`}
+                      className="w-full bg-gray-app-100 text-gray-app-400 px-3 py-2 rounded text-sm border border-transparent"
                     >
                       <option value="ADMIN">Administrador</option>
                       <option value="RESEARCHER">Investigador</option>
@@ -168,18 +194,29 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
             />
           </div>
 
+          {category === "JUNIOR" && researcherName && (
+            <div className="w-11/12">
+              <FormItem>
+                <FormLabel>Investigador asignado</FormLabel>
+                <div className="px-3 py-2 text-sm rounded bg-gray-app-100 text-gray-app-500 border border-gray-200">
+                  {researcherName}
+                </div>
+              </FormItem>
+            </div>
+          )}
+
           <div className="w-11/12 mt-6 flex flex-col gap-4">
             {isEditing ? (
-              <div className="w-full mt-6 flex flex-col gap-4">
+              <>
                 <Button
                   type="submit"
-                  className="w-full bg-green-app-500 hover:bg-green-app-500-transparent text-white"
+                  className="w-full bg-green-app-500 text-white"
                 >
                   Guardar cambios
                 </Button>
                 <Button
                   type="button"
-                  className="w-full bg-red-app-500 hover:bg-red-app-500-transparent text-white"
+                  className="w-full bg-red-app-500 text-white"
                   onClick={() => {
                     form.reset();
                     setIsEditing(false);
@@ -187,12 +224,12 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                 >
                   Cancelar
                 </Button>
-              </div>
+              </>
             ) : (
-              <div className="w-full mt-6 flex flex-col gap-4">
+              <>
                 <Button
                   type="button"
-                  className="w-full bg-gray-app-600 text-white hover:bg-gray-app-500"
+                  className="w-full bg-gray-app-600 text-white"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsEditing(true);
@@ -202,16 +239,17 @@ export function ProfileSheet({ user }: ProfileSheetProps) {
                 </Button>
                 <Button
                   type="button"
-                  className="w-full bg-gray-app-600 text-white hover:bg-gray-app-500"
+                  className="w-full bg-gray-app-600 text-white"
                   onClick={() => setIsPasswordDialogOpen(true)}
                 >
                   Cambiar contraseña
                 </Button>
-              </div>
+              </>
             )}
           </div>
         </form>
       </Form>
+
       <ChangePassword
         open={isPasswordDialogOpen}
         onOpenChange={setIsPasswordDialogOpen}

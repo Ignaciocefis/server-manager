@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -26,8 +26,13 @@ import {
 import { DialogClose } from "@radix-ui/react-dialog";
 import { CircleMinus, CirclePlus, User } from "lucide-react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { ComboboxResearchers } from "@/components/Shared/ComboboxResearchers/ComboboxResearchers";
+import { Researcher } from "@/components/Shared/ComboboxResearchers/Researcher.types";
 
 export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
+  const [researchers, setResearchers] = useState<Researcher[]>([]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,8 +41,22 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
       firstSurname: "",
       secondSurname: "",
       category: "JUNIOR",
+      assignedToId: "",
     },
   });
+
+  const selectedCategory = useWatch({
+    control: form.control,
+    name: "category",
+  });
+
+  useEffect(() => {
+    if (selectedCategory === "JUNIOR") {
+      axios.get("/api/researcher/allResearchers").then((res) => {
+        setResearchers(res.data.researchers || []);
+      });
+    }
+  }, [selectedCategory]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -53,7 +72,6 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
       } else {
         toast.error("Error de red o inesperado");
       }
-      console.error("Error al crear el usuario:", error);
     }
   };
 
@@ -155,6 +173,26 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
               </FormItem>
             )}
           />
+
+          {selectedCategory === "JUNIOR" && (
+            <FormField
+              control={form.control}
+              name="assignedToId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Asignar a Investigador</FormLabel>
+                  <FormControl>
+                    <ComboboxResearchers
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      researchers={researchers}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
 
         <div className="md:col-span-2 flex justify-center gap-4 mt-4">
