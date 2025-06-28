@@ -52,7 +52,7 @@ export function ComboboxResearchers({
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Buscar investigador..." />
-          <CommandEmpty>No se hay investigadores</CommandEmpty>
+          <CommandEmpty>No hay investigadores</CommandEmpty>
           <CommandGroup>
             {researchers.map((researcher) => (
               <CommandItem
