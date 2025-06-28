@@ -1,5 +1,30 @@
 import { db } from "@/lib/db";
 
+export const getUserById = async (id: string) => {
+  if (!id) {
+    return null;
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        firstSurname: true,
+        secondSurname: true,
+        email: true,
+        category: true,
+        assignedToId: true,
+      },
+    });
+    return user;
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    return null;
+  }
+}
+
 export const getUserByEmail = async (email: string) => {
   if (!email) {
     return null;

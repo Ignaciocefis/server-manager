@@ -8,5 +8,6 @@ export interface ProfileSheetProps {
     firstSurname: string;
     secondSurname?: string;
     email: string;
+    assignedToId?: string | null;
   };
 }
