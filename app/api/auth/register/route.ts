@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   
   const data = formSchema.parse(body);
 
-  const { email, name, firstSurname, secondSurname, category } = data;
+  const { email, name, firstSurname, secondSurname, category, assignedToId } = data;
   try {
     const isAdmin = await hasCategory("ADMIN");
 
@@ -56,7 +56,9 @@ export async function POST(request: Request) {
         firstSurname,
         secondSurname,
         category,
-      },
+        assignedTo: category === "JUNIOR" && assignedToId
+          ? { connect: { id: assignedToId } }
+          : undefined,      },
       select: {
         id: true,
         email: true,
@@ -64,6 +66,7 @@ export async function POST(request: Request) {
         firstSurname: true,
         secondSurname: true,
         category: true,
+        assignedToId: true,
         createdAt: true,
         updatedAt: true,
       },
