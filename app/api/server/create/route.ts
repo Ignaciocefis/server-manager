@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     if (!isAdmin) {
       return NextResponse.json(
-        { error: "No tienes permisos para crear usuarios" },
+        { error: "No tienes permisos para crear servidores" },
         { status: 403 }
       );
     }
