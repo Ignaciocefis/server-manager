@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { CircleMinus, CirclePlus, User } from "lucide-react";
+import { CircleMinus, CirclePlus } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ComboboxResearchers } from "@/components/Shared/ComboboxResearchers/ComboboxResearchers";
@@ -81,13 +81,6 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
-        <div className="md:col-span-2 flex justify-end pr-6">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold text-right">
-            <User className="w-6 h-6" />
-            Añadir nuevo usuario
-          </h2>
-        </div>
-
         <div className="space-y-6">
           <FormField
             control={form.control}
