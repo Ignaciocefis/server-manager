@@ -1,5 +1,6 @@
 import { CreateServerDialog } from "./components/CreateServer";
 import { PageTitle } from "./components/PageTitle";
+import { ServerList } from "./components/ServerList";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
       <PageTitle title="Listado de servidores">
         <CreateServerDialog />
       </PageTitle>
+      <ServerList />
     </div>
   );
 }

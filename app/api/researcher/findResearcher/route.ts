@@ -6,15 +6,11 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
-    console.log("ID recibido:", id); 
-
     if (!id) {
       return NextResponse.json({ error: "El id es obligatorio" }, { status: 400 });
     }
 
     const user = await getUserById(id);
-
-    console.log("Usuario encontrado:", user);
 
     if (!user) {
       return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });

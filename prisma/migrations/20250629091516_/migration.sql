@@ -24,6 +24,7 @@ CREATE TABLE "Server" (
     "name" TEXT NOT NULL,
     "ramGB" INTEGER NOT NULL,
     "diskCount" INTEGER NOT NULL,
+    "available" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
