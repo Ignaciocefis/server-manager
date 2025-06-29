@@ -23,3 +23,41 @@ export const existsServerByName = async (name: string) => {
   return !!existingServer;
 };
 
+export const getUserServers = async (userId: string) => {
+  try {
+
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: { category: true },
+    });
+
+    if (!user) return [];
+
+    if (user.category === 'ADMIN') {
+      const servers = await db.server.findMany();
+
+      return servers.map((server) => ({
+        ...server,
+        tarjetasInstaladas: 4, // Example value, replace with actual logic
+        tarjetasDisponibles: 2, // Example value, replace with actual logic
+      }));
+    }
+
+    const userWithAccess = await db.user.findUnique({
+      where: { id: userId },
+      include: {
+        serverAccess: {
+          include: {
+            server: true,
+          },
+        },
+      },
+    });
+
+    return userWithAccess?.serverAccess.map((a) => a.server) || [];
+  } catch (error) {
+    console.error("Error fetching user servers:", error);
+    return [];
+  }
+};
+
