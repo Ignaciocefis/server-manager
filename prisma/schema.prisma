@@ -9,19 +9,42 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String             @id @default(cuid())
   name          String
   firstSurname  String
   secondSurname String?
-  email         String   @unique
+  email         String             @unique
   password      String
   category      Category
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  isActive      Boolean            @default(true)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
   assignedToId  String?
-  assignedTo    User?    @relation("MentorJuniors", fields: [assignedToId], references: [id])
-  juniors       User[]   @relation("MentorJuniors")
+  assignedTo    User?              @relation("MentorJuniors", fields: [assignedToId], references: [id])
+  juniors       User[]             @relation("MentorJuniors")
+  serverAccess  UserServerAccess[]
+}
+
+model Server {
+  id         String             @id @default(cuid())
+  name       String
+  ramGB      Int
+  diskCount  Int
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  userAccess UserServerAccess[]
+}
+
+model UserServerAccess {
+  id        String   @id @default(cuid())
+  userId    String
+  serverId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  server    Server   @relation(fields: [serverId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, serverId])
 }
 
 enum Category {
