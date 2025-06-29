@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
 
-import { db } from "@/lib/db";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { formSchema } from "@/lib/schemas/server/create.schema";
-import { existsServerByName } from "@/data/server";
+import { createServer, existsServerByName } from "@/data/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
   
   const data = formSchema.parse(body);
 
-  const { name, ramGB, diskCount } = data;
+  const { name } = data;
   try {
     const isAdmin = await hasCategory("ADMIN");
 
@@ -30,13 +29,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const serverCreated = await db.server.create({
-      data: {
-        name,
-        ramGB,
-        diskCount,
-      },
-    });
+    const serverCreated = createServer(data)
 
     return NextResponse.json(
       { message: "Servidor creado correctamente", server: serverCreated },
