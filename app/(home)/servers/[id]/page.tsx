@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { ServerListItem } from "../../components/ServerList/ServerList.types";
-import { PageTitle } from "../../components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, ServerCog, ServerOff, Settings } from "lucide-react";
 
