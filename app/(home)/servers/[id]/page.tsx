@@ -47,9 +47,26 @@ export default function ServerDetails() {
     fetchServer();
   }, [serverId]);
 
-  if (loading) return <p className="p-4">Cargando servidor...</p>;
-  if (error) return <p className="p-4 text-red-500">{error}</p>;
-  if (!server) return <p className="p-4">Servidor no encontrado</p>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-full min-h-[300px]">
+        <p className="text-2xl">Cargando servidor...</p>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-full min-h-[300px]">
+        <p className="text-2xl text-red-500">{error}</p>
+      </div>
+    );
+
+  if (!server)
+    return (
+      <div className="flex justify-center items-center h-full min-h-[300px]">
+        <p className="text-2xl">Servidor no encontrado</p>
+      </div>
+    );
 
   const toggleAvailability = async () => {
     try {
