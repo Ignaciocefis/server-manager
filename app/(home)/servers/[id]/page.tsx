@@ -62,8 +62,6 @@ export default function ServerDetails() {
         serverId,
       });
 
-      console.log("Nuevo estado recibido:", response.data.available);
-
       setServer(response.data.updatedServer);
     } catch (error) {
       console.error("Error cambiando disponibilidad:", error);
