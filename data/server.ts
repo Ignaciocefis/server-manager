@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { formSchema } from "@/lib/schemas/server/create.schema";
+import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
 import z from "zod";
 
 export const createServer = async (data: z.infer<typeof formSchema>) => {
@@ -16,11 +17,38 @@ export const createServer = async (data: z.infer<typeof formSchema>) => {
   }
 };
 
+export const updateServer = async (id: string, data: z.infer<typeof updateServerFormSchema>) => {
+  try {
+    const server = await db.server.update({
+      where: { id },
+      data,
+    });
+
+    return server;
+    
+  } catch (error) {
+    console.error("Error updating server:", error);
+    return null;
+  }
+};
+
 export const existsServerByName = async (name: string) => {
   const existingServer = await db.server.findFirst({
     where: { name },
   });
   return !!existingServer;
+};
+
+export const getServerById = async (id: string) => {
+  try {
+    const server = await db.server.findUnique({
+      where: { id },
+    });
+    return server;
+  } catch (error) {
+    console.error("Error fetching server by ID:", error);
+    return null;
+  }
 };
 
 export const getUserServers = async (userId: string) => {
@@ -61,3 +89,27 @@ export const getUserServers = async (userId: string) => {
   }
 };
 
+export const hasAccessToServer = async (userId: string, serverId: string): Promise<boolean> => {
+  try {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: { category: true },
+    });
+
+    if (!user) return false;
+
+    if (user.category === "ADMIN") return true;
+
+    const access = await db.userServerAccess.findFirst({
+      where: {
+        userId: userId,
+        serverId: serverId,
+      },
+    });
+
+    return !!access;
+  } catch (error) {
+    console.error("Error verificando acceso al servidor:", error);
+    return false;
+  }
+};

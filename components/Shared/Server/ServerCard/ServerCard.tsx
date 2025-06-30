@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Cpu, Gpu, Info, Plus, Link2, CirclePlus } from "lucide-react";
 import { ServerListItem } from "@/app/(home)/components/ServerList/ServerList.types";
+import Link from "next/link";
 
 export default function ServerCard({ server }: { server: ServerListItem }) {
   return (
@@ -27,13 +28,15 @@ export default function ServerCard({ server }: { server: ServerListItem }) {
           <span>Gráficas disponibles: {server.tarjetasDisponibles ?? 0}</span>
         </div>
 
-        <Button
-          variant="secondary"
-          className="w-full bg-gray-app-600 text-gray-app-100 hover:bg-gray-app-400 mt-2"
-        >
-          <Info size={16} className="mr-2" />
-          Detalles
-        </Button>
+        <Link href={`/servers/${server.id}`} className="w-full mt-2">
+          <Button
+            variant="secondary"
+            className="w-full bg-gray-app-600 text-gray-app-100 hover:bg-gray-app-400"
+          >
+            <Info size={16} className="mr-2" />
+            Detalles
+          </Button>
+        </Link>
 
         {server.available && (server.tarjetasDisponibles ?? 0) > 0 ? (
           <Button className="w-full mt-1 bg-green-app-500-transparent hover:bg-green-app-500 text-gray-app-100">
