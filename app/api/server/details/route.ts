@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { getServerById, hasAccessToServer } from "@/data/server";
 import { NextResponse } from "next/server";
 
@@ -5,11 +6,18 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("serverId");
-    const userId = searchParams.get("userId");
 
-    if (!id || !userId) {
+    if (!id) {
       return NextResponse.json({ error: "ID requerido" }, { status: 400 });
     }
+
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.json({ error: "Usuario requerido" }, { status: 400 });
+    }
+
 
     const server = await getServerById(id);
     if (!server) {

@@ -33,7 +33,7 @@ export default function ServerDetails() {
         }
 
         const response = await axios.get(
-          `/api/server/details?serverId=${serverId}&userId=${userId}`
+          `/api/server/details?serverId=${serverId}`
         );
         setServer(response.data);
       } catch (err) {
@@ -111,8 +111,8 @@ export default function ServerDetails() {
                   <ServerOff size={20} />
                 )}
                 {server.available
-                  ? "Servidor Disponible"
-                  : "Servidor No Disponible"}
+                  ? "Servidor disponible"
+                  : "Servidor en mantenimiento"}
               </Button>
             </>
           )}
