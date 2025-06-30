@@ -73,7 +73,7 @@ export default function ServerDetails() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="w-11/12 p-6 text-gray-app-100 bg-gray-app-600 rounded-lg shadow-md">
+      <div className="px-8 py-4 m-4 w-11/12 text-gray-app-100 bg-gray-app-600 rounded-lg">
         <h1 className="text-2xl font-bold mb-4">
           Detalles del servidor: {server.name}
         </h1>
