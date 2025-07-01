@@ -1,0 +1,45 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { Settings, Server } from "lucide-react";
+import { EditServerForm } from "./UpdateServerForm";
+import { UpdateServerDialogProps } from "./UpdateServerDialog.types";
+
+export function UpdateServerDialog({
+  serverToEdit,
+  onUpdate,
+}: UpdateServerDialogProps) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+          <Settings size={20} />
+          Editar
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Server className="w-6 h-6" />
+            <span className="text-2xl font-semibold">Editar servidor</span>
+          </DialogTitle>
+        </DialogHeader>
+        <EditServerForm
+          closeDialog={() => setOpen(false)}
+          onUpdate={onUpdate}
+          serverToEdit={serverToEdit}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}

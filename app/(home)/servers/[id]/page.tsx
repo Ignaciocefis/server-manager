@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import { ServerListItem } from "../../components/ServerList/ServerList.types";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, ServerCog, ServerOff, Settings } from "lucide-react";
+import { CirclePlus, ServerCog, ServerOff } from "lucide-react";
+import { UpdateServerDialog } from "../../components";
+import { ServerListItem } from "../../components/Server/ServerList/ServerList.types";
 
 export default function ServerDetails() {
   const params = useParams();
@@ -68,6 +69,10 @@ export default function ServerDetails() {
       </div>
     );
 
+  const handleServerUpdate = (updatedServer: ServerListItem) => {
+    setServer(updatedServer);
+  };
+
   const toggleAvailability = async () => {
     try {
       if (!isAdmin) {
@@ -110,10 +115,11 @@ export default function ServerDetails() {
 
           {isAdmin && (
             <>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                <Settings size={20} />
-                Editar
-              </Button>
+              <UpdateServerDialog
+                serverToEdit={server}
+                onUpdate={handleServerUpdate}
+              />
+
               <Button
                 className={`w-full flex items-center justify-center gap-2 ${
                   server.available

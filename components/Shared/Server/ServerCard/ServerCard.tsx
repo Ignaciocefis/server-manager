@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Cpu, Gpu, Info, Plus, Link2, CirclePlus } from "lucide-react";
-import { ServerListItem } from "@/app/(home)/components/ServerList/ServerList.types";
+import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import Link from "next/link";
 
 export default function ServerCard({ server }: { server: ServerListItem }) {

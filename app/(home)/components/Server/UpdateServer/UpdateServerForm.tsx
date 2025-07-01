@@ -10,35 +10,46 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { formSchema } from "@/lib/schemas/server/create.schema";
+import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DialogClose } from "@radix-ui/react-dialog";
 import axios from "axios";
-import { CircleMinus, CirclePlus } from "lucide-react";
+import { CircleMinus, Save } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z from "zod";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { z } from "zod";
+import { EditServerFormProps } from "./UpdateServerForm.types";
 
-export function CreateServerForm({
+export function EditServerForm({
+  serverToEdit,
   closeDialog,
-}: {
-  closeDialog?: () => void;
-}) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  onUpdate,
+}: EditServerFormProps) {
+  const form = useForm<z.infer<typeof updateServerFormSchema>>({
+    resolver: zodResolver(updateServerFormSchema),
     defaultValues: {
-      name: "",
-      ramGB: 1,
-      diskCount: 1,
+      serverId: serverToEdit!.id,
+      name: serverToEdit!.name,
+      ramGB: serverToEdit!.ramGB,
+      diskCount: serverToEdit!.diskCount,
+      available: serverToEdit!.available,
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof updateServerFormSchema>) => {
     try {
-      const response = await axios.post("/api/server/create", data);
+      const response = await axios.put("/api/server/update", {
+        ...data,
+      });
+      toast.success(
+        response.data.message || "Servidor actualizado correctamente"
+      );
+
+      if (response.data.server && onUpdate) {
+        onUpdate(response.data.server);
+      }
 
       closeDialog?.();
-      toast.success(response.data.message || "Servidor creado correctamente");
     } catch (error: unknown) {
       console.error({ error });
       if (axios.isAxiosError(error)) {
@@ -56,6 +67,7 @@ export function CreateServerForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
+        <input type="hidden" {...form.register("serverId")} />
         <div className="space-y-6">
           <FormField
             control={form.control}
@@ -105,8 +117,8 @@ export function CreateServerForm({
             type="submit"
             className="w-40 bg-green-app-500 hover:bg-green-app-500-transparent"
           >
-            <CirclePlus />
-            Añadir servidor
+            <Save />
+            Actualizar servidor
           </Button>
           <DialogClose asChild>
             <Button

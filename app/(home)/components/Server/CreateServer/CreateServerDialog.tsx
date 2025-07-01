@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus, Server } from "lucide-react";
-import { CreateServerForm } from "./CreateServerForm";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { CreateServerForm } from "./CreateServerForm";
 
 export function CreateServerDialog() {
   const [open, setOpen] = useState(false);

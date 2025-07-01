@@ -1,6 +1,6 @@
-import { CreateServerDialog } from "./components/CreateServer";
+import { CreateServerDialog } from "./components";
 import { PageTitle } from "./components/PageTitle";
-import { ServerList } from "./components/ServerList";
+import { ServerList } from "./components/Server/ServerList";
 
 export default function Home() {
   return (
