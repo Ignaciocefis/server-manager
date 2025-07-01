@@ -35,6 +35,25 @@ export const updateServer = async (serverId: string, data: z.infer<typeof update
   }
 };
 
+export const deleteServer = async (serverId: string) => {
+  try {
+    await db.server.delete({
+      where: { id: serverId },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error deleting server:", error);
+    return false;
+  }
+}
+
+export const existsServerById = async (id: string) => {
+  const existingServer = await db.server.findUnique({
+    where: { id },
+  });
+  return !!existingServer;
+};
+
 export const existsServerByName = async (name: string) => {
   const existingServer = await db.server.findFirst({
     where: { name },

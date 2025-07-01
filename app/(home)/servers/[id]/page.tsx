@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, ServerCog, ServerOff } from "lucide-react";
+import { CirclePlus, ServerCog, ServerOff, Trash2 } from "lucide-react";
 import { UpdateServerDialog } from "../../components";
 import { ServerListItem } from "../../components/Server/ServerList/ServerList.types";
+import { toast } from "sonner";
 
 export default function ServerDetails() {
   const params = useParams();
   const serverId = params.id as string;
+
+  const router = useRouter();
 
   const [server, setServer] = useState<ServerListItem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,10 +87,34 @@ export default function ServerDetails() {
         serverId,
       });
 
+      toast.success(
+        `Servidor ${response.data.updatedServer.available ? "disponible" : "en mantenimiento"}`
+      );
+
       setServer(response.data.updatedServer);
     } catch (error) {
       console.error("Error cambiando disponibilidad:", error);
       setError("No se pudo cambiar el estado del servidor.");
+    }
+  };
+
+  const handleDeleteServer = async () => {
+    try {
+      if (!isAdmin) {
+        setError("Solo los administradores pueden cambiar la disponibilidad.");
+        return;
+      }
+
+      await axios.delete("/api/server/delete", {
+        data: { serverId },
+      });
+
+      toast.success("Servidor eliminado correctamente");
+
+      router.push("/");
+    } catch (err) {
+      console.error("Error eliminando servidor:", err);
+      setError("No se pudo eliminar el servidor.");
     }
   };
 
@@ -136,6 +163,13 @@ export default function ServerDetails() {
                 {server.available
                   ? "Servidor disponible"
                   : "Servidor en mantenimiento"}
+              </Button>
+              <Button
+                className="w-full bg-red-app-500-transparent hover:bg-red-app-500 text-white"
+                onClick={handleDeleteServer}
+              >
+                <Trash2 size={20} />
+                Eliminar servidor
               </Button>
             </>
           )}
