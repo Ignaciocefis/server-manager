@@ -1,6 +1,5 @@
-import { existsServerById } from "@/data/server";
+import { deleteServer, existsServerById } from "@/data/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function DELETE(req: Request) {
@@ -27,8 +26,8 @@ export async function DELETE(req: Request) {
       );
     }
 
-    const deleted = await db.server.delete({ where: { id: serverId } });
-
+    const deleted = await deleteServer(serverId);
+  
     return NextResponse.json({ message: "Servidor eliminado correctamente", deleted });
   } catch (error) {
     console.error("Error eliminando servidor:", error);
