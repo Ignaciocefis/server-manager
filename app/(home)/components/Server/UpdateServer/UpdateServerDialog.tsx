@@ -22,7 +22,7 @@ export function UpdateServerDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="w-full bg-blue-500 opacity-60 hover:bg-blue-500 hover:opacity-100 text-white">
           <Settings size={20} />
           Editar
         </Button>
