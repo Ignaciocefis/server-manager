@@ -18,13 +18,13 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { z } from "zod";
-import { EditServerFormProps } from "./UpdateServerForm.types";
+import { UpdateServerFormProps } from "./UpdateServerForm.types";
 
-export function EditServerForm({
+export function UpdateServerForm({
   serverToEdit,
   closeDialog,
   onUpdate,
-}: EditServerFormProps) {
+}: UpdateServerFormProps) {
   const form = useForm<z.infer<typeof updateServerFormSchema>>({
     resolver: zodResolver(updateServerFormSchema),
     defaultValues: {

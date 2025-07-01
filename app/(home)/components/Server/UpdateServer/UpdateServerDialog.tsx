@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Settings, Server } from "lucide-react";
-import { EditServerForm } from "./UpdateServerForm";
+import { UpdateServerForm } from "./UpdateServerForm";
 import { UpdateServerDialogProps } from "./UpdateServerDialog.types";
 
 export function UpdateServerDialog({
@@ -34,7 +34,7 @@ export function UpdateServerDialog({
             <span className="text-2xl font-semibold">Editar servidor</span>
           </DialogTitle>
         </DialogHeader>
-        <EditServerForm
+        <UpdateServerForm
           closeDialog={() => setOpen(false)}
           onUpdate={onUpdate}
           serverToEdit={serverToEdit}

@@ -1,6 +1,6 @@
 import { ServerListItem } from "../ServerList/ServerList.types";
 
-export interface EditServerFormProps {
+export interface UpdateServerFormProps {
   closeDialog?: () => void;
   onUpdate?: (updatedServer: ServerListItem) => void;
   serverToEdit?: {
