@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
-import { formSchema } from "@/lib/schemas/server/create.schema";
+import { createServerFormSchema } from "@/lib/schemas/server/create.schema";
 import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
 import z from "zod";
 
-export const createServer = async (data: z.infer<typeof formSchema>) => {
+export const createServer = async (data: z.infer<typeof createServerFormSchema>) => {
   try {
     const server = await db.server.create({
       data,
@@ -17,11 +17,14 @@ export const createServer = async (data: z.infer<typeof formSchema>) => {
   }
 };
 
-export const updateServer = async (id: string, data: z.infer<typeof updateServerFormSchema>) => {
+export const updateServer = async (serverId: string, data: z.infer<typeof updateServerFormSchema>) => {
   try {
+
+    const { serverId, ...dataWithoutId } = data;
+
     const server = await db.server.update({
-      where: { id },
-      data,
+      where: { id: serverId },
+      data: dataWithoutId,
     });
 
     return server;

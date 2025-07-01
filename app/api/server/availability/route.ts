@@ -27,6 +27,7 @@ export async function PUT(request: Request) {
     }
 
     const updatedServer = await updateServer(serverId, {
+      serverId: server.id,
       name: server.name,
       ramGB: server.ramGB,
       diskCount: server.diskCount,

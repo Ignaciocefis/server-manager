@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const createServerFormSchema = z.object({
   name: z
     .string()
     .min(3, "El nombre del servidor debe tener al menos 3 caracteres")
