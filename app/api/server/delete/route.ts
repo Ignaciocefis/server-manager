@@ -10,7 +10,7 @@ export async function DELETE(req: Request) {
     const isAdmin = await hasCategory("ADMIN");
     if (!isAdmin) {
       return NextResponse.json(
-        { error: "No tienes permisos para crear servidores" },
+        { error: "No tienes permisos para eliminar servidores" },
         { status: 403 }
       );
     }
