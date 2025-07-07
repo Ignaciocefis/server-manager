@@ -40,7 +40,7 @@ export function UserTable({ data, isLoading, refetch }: UserTableProps) {
 
   const handleToggleActive = async (userId: string, newStatus: boolean) => {
     try {
-      await axios.patch("/api/auth/toggle-active", {
+      await axios.patch("/api/auth/active/toggleActive", {
         userId,
       });
       toast.success(`Usuario ${newStatus ? "activado" : "desactivado"}`);
