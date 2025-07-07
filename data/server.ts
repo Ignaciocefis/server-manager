@@ -135,3 +135,24 @@ export const hasAccessToServer = async (userId: string, serverId: string): Promi
     return false;
   }
 };
+
+  export const removeAllServerAccessForUser = async (userId: string) => {
+    try {
+      await db.userServerAccess.deleteMany({ where: { userId } });
+      return true;
+    } catch (error) {
+      console.error("Error removing all server access for user:", error);
+      return false;
+    }
+  };
+
+  export const addServerAccessForUser = async (newLinks: { userId: string; serverId: string }[]) => {
+    try {
+      await db.userServerAccess.createMany({ data: newLinks });
+      return true;
+    } catch (error) {
+      console.error("Error adding server access for user:", error);
+      return false;
+    }
+  };
+

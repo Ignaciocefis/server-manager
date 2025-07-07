@@ -2,15 +2,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { UsersTableDataProps } from "./UsersTable.data.type";
 import { Category } from "@prisma/client";
-import { CheckCheck, Pause, ServerIcon, Trash2 } from "lucide-react";
+import { CheckCheck, Pause, Trash2 } from "lucide-react";
 import { AssignResearcherPopover } from "../AssignResearcherPopover";
+import { AssignServersPopover } from "../AssignServerPopover";
 
 export function getUserColumns(
   userId: string,
   userCategory: Category,
   onDelete: (userId: string) => void,
   handleToggleActive: (userId: string, newStatus: boolean) => void,
-  handleAssignResearcher: () => void
+  handleRefresh: () => void
 ): ColumnDef<UsersTableDataProps>[] {
   const isAdmin = userCategory === "ADMIN";
   const isResearcher = userCategory === "RESEARCHER";
@@ -58,19 +59,16 @@ export function getUserColumns(
         return (
           <div className="flex gap-2 items-center justify-end">
             {isJunior && (isAdmin || isResearcher) && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-gray-app-200 hover:bg-gray-app-300"
-              >
-                <ServerIcon className="w-4 h-4 mr-1" />
-                Servidores
-              </Button>
+              <AssignServersPopover
+                userId={u.id}
+                editorId={userId}
+                onAssigned={handleRefresh}
+              />
             )}
             {isJunior && isAdmin && (
               <AssignResearcherPopover
                 userId={u.id}
-                onAssigned={handleAssignResearcher}
+                onAssigned={handleRefresh}
                 researcherId={
                   u.assignedTo ? (u.assignedToId ?? undefined) : undefined
                 }
