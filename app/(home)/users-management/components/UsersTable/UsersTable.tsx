@@ -51,9 +51,19 @@ export function UserTable({ data, isLoading, refetch }: UserTableProps) {
     }
   };
 
+  const handleAssignResearcher = async () => {
+    refetch();
+  };
+
   const columns =
     userId && category
-      ? getUserColumns(userId, category, handleDeleteUser, handleToggleActive)
+      ? getUserColumns(
+          userId,
+          category,
+          handleDeleteUser,
+          handleToggleActive,
+          handleAssignResearcher
+        )
       : [];
 
   const table = useReactTable({

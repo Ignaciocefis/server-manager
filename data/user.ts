@@ -114,6 +114,24 @@ export async function getAllUsers() {
   }
 }
 
+export async function assignJuniorToResearcher(userId: string, researcherId: string) {
+  try {
+    if (!userId || !researcherId) {
+      return false;
+    }
+
+    await db.user.update({
+          where: { id: userId },
+          data: { assignedTo: { connect: { id: researcherId } } },
+        });
+
+    return true;
+  } catch (error) {
+    console.error("Error assigning researcher to user:", error);
+    return false;
+  }
+}
+
 export async function getAssignedUsers(investigatorId: string) {
   try {
     if (!investigatorId) {
