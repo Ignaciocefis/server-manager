@@ -23,6 +23,10 @@ export default {
             return null;
           }
 
+          if (!user.isActive) {
+            return null;
+          }
+
           const passwordsMatch = await bcryptjs.compare(password, user.password);
 
           if (passwordsMatch) {

@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/lib/schemas/auth/login.schema";
 
 import { formSchema } from "./LoginForm.form";
+import axios from "axios";
 
 export function LoginForm() {
   const router = useRouter();
@@ -45,6 +46,17 @@ export function LoginForm() {
     const { email, password } = result.data;
 
     try {
+      const userActiveResponse = await axios.post("/api/auth/active/isActive", {
+        email,
+      });
+
+      if (userActiveResponse.data.isActive === false) {
+        toast.error(
+          "Usuario inactivo, habla con un administrador para solicitar el alta de tu cuenta"
+        );
+        return;
+      }
+
       const res = await signIn("credentials", {
         email,
         password,
