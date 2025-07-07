@@ -12,7 +12,7 @@ export async function DELETE(request: Request) {
     const isAdmin = await hasCategory("ADMIN");
     if (!isAdmin) {
       return NextResponse.json(
-        { error: "No tienes permisos para crear usuarios" },
+        { error: "No tienes permisos para eliminar usuarios" },
         { status: 403 }
       );
     }
