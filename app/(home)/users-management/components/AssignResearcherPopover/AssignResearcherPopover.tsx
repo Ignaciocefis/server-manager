@@ -17,10 +17,11 @@ import { AssignResearcherPopoverProps } from "./AssignResearcherPopover.types";
 export function AssignResearcherPopover({
   userId,
   onAssigned,
+  researcherId,
 }: AssignResearcherPopoverProps) {
   const [open, setOpen] = useState(false);
   const [researchers, setResearchers] = useState<Researcher[]>([]);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(researcherId || "");
 
   useEffect(() => {
     if (!open) return;

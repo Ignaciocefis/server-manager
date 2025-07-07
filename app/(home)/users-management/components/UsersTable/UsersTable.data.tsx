@@ -71,6 +71,9 @@ export function getUserColumns(
               <AssignResearcherPopover
                 userId={u.id}
                 onAssigned={handleAssignResearcher}
+                researcherId={
+                  u.assignedTo ? (u.assignedToId ?? undefined) : undefined
+                }
               />
             )}
             {u.category !== "ADMIN" && (
