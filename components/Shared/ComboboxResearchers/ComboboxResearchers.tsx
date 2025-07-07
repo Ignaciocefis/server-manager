@@ -57,7 +57,7 @@ export function ComboboxResearchers({
             {researchers.map((researcher) => (
               <CommandItem
                 key={researcher.id}
-                value={researcher.id}
+                value={`${researcher.name} ${researcher.firstSurname} ${researcher.secondSurname ?? ""}`}
                 onSelect={() => {
                   onChange(researcher.id);
                   setOpen(false);
@@ -70,7 +70,7 @@ export function ComboboxResearchers({
                   )}
                 />
                 {researcher.name} {researcher.firstSurname}{" "}
-                {researcher.secondSurname || ""}
+                {researcher.secondSurname ?? ""}
               </CommandItem>
             ))}
           </CommandGroup>

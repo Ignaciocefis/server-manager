@@ -2,13 +2,15 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { UsersTableDataProps } from "./UsersTable.data.type";
 import { Category } from "@prisma/client";
-import { CheckCheck, Paperclip, Pause, ServerIcon, Trash2 } from "lucide-react";
+import { CheckCheck, Pause, ServerIcon, Trash2 } from "lucide-react";
+import { AssignResearcherPopover } from "../AssignResearcherPopover";
 
 export function getUserColumns(
   userId: string,
   userCategory: Category,
   onDelete: (userId: string) => void,
-  handleToggleActive: (userId: string, newStatus: boolean) => void
+  handleToggleActive: (userId: string, newStatus: boolean) => void,
+  handleAssignResearcher: () => void
 ): ColumnDef<UsersTableDataProps>[] {
   const isAdmin = userCategory === "ADMIN";
   const isResearcher = userCategory === "RESEARCHER";
@@ -66,14 +68,13 @@ export function getUserColumns(
               </Button>
             )}
             {isJunior && isAdmin && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-gray-app-200 hover:bg-gray-app-300"
-              >
-                <Paperclip className="w-4 h-4 mr-1" />
-                Asignar
-              </Button>
+              <AssignResearcherPopover
+                userId={u.id}
+                onAssigned={handleAssignResearcher}
+                researcherId={
+                  u.assignedTo ? (u.assignedToId ?? undefined) : undefined
+                }
+              />
             )}
             {u.category !== "ADMIN" && (
               <Button
