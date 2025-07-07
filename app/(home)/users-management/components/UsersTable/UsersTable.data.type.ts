@@ -1,6 +1,6 @@
 import { Category } from "@prisma/client";
 
-export interface UsersTableProps {
+export interface UsersTableDataProps {
   id: string;
   name: string;
   firstSurname: string;

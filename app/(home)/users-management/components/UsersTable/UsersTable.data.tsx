@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { UsersTableProps } from "./UsersTable.type";
+import { UsersTableDataProps } from "./UsersTable.data.type";
 import { Category } from "@prisma/client";
 import { CheckCheck, Paperclip, Pause, ServerIcon, Trash2 } from "lucide-react";
 
@@ -8,7 +8,7 @@ export function getUserColumns(
   userId: string,
   userCategory: Category,
   onDelete: (userId: string) => void
-): ColumnDef<UsersTableProps>[] {
+): ColumnDef<UsersTableDataProps>[] {
   const isAdmin = userCategory === "ADMIN";
   const isResearcher = userCategory === "RESEARCHER";
 
