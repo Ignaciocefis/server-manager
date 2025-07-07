@@ -19,6 +19,7 @@ import { UsersTableProps } from "./UsersTable.type";
 import { useSession } from "next-auth/react";
 import { Category } from "@prisma/client";
 import { getUserColumns } from "./UsersTable.data";
+import { toast } from "sonner";
 
 export function UserTable() {
   const [data, setData] = useState<UsersTableProps[]>([]);
@@ -44,7 +45,23 @@ export function UserTable() {
       .finally(() => setIsLoading(false));
   }, [status, userId]);
 
-  const columns = userId && category ? getUserColumns(userId, category) : [];
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      await axios.delete("/api/auth/delete", {
+        data: { userId },
+      });
+      setData((prev) => prev.filter((user) => user.id !== userId));
+      toast.success("Usuario eliminado correctamente.");
+    } catch (error) {
+      console.error("Error al eliminar usuario", error);
+      toast.error("Error al eliminar el usuario.");
+    }
+  };
+
+  const columns =
+    userId && category
+      ? getUserColumns(userId, category, handleDeleteUser)
+      : [];
 
   const table = useReactTable({
     data,

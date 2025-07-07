@@ -6,7 +6,8 @@ import { CheckCheck, Paperclip, Pause, ServerIcon, Trash2 } from "lucide-react";
 
 export function getUserColumns(
   userId: string,
-  userCategory: Category
+  userCategory: Category,
+  onDelete: (userId: string) => void
 ): ColumnDef<UsersTableProps>[] {
   const isAdmin = userCategory === "ADMIN";
   const isResearcher = userCategory === "RESEARCHER";
@@ -96,6 +97,7 @@ export function getUserColumns(
                 variant="destructive"
                 size="sm"
                 className=" bg-red-app-500-transparent hover:bg-red-app-500"
+                onClick={() => onDelete(u.id)}
               >
                 <Trash2 className="w-4 h-4 mr-1" />
                 Borrar
