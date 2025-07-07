@@ -7,7 +7,8 @@ import { CheckCheck, Paperclip, Pause, ServerIcon, Trash2 } from "lucide-react";
 export function getUserColumns(
   userId: string,
   userCategory: Category,
-  onDelete: (userId: string) => void
+  onDelete: (userId: string) => void,
+  handleToggleActive: (userId: string, newStatus: boolean) => void
 ): ColumnDef<UsersTableDataProps>[] {
   const isAdmin = userCategory === "ADMIN";
   const isResearcher = userCategory === "RESEARCHER";
@@ -83,6 +84,7 @@ export function getUserColumns(
                     ? "bg-green-app-500-transparent hover:bg-green-app-500"
                     : "bg-red-app-500-transparent hover:bg-red-app-500"
                 }
+                onClick={() => handleToggleActive(u.id, !u.isActive)}
               >
                 {u.isActive ? (
                   <CheckCheck className="w-4 h-4 mr-1" />

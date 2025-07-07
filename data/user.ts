@@ -57,6 +57,31 @@ export const deleteUserById = async (id: string) => {
   }
 };
 
+export const toggleUserActiveStatus = async (id: string) => {
+  if (!id) {
+    return null;
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: { id },
+      select: { isActive: true },
+    });
+    if (!user) {
+      return null;
+    }
+
+    await db.user.update({
+      where: { id },
+      data: { isActive: !user.isActive },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error toggling user active status:", error);
+    return false;
+  }
+};
+
 export const getAllResearchers = async () => {
   try {
     const researchers = await db.user.findMany({
