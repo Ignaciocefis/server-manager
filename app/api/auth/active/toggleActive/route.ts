@@ -30,6 +30,6 @@ export async function PATCH(request: Request) {
     }
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "No se pudo eliminar el usuario" }, { status: 500 });
+    return NextResponse.json({ error: "No se pudo actualizar el estado del usuario" }, { status: 500 });
   }
 }
