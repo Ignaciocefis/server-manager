@@ -31,16 +31,29 @@ export function UserTable({ data, isLoading, refetch }: UserTableProps) {
         data: { userId },
       });
       toast.success("Usuario eliminado correctamente.");
-      refetch(); // ✅ actualiza los datos
+      refetch();
     } catch (error) {
       console.error("Error al eliminar usuario", error);
       toast.error("Error al eliminar el usuario.");
     }
   };
 
+  const handleToggleActive = async (userId: string, newStatus: boolean) => {
+    try {
+      await axios.patch("/api/auth/toggle-active", {
+        userId,
+      });
+      toast.success(`Usuario ${newStatus ? "activado" : "desactivado"}`);
+      refetch();
+    } catch (error) {
+      console.error("Error al cambiar estado", error);
+      toast.error("No se pudo cambiar el estado del usuario.");
+    }
+  };
+
   const columns =
     userId && category
-      ? getUserColumns(userId, category, handleDeleteUser)
+      ? getUserColumns(userId, category, handleDeleteUser, handleToggleActive)
       : [];
 
   const table = useReactTable({
