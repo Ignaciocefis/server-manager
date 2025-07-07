@@ -1,4 +1,3 @@
-// app/api/users/route.ts
 import { NextResponse } from "next/server";
 import { getAllUsers, getAssignedUsers } from "@/data/user";
 import { db } from "@/lib/db";
@@ -6,8 +5,13 @@ import { auth } from "@/auth";
 
 export async function GET() {
   const session = await auth();
-  if (!session || !session.user?.email || session.user?.category === "JUNIOR") {
-    return NextResponse.json({ error: "No tiene permisos" }, { status: 401 });
+
+  if (!session || !session.user?.email) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
+  if (session.user?.category === "JUNIOR") {
+    return NextResponse.json({ error: "No tiene permisos" }, { status: 403 });
   }
 
   const user = await db.user.findUnique({
