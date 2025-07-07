@@ -41,6 +41,22 @@ export const getUserByEmail = async (email: string) => {
   }
 }
 
+export const deleteUserById = async (id: string) => {
+  if (!id) {
+    return null;
+  }
+
+  try {
+    await db.user.delete({
+      where: { id },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error deleting user by ID:", error);
+    return false;
+  }
+};
+
 export const getAllResearchers = async () => {
   try {
     const researchers = await db.user.findMany({

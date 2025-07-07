@@ -12,7 +12,11 @@ import { User } from "lucide-react";
 import { CreateUserForm } from "./CreateUserForm";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
-export function CreateUserDialog() {
+export function CreateUserDialog({
+  onUserCreated,
+}: {
+  onUserCreated: () => void;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,7 +36,10 @@ export function CreateUserDialog() {
             </span>
           </DialogTitle>
         </DialogHeader>
-        <CreateUserForm closeDialog={() => setOpen(false)} />
+        <CreateUserForm
+          closeDialog={() => setOpen(false)}
+          onSuccess={onUserCreated}
+        />
       </DialogContent>
     </Dialog>
   );

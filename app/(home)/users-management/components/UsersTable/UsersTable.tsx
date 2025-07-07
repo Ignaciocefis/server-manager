@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,36 +13,35 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { UsersTableProps } from "./UsersTable.type";
 import { useSession } from "next-auth/react";
 import { Category } from "@prisma/client";
 import { getUserColumns } from "./UsersTable.data";
+import { toast } from "sonner";
+import axios from "axios";
+import { UserTableProps } from "./UserTable.type";
 
-export function UserTable() {
-  const [data, setData] = useState<UsersTableProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { data: session, status } = useSession();
-
+export function UserTable({ data, isLoading, refetch }: UserTableProps) {
+  const { data: session } = useSession();
   const userId = session?.user?.id ?? null;
   const category = session?.user?.category as Category | undefined;
 
-  useEffect(() => {
-    if (status !== "authenticated" || !userId) return;
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      await axios.delete("/api/auth/delete", {
+        data: { userId },
+      });
+      toast.success("Usuario eliminado correctamente.");
+      refetch(); // ✅ actualiza los datos
+    } catch (error) {
+      console.error("Error al eliminar usuario", error);
+      toast.error("Error al eliminar el usuario.");
+    }
+  };
 
-    axios
-      .get("/api/users")
-      .then((res) => setData(res.data))
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-        setError(
-          error.response?.data?.error || "Error al cargar los usuarios."
-        );
-      })
-      .finally(() => setIsLoading(false));
-  }, [status, userId]);
-
-  const columns = userId && category ? getUserColumns(userId, category) : [];
+  const columns =
+    userId && category
+      ? getUserColumns(userId, category, handleDeleteUser)
+      : [];
 
   const table = useReactTable({
     data,
@@ -56,14 +53,6 @@ export function UserTable() {
     return <div className="text-center py-10 text-2xl">Cargando...</div>;
   }
 
-  if (error) {
-    return (
-      <div className="text-center py-10 text-2xl text-red-500">
-        Error al cargar los usuarios.
-      </div>
-    );
-  }
-
   return (
     <div className="w-11/12 mx-auto mt-6 px-8 py-4 rounded-xl border overflow-hidden shadow-sm bg-gray-app-100">
       <Table>
@@ -73,7 +62,7 @@ export function UserTable() {
               {hg.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className={` text-sm font-semibold ${
+                  className={`text-sm font-semibold ${
                     header.column.id === "actions" ? "text-left w-1" : ""
                   }`}
                 >

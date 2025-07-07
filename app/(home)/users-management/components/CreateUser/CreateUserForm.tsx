@@ -30,7 +30,13 @@ import { useEffect, useState } from "react";
 import { ComboboxResearchers } from "@/components/Shared/ComboboxResearchers/ComboboxResearchers";
 import { Researcher } from "@/components/Shared/ComboboxResearchers/Researcher.types";
 
-export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
+export function CreateUserForm({
+  closeDialog,
+  onSuccess,
+}: {
+  closeDialog?: () => void;
+  onSuccess?: () => void;
+}) {
   const [researchers, setResearchers] = useState<Researcher[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -63,6 +69,7 @@ export function CreateUserForm({ closeDialog }: { closeDialog?: () => void }) {
       const response = await axios.post("/api/auth/register", data);
 
       closeDialog?.();
+      onSuccess?.();
       toast.success(response.data.message || "Usuario creado correctamente");
     } catch (error: unknown) {
       console.error({ error });
