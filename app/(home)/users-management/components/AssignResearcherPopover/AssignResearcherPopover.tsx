@@ -60,7 +60,7 @@ export function AssignResearcherPopover({
           Asignar
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px]">
+      <PopoverContent className="w-full">
         <ComboboxResearchers
           value={selected}
           onChange={handleAssign}
