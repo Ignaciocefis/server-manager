@@ -23,6 +23,7 @@ import { getUserColumns } from "./UsersTable.data";
 export function UserTable() {
   const [data, setData] = useState<UsersTableProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { data: session, status } = useSession();
 
   const userId = session?.user?.id ?? null;
@@ -34,7 +35,12 @@ export function UserTable() {
     axios
       .get("/api/users")
       .then((res) => setData(res.data))
-      .catch(console.error)
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+        setError(
+          error.response?.data?.error || "Error al cargar los usuarios."
+        );
+      })
       .finally(() => setIsLoading(false));
   }, [status, userId]);
 
@@ -48,6 +54,14 @@ export function UserTable() {
 
   if (isLoading) {
     return <div className="text-center py-10 text-2xl">Cargando...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10 text-2xl text-red-500">
+        Error al cargar los usuarios.
+      </div>
+    );
   }
 
   return (
