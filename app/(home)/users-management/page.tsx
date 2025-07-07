@@ -1,5 +1,6 @@
 import { PageTitle } from "../components/PageTitle";
 import { CreateUserDialog } from "./components/CreateUser";
+import { UserTable } from "./components/UsersTable";
 
 export default function UsersManagement() {
   return (
@@ -7,6 +8,7 @@ export default function UsersManagement() {
       <PageTitle title="Gestión de Usuarios">
         <CreateUserDialog />
       </PageTitle>
+      <UserTable />
     </div>
   );
 }

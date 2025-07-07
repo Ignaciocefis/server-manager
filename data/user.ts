@@ -57,3 +57,40 @@ export const getAllResearchers = async () => {
     return [];
   }
 }
+
+export async function getAllUsers() {
+  try {
+    const users = await db.user.findMany({
+      include: {
+        assignedTo: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return users;
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    return [];
+  }
+}
+
+export async function getAssignedUsers(investigatorId: string) {
+  try {
+    if (!investigatorId) {
+      return [];
+    }
+
+    const users = await db.user.findMany({
+      where: {
+        assignedToId: investigatorId,
+      },
+      include: {
+        assignedTo: true,
+    },
+    orderBy: { createdAt: "desc" },
+    });
+    return users;
+  } catch (error) {
+    console.error("Error fetching assigned users:", error);
+    return [];
+  }
+}
