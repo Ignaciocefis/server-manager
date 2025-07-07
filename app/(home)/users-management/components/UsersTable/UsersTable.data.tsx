@@ -54,18 +54,20 @@ export function getUserColumns(
       header: "Acciones",
       cell: ({ row }) => {
         const u = row.original;
-        const isJunior = u.category === "JUNIOR";
+        const isUserJunior = u.category === "JUNIOR";
 
         return (
           <div className="flex gap-2 items-center justify-end">
-            {isJunior && (isAdmin || isResearcher) && (
+            {((isAdmin &&
+              (u.category === "RESEARCHER" || u.category === "JUNIOR")) ||
+              (isResearcher && u.category === "JUNIOR")) && (
               <AssignServersPopover
                 userId={u.id}
                 editorId={userId}
                 onAssigned={handleRefresh}
               />
             )}
-            {isJunior && isAdmin && (
+            {isUserJunior && isAdmin && (
               <AssignResearcherPopover
                 userId={u.id}
                 onAssigned={handleRefresh}
