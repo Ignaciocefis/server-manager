@@ -1,5 +1,5 @@
-import { auth } from "@/auth";
 import { assignJuniorToResearcher, getUserById } from "@/data/user";
+import { hasCategory } from "@/lib/auth/hasCategory";
 import { assignResearcherFormSchema } from "@/lib/schemas/auth/assignResearcher.schema";
 import { NextResponse } from "next/server";
 
@@ -11,11 +11,12 @@ export async function PUT(request: Request) {
   const { userId, researcherId } = data;
 
   try {
-    const session = await auth();
-    const adminId = session?.user?.id;
-
-    if (!adminId) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    const isAdmin = await hasCategory("ADMIN");
+    if (!isAdmin) {
+      return NextResponse.json(
+        { error: "No tienes permisos para editar usuarios" },
+        { status: 403 }
+      );
     }
 
     const junior = await getUserById(userId);
