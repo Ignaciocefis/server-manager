@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -11,15 +11,9 @@ import { ServerIcon } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Command,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandEmpty,
-} from "@/components/ui/command";
-import { AssignServersPopoverProps } from "./AssignServerPopover.types";
 import { Server } from "@prisma/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { AssignServersPopoverProps } from "./AssignServerPopover.types";
 
 export function AssignServersPopover({
   userId,
@@ -29,32 +23,27 @@ export function AssignServersPopover({
   const [open, setOpen] = useState(false);
   const [servers, setServers] = useState<Server[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-
-  const filteredServers = useMemo(() => {
-    return servers.filter((server) =>
-      server.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [servers, searchTerm]);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (!open) return;
 
     const fetchServers = async () => {
+      setLoading(true);
       try {
         const [availableRes, assignedRes] = await Promise.all([
           axios.get(`/api/server/list?id=${editorId}`),
           axios.get(`/api/server/list?id=${userId}`),
         ]);
 
-        const available = availableRes.data ?? [];
-        const assigned = assignedRes.data ?? [];
-
-        setServers(available);
-        setSelected(assigned.map((s: Server) => s.id));
+        setServers(availableRes.data ?? []);
+        const assignedIds = (assignedRes.data ?? []).map((s: Server) => s.id);
+        setSelected(assignedIds);
       } catch (error) {
         console.error("Error fetching servers:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -71,7 +60,6 @@ export function AssignServersPopover({
 
   const handleSave = async () => {
     try {
-      setIsSaving(true);
       await axios.put("/api/server/assignServers", {
         userId,
         serverIds: selected,
@@ -82,10 +70,12 @@ export function AssignServersPopover({
     } catch (error) {
       toast.error("No se pudo asignar los servidores");
       console.error("Error al guardar:", error);
-    } finally {
-      setIsSaving(false);
     }
   };
+
+  const filteredServers = servers.filter((server) =>
+    server.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -99,41 +89,41 @@ export function AssignServersPopover({
           Servidores
         </Button>
       </PopoverTrigger>
-
-      <PopoverContent className="w-[320px] p-4 rounded-xl shadow-md">
-        <h3 className="text-base font-semibold mb-2">Asignar servidores</h3>
-
-        <Command className="bg-transparent">
-          <CommandInput
-            placeholder="Buscar servidor..."
-            onValueChange={setSearchTerm}
-          />
-          <CommandList className="max-h-64 overflow-auto">
-            <CommandEmpty>No hay servidores disponibles.</CommandEmpty>
-
-            {filteredServers.map((server) => (
-              <CommandItem
+      <PopoverContent className="w-[300px] p-4">
+        <h3 className="mb-2 font-semibold text-lg">Asignar servidores</h3>
+        <input
+          type="text"
+          placeholder="Buscar servidores..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="mb-3 w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none"
+        />
+        <ScrollArea className="h-64">
+          {loading ? (
+            <div className="p-4 text-center text-gray-500">Cargando...</div>
+          ) : filteredServers.length === 0 ? (
+            <div className="p-4 text-center text-gray-500">
+              No hay servidores disponibles
+            </div>
+          ) : (
+            filteredServers.map((server) => (
+              <div
                 key={server.id}
-                onSelect={() => handleToggle(server.id)}
-                className="flex items-center justify-between px-2 py-2 rounded-md"
+                className="flex items-center justify-between py-2 px-2 hover:bg-gray-100 rounded-md cursor-pointer"
+                onClick={() => handleToggle(server.id)}
               >
-                <span className="text-sm">{server.name}</span>
-                <Checkbox
-                  checked={selected.includes(server.id)}
-                  onClick={(e) => e.preventDefault()}
-                />
-              </CommandItem>
-            ))}
-          </CommandList>
-        </Command>
-
+                <span className="text-sm font-medium">{server.name}</span>
+                <Checkbox checked={selected.includes(server.id)} />
+              </div>
+            ))
+          )}
+        </ScrollArea>
         <Button
           onClick={handleSave}
           size="sm"
-          disabled={isSaving}
-          className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white"
+          className="mt-3 w-full bg-green-600 hover:bg-green-700"
         >
-          {isSaving ? "Guardando..." : "Guardar"}
+          Guardar
         </Button>
       </PopoverContent>
     </Popover>
