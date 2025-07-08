@@ -42,6 +42,7 @@ export function AssignServersPopover({
         setSelected(assignedIds);
       } catch (error) {
         console.error("Error fetching servers:", error);
+        toast.error("No se pudo cargar la lista de servidores");
       } finally {
         setLoading(false);
       }
