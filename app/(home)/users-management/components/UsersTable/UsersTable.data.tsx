@@ -2,15 +2,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { UsersTableDataProps } from "./UsersTable.data.type";
 import { Category } from "@prisma/client";
-import { CheckCheck, Pause, ServerIcon, Trash2 } from "lucide-react";
+import { CheckCheck, Pause, Trash2 } from "lucide-react";
 import { AssignResearcherPopover } from "../AssignResearcherPopover";
+import { AssignServersPopover } from "../AssignServerPopover";
 
 export function getUserColumns(
   userId: string,
   userCategory: Category,
   onDelete: (userId: string) => void,
   handleToggleActive: (userId: string, newStatus: boolean) => void,
-  handleAssignResearcher: () => void
+  handleRefresh: () => void
 ): ColumnDef<UsersTableDataProps>[] {
   const isAdmin = userCategory === "ADMIN";
   const isResearcher = userCategory === "RESEARCHER";
@@ -53,24 +54,23 @@ export function getUserColumns(
       header: "Acciones",
       cell: ({ row }) => {
         const u = row.original;
-        const isJunior = u.category === "JUNIOR";
+        const isUserJunior = u.category === "JUNIOR";
 
         return (
           <div className="flex gap-2 items-center justify-end">
-            {isJunior && (isAdmin || isResearcher) && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-gray-app-200 hover:bg-gray-app-300"
-              >
-                <ServerIcon className="w-4 h-4 mr-1" />
-                Servidores
-              </Button>
+            {((isAdmin &&
+              (u.category === "RESEARCHER" || u.category === "JUNIOR")) ||
+              (isResearcher && u.category === "JUNIOR")) && (
+              <AssignServersPopover
+                userId={u.id}
+                editorId={userId}
+                onAssigned={handleRefresh}
+              />
             )}
-            {isJunior && isAdmin && (
+            {isUserJunior && isAdmin && (
               <AssignResearcherPopover
                 userId={u.id}
-                onAssigned={handleAssignResearcher}
+                onAssigned={handleRefresh}
                 researcherId={
                   u.assignedTo ? (u.assignedToId ?? undefined) : undefined
                 }

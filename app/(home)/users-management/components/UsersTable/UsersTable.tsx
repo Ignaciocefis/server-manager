@@ -51,7 +51,7 @@ export function UserTable({ data, isLoading, refetch }: UserTableProps) {
     }
   };
 
-  const handleAssignResearcher = async () => {
+  const handleRefresh = async () => {
     refetch();
   };
 
@@ -62,7 +62,7 @@ export function UserTable({ data, isLoading, refetch }: UserTableProps) {
           category,
           handleDeleteUser,
           handleToggleActive,
-          handleAssignResearcher
+          handleRefresh
         )
       : [];
 

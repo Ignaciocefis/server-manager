@@ -135,3 +135,31 @@ export const hasAccessToServer = async (userId: string, serverId: string): Promi
     return false;
   }
 };
+
+export const assignServersToUser = async (userId: string, serverIds: string[]) => {
+  try {
+    const newLinks = serverIds.map(serverId => ({
+      userId,
+      serverId,
+    }));
+
+    await db.$transaction(async (tx) => {
+      await tx.userServerAccess.deleteMany({
+        where: { userId },
+      });
+
+      if (newLinks.length > 0) {
+        await tx.userServerAccess.createMany({
+          data: newLinks,
+        });
+      }
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error assigning servers in transaction:", error);
+    return false;
+  }
+};
+
+
