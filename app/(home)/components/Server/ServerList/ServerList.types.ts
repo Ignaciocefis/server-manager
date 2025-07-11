@@ -4,6 +4,6 @@ export interface ServerListItem {
   ramGB: number;
   diskCount: number;
   available: boolean;
-  tarjetasInstaladas?: number;
-  tarjetasDisponibles?: number;
+  installedGpus?: number;
+  availableGpus?: number;
 }

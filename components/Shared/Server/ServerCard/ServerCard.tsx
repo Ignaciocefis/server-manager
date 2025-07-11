@@ -20,12 +20,12 @@ export default function ServerCard({ server }: { server: ServerListItem }) {
 
         <div className="flex items-center gap-2 text-sm text-gray-app-100">
           <Gpu size={16} />
-          <span>Gráficas instaladas: {server.tarjetasInstaladas ?? 0}</span>
+          <span>Gráficas instaladas: {server.installedGpus ?? 0}</span>
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-app-100">
           <Plus size={16} />
-          <span>Gráficas disponibles: {server.tarjetasDisponibles ?? 0}</span>
+          <span>Gráficas disponibles: {server.availableGpus ?? 0}</span>
         </div>
 
         <Link href={`/servers/${server.id}`} className="w-full mt-2">
@@ -38,12 +38,12 @@ export default function ServerCard({ server }: { server: ServerListItem }) {
           </Button>
         </Link>
 
-        {server.available && (server.tarjetasDisponibles ?? 0) > 0 ? (
+        {server.available && (server.availableGpus ?? 0) > 0 ? (
           <Button className="w-full mt-1 bg-green-app-500-transparent hover:bg-green-app-500 text-gray-app-100">
             <CirclePlus size={16} className="mr-2" />
             Solicitar uso
           </Button>
-        ) : server.available && (server.tarjetasDisponibles ?? 0) === 0 ? (
+        ) : server.available && (server.availableGpus ?? 0) === 0 ? (
           <Button className="w-full mt-1 bg-gray-app-300 text-white" disabled>
             <CirclePlus size={16} className="mr-2" />
             No disponible

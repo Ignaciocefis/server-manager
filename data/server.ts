@@ -84,7 +84,6 @@ export const getServerById = async (id: string) => {
 
 export const getUserServers = async (userId: string) => {
   try {
-
     const user = await db.user.findUnique({
       where: { id: userId },
       select: { category: true },
@@ -93,13 +92,22 @@ export const getUserServers = async (userId: string) => {
     if (!user) return [];
 
     if (user.category === 'ADMIN') {
-      const servers = await db.server.findMany();
+      const servers = await db.server.findMany({
+        include: {
+          gpus: true,
+        },
+      });
 
-      return servers.map((server) => ({
-        ...server,
-        tarjetasInstaladas: 4, // Example value, replace with actual logic
-        tarjetasDisponibles: 2, // Example value, replace with actual logic
-      }));
+      return servers.map((server) => {
+        const installedGpus = server.gpus.length;
+        const availableGpus = server.gpus.filter(gpu => gpu.status === "AVAILABLE").length;
+
+        return {
+          ...server,
+          installedGpus,
+          availableGpus,
+        };
+      });
     }
 
     const userWithAccess = await db.user.findUnique({
@@ -107,18 +115,35 @@ export const getUserServers = async (userId: string) => {
       include: {
         serverAccess: {
           include: {
-            server: true,
+            server: {
+              include: {
+                gpus: true,
+              },
+            },
           },
         },
       },
     });
 
-    return userWithAccess?.serverAccess.map((a) => a.server) || [];
+    return (
+      userWithAccess?.serverAccess.map((access) => {
+        const server = access.server;
+        const installedGpus = server.gpus.length;
+        const availableGpus = server.gpus.filter(gpu => gpu.status === "AVAILABLE").length;
+
+        return {
+          ...server,
+          installedGpus,
+          availableGpus,
+        };
+      }) || []
+    );
   } catch (error) {
     console.error("Error fetching user servers:", error);
     return [];
   }
 };
+
 
 export const hasAccessToServer = async (userId: string, serverId: string): Promise<boolean> => {
   try {
