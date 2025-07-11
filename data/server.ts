@@ -3,19 +3,28 @@ import { createServerFormSchema } from "@/lib/schemas/server/create.schema";
 import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
 import z from "zod";
 
-export const createServer = async (data: z.infer<typeof createServerFormSchema>) => {
+export async function createServer(data: z.infer<typeof createServerFormSchema>) {
   try {
+    const { gpus, ...serverData } = data;
+
     const server = await db.server.create({
-      data,
+      data: {
+        ...serverData,
+        gpus: {
+          create: gpus.map((gpu) => ({
+            ...gpu,
+          })),
+        },
+      },
     });
 
     return server;
-    
   } catch (error) {
     console.error("Error creating server:", error);
     return null;
   }
-};
+}
+
 
 export const updateServer = async (serverId: string, data: z.infer<typeof updateServerFormSchema>) => {
   try {

@@ -23,7 +23,7 @@ export function CreateServerDialog() {
           Añadir nuevo servidor
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="md:col-span-2 flex justify-end pr-6 gap-2 items-center">
             <Server className="w-6 h-6" />
