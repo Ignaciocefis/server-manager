@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "Category" AS ENUM ('ADMIN', 'RESEARCHER', 'JUNIOR');
 
+-- CreateEnum
+CREATE TYPE "GPUStatus" AS ENUM ('AVAILABLE', 'IN_USE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -42,6 +45,21 @@ CREATE TABLE "UserServerAccess" (
     CONSTRAINT "UserServerAccess_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "gpu" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "ramGB" INTEGER NOT NULL,
+    "status" "GPUStatus" NOT NULL DEFAULT 'AVAILABLE',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "serverId" TEXT NOT NULL,
+    "userId" TEXT,
+
+    CONSTRAINT "gpu_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -56,3 +74,9 @@ ALTER TABLE "UserServerAccess" ADD CONSTRAINT "UserServerAccess_serverId_fkey" F
 
 -- AddForeignKey
 ALTER TABLE "UserServerAccess" ADD CONSTRAINT "UserServerAccess_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "gpu" ADD CONSTRAINT "gpu_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Server"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "gpu" ADD CONSTRAINT "gpu_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

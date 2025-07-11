@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { z } from "zod";
+import { CreateGpuForm } from "../../Gpu";
 
 export function CreateServerForm({
   closeDialog,
@@ -33,6 +34,7 @@ export function CreateServerForm({
       name: "",
       ramGB: 1,
       diskCount: 1,
+      gpus: [{ name: "", type: "", ramGB: 1 }],
     },
   });
 
@@ -60,25 +62,22 @@ export function CreateServerForm({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-      >
-        <div className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg">Nombre del servidor</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg">Nombre del servidor</FormLabel>
+              <FormControl>
+                <Input type="text" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
             name="ramGB"
@@ -108,12 +107,14 @@ export function CreateServerForm({
           />
         </div>
 
-        <div className="md:col-span-2 flex justify-center gap-4 mt-4">
+        <CreateGpuForm />
+
+        <div className="flex justify-center gap-4 mt-6">
           <Button
             type="submit"
             className="w-40 bg-green-app-500 hover:bg-green-app-500-transparent"
           >
-            <CirclePlus />
+            <CirclePlus className="mr-2" />
             Añadir servidor
           </Button>
           <DialogClose asChild>
@@ -121,7 +122,7 @@ export function CreateServerForm({
               type="button"
               className="w-40 bg-red-app-500 hover:bg-red-app-500-transparent"
             >
-              <CircleMinus />
+              <CircleMinus className="mr-2" />
               Cancelar
             </Button>
           </DialogClose>
