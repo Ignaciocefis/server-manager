@@ -113,9 +113,6 @@ export function CreateServerForm({
           <Button
             type="submit"
             className="w-40 bg-green-app-500 hover:bg-green-app-500-transparent"
-            onClick={() => {
-              console.log("Submitting form with GPUs:", form.getValues("gpus"));
-            }}
           >
             <CirclePlus className="mr-2" />
             Añadir servidor
