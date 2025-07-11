@@ -40,7 +40,6 @@ export function CreateServerForm({
 
   const onSubmit = async (data: z.infer<typeof createServerFormSchema>) => {
     try {
-      console.log("Datos del formulario:", data);
       const response = await axios.post("/api/server/create", data);
       toast.success(response.data.message || "Servidor creado correctamente");
 
