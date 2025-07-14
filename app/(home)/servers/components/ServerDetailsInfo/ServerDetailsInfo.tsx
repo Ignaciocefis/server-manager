@@ -37,14 +37,14 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
             <span className="font-semibold">Discos: {server.diskCount} GB</span>
           </p>
 
-          <div className="flex flex-col items-center gap-2 mt-4 w-full max-w-xs self-center">
+          <div className="flex flex-col items-center md:items-start gap-2 mt-4 w-full">
             {server.available && (server.availableGpus ?? 0) > 0 ? (
-              <Button className="w-full bg-green-app-500-transparent hover:bg-green-app-500">
+              <Button className="w-full max-w-xs bg-green-app-500-transparent hover:bg-green-app-500">
                 <CirclePlus size={16} className="mr-2" />
                 Solicitar uso
               </Button>
             ) : (
-              <Button className="w-full bg-gray-app-300" disabled>
+              <Button className="w-full max-w-xs bg-gray-app-300" disabled>
                 <CirclePlus size={16} className="mr-2" />
                 No disponible
               </Button>
@@ -55,7 +55,7 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
                 <UpdateServerDialog serverToEdit={server} onUpdate={onUpdate} />
 
                 <Button
-                  className={`w-full flex items-center justify-center gap-2 ${
+                  className={`w-full max-w-xs ${
                     server.available
                       ? "bg-green-app-500-transparent hover:bg-green-app-500"
                       : "bg-red-app-500-transparent hover:bg-red-app-500"
@@ -73,7 +73,7 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
                 </Button>
 
                 <Button
-                  className="w-full bg-red-app-500-transparent hover:bg-red-app-500 text-white"
+                  className="w-full max-w-xs bg-red-app-500-transparent hover:bg-red-app-500 text-white"
                   onClick={onDelete}
                 >
                   <Trash2 size={20} />
@@ -84,16 +84,11 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
           </div>
         </div>
 
-        <div
-          className={`w-full md:${(server.gpus?.length ?? 0) > 2 ? "w-1/2" : "w-1/3"} rounded-lg p-4 flex flex-col gap-4`}
-        >
+        <div className="w-full md:w-2/3 lg:w-3/4 rounded-lg p-4 flex flex-col gap-4">
           <h2 className="text-xl font-semibold mb-2">GPUs instaladas</h2>
+
           {server.gpus && server.gpus.length > 0 ? (
-            <div
-              className={`gap-4 ${
-                server.gpus.length > 2 ? "grid grid-cols-2" : "flex flex-col"
-              }`}
-            >
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               {server.gpus.map((gpu) => (
                 <GpuDetailsInfo
                   key={gpu.id}
