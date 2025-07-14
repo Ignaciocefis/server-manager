@@ -43,27 +43,67 @@ export const updateServerWithGpus = async (
         },
       });
 
-      await tx.gpu.deleteMany({
-        where: { serverId },
-      });
+      const existingGpus = await tx.gpu.findMany({ where: { serverId } });
 
-      const createdGpus = await Promise.all(
-        gpus.map((gpu) =>
-          tx.gpu.create({
-            data: {
-              name: gpu.name,
-              type: gpu.type,
-              ramGB: gpu.ramGB,
-              status: gpu.status ?? "AVAILABLE",
-              userId: gpu.userId ?? null,
-              serverId,
-            },
-          })
-        )
+      const incomingGpuMap = new Map(
+        gpus
+          .filter((gpu): gpu is typeof gpu & { id: string } => !!gpu.id)
+          .map((gpu) => [gpu.id, gpu])
       );
 
-      const installedGpus = createdGpus.length;
-      const availableGpus = createdGpus.filter(
+      for (const existingGpu of existingGpus) {
+        const incomingGpu = incomingGpuMap.get(existingGpu.id);
+        if (incomingGpu) {
+          const updatedFields = {
+            name: incomingGpu.name,
+            type: incomingGpu.type,
+            ramGB: incomingGpu.ramGB,
+            status: incomingGpu.status ?? "AVAILABLE",
+            userId: incomingGpu.userId ?? null,
+          };
+
+          const hasChanged = Object.entries(updatedFields).some(
+            ([key, value]) => existingGpu[key as keyof typeof updatedFields] !== value
+          );
+
+          if (hasChanged) {
+            await tx.gpu.update({
+              where: { id: existingGpu.id },
+              data: updatedFields,
+            });
+          }
+        }
+      }
+
+      const incomingIds = new Set(
+        gpus.filter((g): g is typeof g & { id: string } => !!g.id).map((g) => g.id)
+      );
+
+      const toDeleteIds = existingGpus
+        .filter((gpu) => !incomingIds.has(gpu.id))
+        .map((gpu) => gpu.id);
+
+      if (toDeleteIds.length > 0) {
+        await tx.gpu.deleteMany({ where: { id: { in: toDeleteIds } } });
+      }
+
+      for (const gpu of gpus.filter((gpu) => !gpu.id)) {
+        await tx.gpu.create({
+          data: {
+            name: gpu.name,
+            type: gpu.type,
+            ramGB: gpu.ramGB,
+            status: gpu.status ?? "AVAILABLE",
+            userId: gpu.userId ?? null,
+            serverId,
+          },
+        });
+      }
+
+      const finalGpus = await tx.gpu.findMany({ where: { serverId } });
+
+      const installedGpus = finalGpus.length;
+      const availableGpus = finalGpus.filter(
         (gpu) => gpu.status === "AVAILABLE"
       ).length;
 
@@ -75,7 +115,7 @@ export const updateServerWithGpus = async (
         available: updatedServer.available,
         installedGpus,
         availableGpus,
-        gpus: createdGpus.map(({ id, type, name, ramGB, status, userId }) => ({
+        gpus: finalGpus.map(({ id, type, name, ramGB, status, userId }) => ({
           id,
           type,
           name,
