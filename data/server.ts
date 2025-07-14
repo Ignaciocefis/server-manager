@@ -78,12 +78,23 @@ export const getServerById = async (id: string) => {
         gpus: true,
       },
     });
-    return server;
+
+    if (!server) return null;
+
+    const installedGpus = server.gpus.length;
+    const availableGpus = server.gpus.filter(gpu => gpu.status === "AVAILABLE").length;
+
+    return {
+      ...server,
+      installedGpus,
+      availableGpus,
+    };
   } catch (error) {
     console.error("Error fetching server by ID:", error);
     return null;
   }
 };
+
 
 export const getUserServers = async (userId: string) => {
   try {

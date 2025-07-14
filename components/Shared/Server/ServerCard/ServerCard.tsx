@@ -1,8 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Cpu, Gpu, Info, Plus, Link2, CirclePlus } from "lucide-react";
+import { Cpu, Gpu, Info, Plus, CirclePlus } from "lucide-react";
 import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import Link from "next/link";
+import { GpuDonutChart } from "../GpuDonutChart";
 
 export default function ServerCard({ server }: { server: ServerListItem }) {
   return (
@@ -10,7 +11,11 @@ export default function ServerCard({ server }: { server: ServerListItem }) {
       <CardContent className="flex flex-col gap-2 items-start p-0">
         <div className="flex justify-between w-full items-center">
           <h2 className="text-xl font-bold">{server.name}</h2>
-          <Link2 size={18} />
+          <GpuDonutChart
+            installedGpus={server.installedGpus}
+            availableGpus={server.availableGpus}
+            size="icon"
+          />
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-app-100">

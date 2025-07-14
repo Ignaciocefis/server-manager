@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import { ServerDetailsInfo } from "../ServerDetailsInfo";
+import { GpuDonutChart } from "@/components/Shared/Server";
 
 export const ServerDetailsContainer = () => {
   const params = useParams();
@@ -123,6 +124,14 @@ export const ServerDetailsContainer = () => {
         onToggleAvailability={toggleAvailability}
         onDelete={handleDeleteServer}
       />
+
+      <div className="flex flex-col items-center mt-8">
+        <GpuDonutChart
+          installedGpus={server.installedGpus}
+          availableGpus={server.availableGpus}
+          size="md"
+        />
+      </div>
     </>
   );
 };
