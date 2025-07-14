@@ -19,8 +19,6 @@ export async function PUT(request: Request) {
     const data = updateServerFormSchema.parse(body);
     const { serverId, ...serverData } = data;
 
-    console.log("Datos del servidor a actualizar:", data);
-
     const existingServer = await getServerById(serverId);
     if (!existingServer) {
       return NextResponse.json(
