@@ -34,7 +34,7 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
           </p>
           <p className="flex items-center mb-4">
             <HardDrive size={16} className="inline mr-2" />
-            <span className="font-semibold">Discos: {server.diskCount} GB</span>
+            <span className="font-semibold">Discos: {server.diskCount}</span>
           </p>
 
           <div className="flex flex-col items-center md:items-start gap-2 mt-4 w-full">
