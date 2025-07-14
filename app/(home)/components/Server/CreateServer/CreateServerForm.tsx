@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { z } from "zod";
-import { CreateGpuForm } from "../../Gpu";
+import { GpuForm } from "../../Gpu";
 
 export function CreateServerForm({
   closeDialog,
@@ -107,7 +107,7 @@ export function CreateServerForm({
           />
         </div>
 
-        <CreateGpuForm />
+        <GpuForm />
 
         <div className="flex justify-center gap-4 mt-6">
           <Button

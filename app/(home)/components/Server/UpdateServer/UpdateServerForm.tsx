@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { z } from "zod";
 import { UpdateServerFormProps } from "./UpdateServerForm.types";
-import { CreateGpuForm } from "../../Gpu";
+import { GpuForm } from "../../Gpu";
 
 export function UpdateServerForm({
   serverToEdit,
@@ -128,7 +128,7 @@ export function UpdateServerForm({
           />
         </div>
 
-        <CreateGpuForm />
+        <GpuForm />
 
         <div className="flex justify-center gap-4 mt-4">
           <Button
