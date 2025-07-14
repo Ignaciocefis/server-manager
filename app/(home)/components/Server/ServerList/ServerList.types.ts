@@ -6,4 +6,10 @@ export interface ServerListItem {
   available: boolean;
   installedGpus?: number;
   availableGpus?: number;
+  gpus?: {
+    id: string;
+    type: string;
+    name: string;
+    ramGB: number;
+  }[];
 }

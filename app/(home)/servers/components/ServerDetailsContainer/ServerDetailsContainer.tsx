@@ -36,6 +36,7 @@ export const ServerDetailsContainer = () => {
         const response = await axios.get(
           `/api/server/details?serverId=${serverId}`
         );
+
         setServer(response.data);
       } catch (err) {
         console.error("Error al obtener detalles del servidor:", err);
@@ -113,14 +114,15 @@ export const ServerDetailsContainer = () => {
         <p className="text-2xl">Servidor no encontrado</p>
       </div>
     );
-
   return (
-    <ServerDetailsInfo
-      server={server}
-      isAdmin={isAdmin}
-      onUpdate={handleServerUpdate}
-      onToggleAvailability={toggleAvailability}
-      onDelete={handleDeleteServer}
-    />
+    <>
+      <ServerDetailsInfo
+        server={server}
+        isAdmin={isAdmin}
+        onUpdate={handleServerUpdate}
+        onToggleAvailability={toggleAvailability}
+        onDelete={handleDeleteServer}
+      />
+    </>
   );
 };

@@ -74,6 +74,9 @@ export const getServerById = async (id: string) => {
   try {
     const server = await db.server.findUnique({
       where: { id },
+      include: {
+        gpus: true,
+      },
     });
     return server;
   } catch (error) {
