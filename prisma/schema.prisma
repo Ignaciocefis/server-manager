@@ -20,10 +20,10 @@ model User {
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
   assignedToId  String?
+  gpus          Gpu[]
   assignedTo    User?              @relation("MentorJuniors", fields: [assignedToId], references: [id])
   juniors       User[]             @relation("MentorJuniors")
   serverAccess  UserServerAccess[]
-  gpus          gpu[]
 }
 
 model Server {
@@ -34,8 +34,8 @@ model Server {
   available  Boolean            @default(true)
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
+  gpus       Gpu[]
   userAccess UserServerAccess[]
-  gpus       gpu[]
 }
 
 model UserServerAccess {
@@ -44,13 +44,13 @@ model UserServerAccess {
   serverId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  server    Server   @relation(fields: [serverId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, serverId])
 }
 
-model gpu {
+model Gpu {
   id        String    @id @default(cuid())
   name      String
   type      String
@@ -60,7 +60,7 @@ model gpu {
   updatedAt DateTime  @updatedAt
   serverId  String
   userId    String?
-  server    Server    @relation(fields: [serverId], references: [id])
+  server    Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
   user      User?     @relation(fields: [userId], references: [id])
 }
 
