@@ -11,5 +11,7 @@ export interface ServerListItem {
     type: string;
     name: string;
     ramGB: number;
+    status: "AVAILABLE" | "IN_USE";
+    userId: string | null;
   }[];
 }

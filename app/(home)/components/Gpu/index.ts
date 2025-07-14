@@ -1,1 +1,1 @@
-export * from "./CreateGpu"
+export * from "./GpuForm"

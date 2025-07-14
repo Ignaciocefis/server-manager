@@ -17,4 +17,17 @@ export const updateServerFormSchema = z.object({
     .int("Debe ser un número entero")
     .min(1, "Debe tener al menos un disco"),
   available: z.boolean(),
+  gpus: z
+    .array(z.object({
+      id: z.string().optional(),
+      name: z.string().min(1, "El nombre de la GPU es obligatorio"),
+      type: z.string().min(1, "El tipo de GPU es obligatorio"),
+      status: z.enum(["AVAILABLE", "IN_USE"]).optional(),
+      userId: z.string().optional(),
+      ramGB: z
+        .coerce.number({ invalid_type_error: "La RAM de la GPU debe ser un número" })
+        .int("La RAM de la GPU debe ser un número entero")
+        .min(1, "La GPU debe tener al menos 1 GB de RAM")
+    }))
+    .min(1, "Debe haber al menos una GPU")
 });

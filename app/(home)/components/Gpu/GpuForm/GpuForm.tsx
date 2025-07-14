@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { PlusCircle, XCircle } from "lucide-react";
 
-export function CreateGpuForm() {
+export function GpuForm() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,

@@ -9,5 +9,12 @@ export interface UpdateServerFormProps {
     name: string;
     ramGB: number;
     diskCount: number;
+    gpus?: {
+      name: string;
+      type: string;
+      ramGB: number;
+      status: "AVAILABLE" | "IN_USE";
+      userId: string | null;
+    }[];
   };
 }

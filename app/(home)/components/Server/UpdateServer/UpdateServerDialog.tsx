@@ -27,7 +27,7 @@ export function UpdateServerDialog({
           Editar
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Server className="w-6 h-6" />

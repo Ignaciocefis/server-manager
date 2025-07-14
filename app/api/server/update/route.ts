@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { existsServerByName, getServerById, updateServerWithGpus } from "@/data/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { getServerById, updateServer, existsServerByName } from "@/data/server";
 import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
+import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
   try {
@@ -13,11 +13,11 @@ export async function PUT(request: Request) {
         { status: 403 }
       );
     }
+
     const body = await request.json();
 
     const data = updateServerFormSchema.parse(body);
-
-    const { serverId, name, ramGB, diskCount, available } = data;
+    const { serverId, ...serverData } = data;
 
     const existingServer = await getServerById(serverId);
     if (!existingServer) {
@@ -27,8 +27,8 @@ export async function PUT(request: Request) {
       );
     }
 
-    if (existingServer.name !== name) {
-      const nameExists = await existsServerByName(name);
+    if (existingServer.name !== serverData.name) {
+      const nameExists = await existsServerByName(serverData.name);
       if (nameExists) {
         return NextResponse.json(
           { error: "Ya existe un servidor con ese nombre" },
@@ -37,16 +37,20 @@ export async function PUT(request: Request) {
       }
     }
 
-    const updatedServerResult = await updateServer(serverId, {
-      serverId,
-      name,
-      ramGB,
-      diskCount,
-      available,
-    });
+    const updatedServer = await updateServerWithGpus(data);
+
+    if (!updatedServer) {
+      return NextResponse.json(
+        { error: "Error actualizando el servidor" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
-      { message: "Servidor actualizado correctamente", server: updatedServerResult },
+      {
+        message: "Servidor actualizado correctamente",
+        server: updatedServer,
+      },
       { status: 200 }
     );
   } catch (error) {
