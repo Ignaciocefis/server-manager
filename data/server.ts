@@ -1,3 +1,4 @@
+import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import { db } from "@/lib/db";
 import { createServerFormSchema } from "@/lib/schemas/server/create.schema";
 import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
@@ -25,24 +26,73 @@ export async function createServer(data: z.infer<typeof createServerFormSchema>)
   }
 }
 
+export const updateServerWithGpus = async (
+  data: z.infer<typeof updateServerFormSchema>
+): Promise<ServerListItem | null> => {
+  const { serverId, gpus, ...serverData } = data;
 
-export const updateServer = async (serverId: string, data: z.infer<typeof updateServerFormSchema>) => {
   try {
+    return await db.$transaction(async (tx) => {
+      const updatedServer = await tx.server.update({
+        where: { id: serverId },
+        data: {
+          name: serverData.name,
+          ramGB: serverData.ramGB,
+          diskCount: serverData.diskCount,
+          available: serverData.available,
+        },
+      });
 
-    const { serverId, ...dataWithoutId } = data;
+      await tx.gpu.deleteMany({
+        where: { serverId },
+      });
 
-    const server = await db.server.update({
-      where: { id: serverId },
-      data: dataWithoutId,
+      const createdGpus = await Promise.all(
+        gpus.map((gpu) =>
+          tx.gpu.create({
+            data: {
+              name: gpu.name,
+              type: gpu.type,
+              ramGB: gpu.ramGB,
+              status: gpu.status ?? "AVAILABLE",
+              userId: gpu.userId ?? null,
+              serverId,
+            },
+          })
+        )
+      );
+
+      const installedGpus = createdGpus.length;
+      const availableGpus = createdGpus.filter(
+        (gpu) => gpu.status === "AVAILABLE"
+      ).length;
+
+      const serverListItem: ServerListItem = {
+        id: updatedServer.id,
+        name: updatedServer.name,
+        ramGB: updatedServer.ramGB,
+        diskCount: updatedServer.diskCount,
+        available: updatedServer.available,
+        installedGpus,
+        availableGpus,
+        gpus: createdGpus.map(({ id, type, name, ramGB, status, userId }) => ({
+          id,
+          type,
+          name,
+          ramGB,
+          status,
+          userId,
+        })),
+      };
+
+      return serverListItem;
     });
-
-    return server;
-    
   } catch (error) {
-    console.error("Error updating server:", error);
+    console.error("Error in updateServerWithGpus:", error);
     return null;
   }
 };
+
 
 export const deleteServer = async (serverId: string) => {
   try {
