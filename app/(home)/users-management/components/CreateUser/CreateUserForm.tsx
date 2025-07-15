@@ -27,8 +27,8 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { CircleMinus, CirclePlus } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ComboboxResearchers } from "@/components/Shared/ComboboxResearchers/ComboboxResearchers";
-import { Researcher } from "@/components/Shared/ComboboxResearchers/Researcher.types";
+import { ComboboxResearchers } from "@/components/Shared/FormItems/ComboboxResearchers/ComboboxResearchers";
+import { Researcher } from "@/components/Shared/FormItems/ComboboxResearchers/Researcher.types";
 
 export function CreateUserForm({
   closeDialog,
