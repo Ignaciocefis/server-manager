@@ -113,25 +113,61 @@ export function GpuReservationForm({
   }, [watchRange, watchStartHour, watchEndHour, gpus, form]);
 
   const onSubmit = async (data: RawGpuReservationFormData) => {
+    const from = new Date(data.range.from as string | number | Date);
+    const to = new Date(data.range.to as string | number | Date);
+    const start = getDateWithTime(from, data.startHour);
+    const end = getDateWithTime(to, data.endHour);
+    const now = new Date();
+
+    if (from > to) {
+      form.setError("range", {
+        message: "La fecha de inicio no puede ser posterior a la de fin",
+      });
+      return;
+    }
+
+    if (
+      from.toDateString() === to.toDateString() &&
+      data.startHour >= data.endHour
+    ) {
+      form.setError("endHour", {
+        message:
+          "La hora de fin debe ser posterior a la de inicio si es el mismo día",
+      });
+      return;
+    }
+
+    const truncateToMinutes = (date: Date): Date => {
+      const d = new Date(date);
+      d.setSeconds(0, 0);
+      return d;
+    };
+    if (
+      from.toDateString() === now.toDateString() &&
+      truncateToMinutes(start) < truncateToMinutes(now)
+    ) {
+      form.setError("startHour", {
+        message: "La hora de inicio no puede estar en el pasado",
+      });
+      return;
+    }
+
+    const diffMs = end.getTime() - start.getTime();
+    const maxDurationMs = 1000 * 60 * 60 * 24 * 3; // 3 días
+    if (diffMs > maxDurationMs) {
+      toast.error("La duración máxima de una reserva es de 3 días");
+      return;
+    }
+
+    if (data.selectedGpuIds.length === 0) {
+      form.setError("selectedGpuIds", {
+        type: "manual",
+        message: "Debes seleccionar al menos una GPU",
+      });
+      return;
+    }
+
     try {
-      const from =
-        data.range.from instanceof Date
-          ? data.range.from
-          : new Date(data.range.from as string);
-      const to =
-        data.range.to instanceof Date
-          ? data.range.to
-          : new Date(data.range.to as string);
-      const start = getDateWithTime(from, data.startHour);
-      const end = getDateWithTime(to, data.endHour);
-
-      if (start >= end) {
-        form.setError("endHour", {
-          message: "La hora de fin debe ser posterior a la de inicio",
-        });
-        return;
-      }
-
       await axios.post("/api/gpu/reservation", {
         ...data,
         range: { from, to },
