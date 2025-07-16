@@ -36,9 +36,7 @@ export async function PUT(request: Request) {
         id: gpu.id,
         type: gpu.type,
         name: gpu.name,
-        ramGB: gpu.ramGB,
-        status: gpu.status,
-        userId: gpu.userId ?? undefined,
+        ramGB: gpu.ramGB
       })),
     });
 

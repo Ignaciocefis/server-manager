@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Paperclip } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
-import { ComboboxResearchers } from "@/components/Shared/ComboboxResearchers";
-import { Researcher } from "@/components/Shared/ComboboxResearchers/Researcher.types";
+import { ComboboxResearchers } from "@/components/Shared/FormItems/ComboboxResearchers";
+import { Researcher } from "@/components/Shared/FormItems/ComboboxResearchers/Researcher.types";
 import { AssignResearcherPopoverProps } from "./AssignResearcherPopover.types";
 
 export function AssignResearcherPopover({

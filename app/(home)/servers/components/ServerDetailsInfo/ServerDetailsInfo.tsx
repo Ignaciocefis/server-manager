@@ -10,7 +10,10 @@ import {
   ServerOff,
   Trash2,
 } from "lucide-react";
-import { UpdateServerDialog } from "@/app/(home)/components";
+import {
+  GpuReservationDialog,
+  UpdateServerDialog,
+} from "@/app/(home)/components";
 import { ServerDetailsInfoProps } from "@/app/(home)/servers/components/ServerDetailsInfo/ServerDetailsInfo.types";
 import { GpuDetailsInfo } from "../GpuDetailsInfo";
 
@@ -39,10 +42,7 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
 
           <div className="flex flex-col items-center md:items-start gap-2 mt-4 w-full">
             {server.available && (server.availableGpus ?? 0) > 0 ? (
-              <Button className="w-full max-w-xs bg-green-app-500-transparent hover:bg-green-app-500">
-                <CirclePlus size={16} className="mr-2" />
-                Solicitar uso
-              </Button>
+              <GpuReservationDialog serverId={server.id} />
             ) : (
               <Button className="w-full max-w-xs bg-gray-app-300" disabled>
                 <CirclePlus size={16} className="mr-2" />

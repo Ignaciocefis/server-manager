@@ -13,7 +13,10 @@ export async function createServer(data: z.infer<typeof createServerFormSchema>)
         ...serverData,
         gpus: {
           create: gpus.map((gpu) => ({
-            ...gpu,
+            name: gpu.name,
+            type: gpu.type,
+            ramGB: gpu.ramGB,
+            serverId: undefined,
           })),
         },
       },
@@ -58,8 +61,6 @@ export const updateServerWithGpus = async (
             name: incomingGpu.name,
             type: incomingGpu.type,
             ramGB: incomingGpu.ramGB,
-            status: incomingGpu.status ?? "AVAILABLE",
-            userId: incomingGpu.userId ?? null,
           };
 
           const hasChanged = Object.entries(updatedFields).some(
@@ -84,7 +85,11 @@ export const updateServerWithGpus = async (
         .map((gpu) => gpu.id);
 
       if (toDeleteIds.length > 0) {
-        await tx.gpu.deleteMany({ where: { id: { in: toDeleteIds } } });
+        await tx.gpu.deleteMany({
+          where: {
+            id: { in: toDeleteIds },
+          },
+        });
       }
 
       for (const gpu of gpus.filter((gpu) => !gpu.id)) {
@@ -93,19 +98,26 @@ export const updateServerWithGpus = async (
             name: gpu.name,
             type: gpu.type,
             ramGB: gpu.ramGB,
-            status: gpu.status ?? "AVAILABLE",
-            userId: gpu.userId ?? null,
             serverId,
           },
         });
       }
 
-      const finalGpus = await tx.gpu.findMany({ where: { serverId } });
+      const finalGpus = await tx.gpu.findMany({
+        where: { serverId },
+        include: {
+          reservations: {
+            where: {
+              status: {
+                in: ["PENDING", "ACTIVE", "EXTENDED"],
+              },
+            },
+          },
+        },
+      });
 
       const installedGpus = finalGpus.length;
-      const availableGpus = finalGpus.filter(
-        (gpu) => gpu.status === "AVAILABLE"
-      ).length;
+      const availableGpus = finalGpus.filter(gpu => gpu.reservations.length === 0).length;
 
       const serverListItem: ServerListItem = {
         id: updatedServer.id,
@@ -115,13 +127,13 @@ export const updateServerWithGpus = async (
         available: updatedServer.available,
         installedGpus,
         availableGpus,
-        gpus: finalGpus.map(({ id, type, name, ramGB, status, userId }) => ({
+        gpus: finalGpus.map(({ id, type, name, ramGB, reservations }) => ({
           id,
           type,
           name,
           ramGB,
-          status,
-          userId,
+          status: reservations.length === 0 ? "AVAILABLE" : "IN_USE",
+          userId: reservations.length > 0 ? reservations[0].userId ?? null : null,
         })),
       };
 
@@ -133,7 +145,6 @@ export const updateServerWithGpus = async (
   }
 };
 
-
 export const deleteServer = async (serverId: string) => {
   try {
     await db.server.delete({
@@ -144,7 +155,7 @@ export const deleteServer = async (serverId: string) => {
     console.error("Error deleting server:", error);
     return false;
   }
-}
+};
 
 export const existsServerById = async (id: string) => {
   const existingServer = await db.server.findUnique({
@@ -165,14 +176,24 @@ export const getServerById = async (id: string) => {
     const server = await db.server.findUnique({
       where: { id },
       include: {
-        gpus: true,
+        gpus: {
+          include: {
+            reservations: {
+              where: {
+                status: {
+                  in: ["PENDING", "ACTIVE", "EXTENDED"],
+                },
+              },
+            },
+          },
+        },
       },
     });
 
     if (!server) return null;
 
     const installedGpus = server.gpus.length;
-    const availableGpus = server.gpus.filter(gpu => gpu.status === "AVAILABLE").length;
+    const availableGpus = server.gpus.filter(gpu => gpu.reservations.length === 0).length;
 
     return {
       ...server,
@@ -185,7 +206,6 @@ export const getServerById = async (id: string) => {
   }
 };
 
-
 export const getUserServers = async (userId: string) => {
   try {
     const user = await db.user.findUnique({
@@ -195,16 +215,26 @@ export const getUserServers = async (userId: string) => {
 
     if (!user) return [];
 
-    if (user.category === 'ADMIN') {
+    if (user.category === "ADMIN") {
       const servers = await db.server.findMany({
         include: {
-          gpus: true,
+          gpus: {
+            include: {
+              reservations: {
+                where: {
+                  status: {
+                    in: ["PENDING", "ACTIVE", "EXTENDED"],
+                  },
+                },
+              },
+            },
+          },
         },
       });
 
       return servers.map((server) => {
         const installedGpus = server.gpus.length;
-        const availableGpus = server.gpus.filter(gpu => gpu.status === "AVAILABLE").length;
+        const availableGpus = server.gpus.filter(gpu => gpu.reservations.length === 0).length;
 
         return {
           ...server,
@@ -221,7 +251,17 @@ export const getUserServers = async (userId: string) => {
           include: {
             server: {
               include: {
-                gpus: true,
+                gpus: {
+                  include: {
+                    reservations: {
+                      where: {
+                        status: {
+                          in: ["PENDING", "ACTIVE", "EXTENDED"],
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -233,7 +273,7 @@ export const getUserServers = async (userId: string) => {
       userWithAccess?.serverAccess.map((access) => {
         const server = access.server;
         const installedGpus = server.gpus.length;
-        const availableGpus = server.gpus.filter(gpu => gpu.status === "AVAILABLE").length;
+        const availableGpus = server.gpus.filter(gpu => gpu.reservations.length === 0).length;
 
         return {
           ...server,
@@ -248,7 +288,6 @@ export const getUserServers = async (userId: string) => {
   }
 };
 
-
 export const hasAccessToServer = async (userId: string, serverId: string): Promise<boolean> => {
   try {
     const user = await db.user.findUnique({
@@ -262,8 +301,8 @@ export const hasAccessToServer = async (userId: string, serverId: string): Promi
 
     const access = await db.userServerAccess.findFirst({
       where: {
-        userId: userId,
-        serverId: serverId,
+        userId,
+        serverId,
       },
     });
 
@@ -299,5 +338,3 @@ export const assignServersToUser = async (userId: string, serverIds: string[]) =
     return false;
   }
 };
-
-

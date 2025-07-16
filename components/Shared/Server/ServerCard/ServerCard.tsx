@@ -4,6 +4,7 @@ import { Cpu, Gpu, Info, Plus, CirclePlus } from "lucide-react";
 import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import Link from "next/link";
 import { GpuDonutChart } from "../GpuDonutChart";
+import { GpuReservationDialog } from "@/app/(home)/components";
 
 export default function ServerCard({ server }: { server: ServerListItem }) {
   return (
@@ -44,10 +45,7 @@ export default function ServerCard({ server }: { server: ServerListItem }) {
         </Link>
 
         {server.available && (server.availableGpus ?? 0) > 0 ? (
-          <Button className="w-full mt-1 bg-green-app-500-transparent hover:bg-green-app-500 text-gray-app-100">
-            <CirclePlus size={16} className="mr-2" />
-            Solicitar uso
-          </Button>
+          <GpuReservationDialog serverId={server.id} />
         ) : server.available && (server.availableGpus ?? 0) === 0 ? (
           <Button className="w-full mt-1 bg-gray-app-300 text-white" disabled>
             <CirclePlus size={16} className="mr-2" />
