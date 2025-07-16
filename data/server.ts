@@ -85,7 +85,11 @@ export const updateServerWithGpus = async (
         .map((gpu) => gpu.id);
 
       if (toDeleteIds.length > 0) {
-        await tx.gpu.deleteMany({ where: { id: { in: toDeleteIds } } });
+        await tx.gpu.deleteMany({
+          where: {
+            id: { in: toDeleteIds },
+          },
+        });
       }
 
       for (const gpu of gpus.filter((gpu) => !gpu.id)) {
