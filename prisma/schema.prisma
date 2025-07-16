@@ -76,9 +76,9 @@ model GpuReservation {
   extendedAt    DateTime?
   extendedUntil DateTime?
   cancelledAt   DateTime?
-  gpu           Gpu               @relation(fields: [gpuId], references: [id])
-  server        Server            @relation(fields: [serverId], references: [id])
-  user          User              @relation(fields: [userId], references: [id])
+  gpu           Gpu               @relation(fields: [gpuId], references: [id], onDelete: Cascade)
+  server        Server            @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([gpuId])
