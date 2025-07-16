@@ -59,6 +59,12 @@ export function GpuReservationForm({
     return d;
   };
 
+  const truncateToMinutes = (date: Date): Date => {
+    const d = new Date(date);
+    d.setSeconds(0, 0);
+    return d;
+  };
+
   const hasOverlap = (
     start1: Date,
     end1: Date,
@@ -126,7 +132,13 @@ export function GpuReservationForm({
       return;
     }
 
-    if (start < now || end <= now) {
+    const truncatedStart = truncateToMinutes(start);
+    const truncatedNow = truncateToMinutes(now);
+
+    if (
+      truncatedStart < truncatedNow ||
+      truncateToMinutes(end) <= truncatedNow
+    ) {
       toast.error("No puedes crear reservas en el pasado");
       return;
     }
@@ -142,11 +154,6 @@ export function GpuReservationForm({
       return;
     }
 
-    const truncateToMinutes = (date: Date): Date => {
-      const d = new Date(date);
-      d.setSeconds(0, 0);
-      return d;
-    };
     if (
       from.toDateString() === now.toDateString() &&
       truncateToMinutes(start) < truncateToMinutes(now)
