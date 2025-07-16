@@ -117,7 +117,11 @@ export const updateServerWithGpus = async (
       });
 
       const installedGpus = finalGpus.length;
-      const availableGpus = finalGpus.filter(gpu => gpu.reservations.length === 0).length;
+      const availableGpus = finalGpus.filter(
+        gpu => gpu.reservations.every(
+          r => r.status !== "ACTIVE" && r.status !== "EXTENDED"
+        )
+      ).length;
 
       const serverListItem: ServerListItem = {
         id: updatedServer.id,
@@ -193,8 +197,11 @@ export const getServerById = async (id: string) => {
     if (!server) return null;
 
     const installedGpus = server.gpus.length;
-    const availableGpus = server.gpus.filter(gpu => gpu.reservations.length === 0).length;
-
+    const availableGpus = server.gpus.filter(
+      gpu => gpu.reservations.every(
+        r => r.status !== "ACTIVE" && r.status !== "EXTENDED"
+      )
+    ).length;
     return {
       ...server,
       installedGpus,
@@ -234,7 +241,11 @@ export const getUserServers = async (userId: string) => {
 
       return servers.map((server) => {
         const installedGpus = server.gpus.length;
-        const availableGpus = server.gpus.filter(gpu => gpu.reservations.length === 0).length;
+        const availableGpus = server.gpus.filter(
+          gpu => gpu.reservations.every(
+            r => r.status !== "ACTIVE" && r.status !== "EXTENDED"
+          )
+        ).length;
 
         return {
           ...server,
@@ -273,8 +284,11 @@ export const getUserServers = async (userId: string) => {
       userWithAccess?.serverAccess.map((access) => {
         const server = access.server;
         const installedGpus = server.gpus.length;
-        const availableGpus = server.gpus.filter(gpu => gpu.reservations.length === 0).length;
-
+        const availableGpus = server.gpus.filter(
+          gpu => gpu.reservations.every(
+            r => r.status !== "ACTIVE" && r.status !== "EXTENDED"
+          )
+        ).length;
         return {
           ...server,
           installedGpus,
