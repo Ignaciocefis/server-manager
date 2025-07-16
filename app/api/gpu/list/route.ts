@@ -1,8 +1,11 @@
 import { auth } from "@/auth";
 import { getActiveOrFutureUserReservations } from "@/data/gpu";
+import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  await updateGpuReservationStatuses();
+
   try {
     const session = await auth();
     const authUserId = session?.user?.id;

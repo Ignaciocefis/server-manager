@@ -1,8 +1,0 @@
-{
-  "cron": [
-    {
-      "path": "/api/reservations/update-status",
-      "schedule": "*/5 * * * *" 
-    }
-  ]
-}
