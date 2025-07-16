@@ -48,3 +48,30 @@ export const createGpuReservations = async (selectedGpuIds: string[], userId: st
     throw new Error("Error creating GPU reservations");
   }
 }
+
+export const getActiveOrFutureUserReservations = async (userId: string) => {
+  try {
+    return await db.gpuReservation.findMany({
+      where: { userId, status: { in: ["ACTIVE", "EXTENDED", "PENDING"] } },
+      include: {
+        server: {
+          select: {
+            name: true,
+            ramGB: true,
+            diskCount: true,
+          },
+        },
+        gpu: {
+          select: {
+            name: true,
+            type: true,
+            ramGB: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user reservations:", error);
+    throw new Error("Error fetching user reservations");
+  }
+};
