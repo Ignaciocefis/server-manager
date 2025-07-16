@@ -38,6 +38,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "La fecha y hora de inicio deben ser anteriores a las de fin." }, { status: 400 });
     }
 
+    const now = new Date();
+    if (endDate <= now || startDate < now) {
+      return NextResponse.json({
+        error: "No puedes crear reservas en el pasado.",
+      }, { status: 400 });
+    }
+
     if (!isAdmin) {
       const access = await hasAccessToServer(userId, data.serverId);
       if (!access) {

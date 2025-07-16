@@ -126,6 +126,11 @@ export function GpuReservationForm({
       return;
     }
 
+    if (start < now || end <= now) {
+      toast.error("No puedes crear reservas en el pasado");
+      return;
+    }
+
     if (
       from.toDateString() === to.toDateString() &&
       data.startHour >= data.endHour
