@@ -35,6 +35,21 @@ export function GpuReservationsList() {
       return extended && extended > end ? extended : end;
     };
 
+    const getPriority = (status: string) => {
+      switch (status) {
+        case "ACTIVE":
+        case "EXTENDED":
+          return 0;
+        case "PENDING":
+          return 1;
+        default:
+          return 2;
+      }
+    };
+
+    const priorityDiff = getPriority(a.status) - getPriority(b.status);
+    if (priorityDiff !== 0) return priorityDiff;
+
     return getFinalEnd(a).getTime() - getFinalEnd(b).getTime();
   });
 
