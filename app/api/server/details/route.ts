@@ -1,8 +1,11 @@
 import { auth } from "@/auth";
 import { getServerById, hasAccessToServer } from "@/data/server";
+import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
+  await updateGpuReservationStatuses();
+    
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("serverId");

@@ -18,11 +18,15 @@ import {
   gpuInUseColumns,
   mapReservationsFromServer,
 } from "./GpuInUseTable.data";
+import { useMemo } from "react";
 
 export function GpuInUseTable({ data }: { data: ServerListItem }) {
-  const rows = mapReservationsFromServer(data);
+  const tableData = useMemo(() => {
+    return mapReservationsFromServer(data);
+  }, [data]);
+
   const table = useReactTable({
-    data: rows,
+    data: tableData,
     columns: gpuInUseColumns,
     getCoreRowModel: getCoreRowModel(),
   });
