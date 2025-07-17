@@ -75,3 +75,18 @@ export const getActiveOrFutureUserReservations = async (userId: string) => {
     throw new Error("Error fetching user reservations");
   }
 };
+
+export const cancelGpuReservation = async (reservationId: string) => {
+  try {
+    await db.gpuReservation.update({
+          where: { id: reservationId },
+          data: {
+            status: "CANCELLED",
+            cancelledAt: new Date(),
+          },
+        });
+  } catch (error) {
+    console.error("Error canceling GPU reservation:", error);
+    throw new Error("Error canceling GPU reservation");
+  }
+}

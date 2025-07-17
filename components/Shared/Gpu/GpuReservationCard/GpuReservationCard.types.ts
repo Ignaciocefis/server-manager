@@ -1,4 +1,5 @@
 export interface GpuReservationCardProps {
+  reservationId: string;
   status: "PENDING" | "ACTIVE" | "EXTENDED";
   startTime: string | null;
   endTime: string | null;
@@ -13,4 +14,5 @@ export interface GpuReservationCardProps {
     ramGB: number;
     diskCount: number;
   };
+  onRefresh?: () => void;
 }

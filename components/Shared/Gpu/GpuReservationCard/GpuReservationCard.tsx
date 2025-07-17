@@ -10,6 +10,8 @@ import {
   MinusCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "sonner";
 
 function formatCountdown(seconds: number) {
   const h = Math.floor(seconds / 3600);
@@ -21,17 +23,21 @@ function formatCountdown(seconds: number) {
 }
 
 export default function GpuReservationCard({
+  reservationId,
   status,
   startTime,
   endTime,
   extendedAt,
   gpu,
   server,
+  onRefresh,
 }: GpuReservationCardProps) {
   const start = useMemo(
     () => (startTime ? new Date(startTime) : null),
     [startTime]
   );
+  const [cancelling, setCancelling] = useState(false);
+
   const end = endTime ? new Date(endTime) : null;
   const extended = extendedAt ? new Date(extendedAt) : null;
 
@@ -78,6 +84,27 @@ export default function GpuReservationCard({
 
   const isPending = status === "PENDING";
   const isExtended = status === "EXTENDED";
+
+  const handleCancelReservation = async () => {
+    try {
+      setCancelling(true);
+      const res = await axios.put("/api/gpu/cancelation", {
+        reservationId,
+      });
+
+      if (res.status === 200) {
+        toast.success("Reserva cancelada exitosamente");
+      } else {
+        toast.error("Error al cancelar la reserva");
+      }
+      onRefresh?.();
+    } catch (err) {
+      console.error(err);
+      toast.error("Error al cancelar la reserva");
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   return (
     <Card className="bg-gray-app-500 text-gray-app-100 rounded-xl p-4 w-auto">
@@ -152,9 +179,13 @@ export default function GpuReservationCard({
               Prórroga
             </Button>
           )}
-          <Button className="w-full bg-red-app-500 hover:brightness-110 focus-visible:ring-2 focus-visible:ring-red-300">
+          <Button
+            onClick={() => handleCancelReservation()}
+            disabled={cancelling}
+            className="w-full bg-red-app-500 hover:brightness-110 focus-visible:ring-2 focus-visible:ring-red-300"
+          >
             <MinusCircle size={16} className="inline mr-1" />
-            Cancelar uso
+            {cancelling ? "Cancelando..." : "Cancelar uso"}
           </Button>
         </div>
       </div>
