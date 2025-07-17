@@ -19,7 +19,7 @@ export async function GET() {
     return NextResponse.json(reservationList, { status: 200 });
 
   } catch (error) {
-    console.error("Error fetching GPU list:", error);
-    return NextResponse.json({ error: "Error fetching GPU list" }, { status: 500 });
+    console.error("Error fetching GPU:", error);
+    return NextResponse.json({ error: "Error fetching GPU" }, { status: 500 });
   }
 }
