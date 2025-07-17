@@ -98,9 +98,18 @@ export default function GpuReservationCard({
         toast.error("Error al cancelar la reserva");
       }
       onRefresh?.();
-    } catch (err) {
-      console.error(err);
-      toast.error("Error al cancelar la reserva");
+    } catch (error) {
+      console.error(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.error ??
+            "Error inesperado al cancelar la reserva. Intenta nuevamente."
+        );
+      } else {
+        toast.error(
+          "Error inesperado al cancelar la reserva. Intenta nuevamente."
+        );
+      }
     } finally {
       setCancelling(false);
     }
