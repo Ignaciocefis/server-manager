@@ -90,3 +90,18 @@ export const cancelGpuReservation = async (reservationId: string) => {
     throw new Error("Error canceling GPU reservation");
   }
 }
+
+export const getReservationByIdAndUser = async (reservationId: string, userId: string) => {
+  try {
+    return await db.gpuReservation.findUnique({
+      where: { id: reservationId, userId },
+      include: {
+        gpu: true,
+        server: true,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching reservation by ID and user:", error);
+    throw new Error("Error fetching reservation by ID and user");
+  }
+}

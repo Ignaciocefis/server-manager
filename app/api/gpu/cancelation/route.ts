@@ -1,8 +1,7 @@
 
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
 import { auth } from "@/auth";
-import { cancelGpuReservation } from "@/data/gpu";
+import { cancelGpuReservation, getReservationByIdAndUser } from "@/data/gpu";
 
 export async function PUT(req: Request) {
   try {
@@ -18,8 +17,6 @@ export async function PUT(req: Request) {
 
     const { reservationId } = await req.json();
 
-    console.log("Canceling reservation:", reservationId);
-
     if (!reservationId) {
       return NextResponse.json(
         { error: "El ID de la reserva es obligatorio" },
@@ -27,11 +24,7 @@ export async function PUT(req: Request) {
       );
     }
 
-    const reservation = await db.gpuReservation.findUnique({
-      where: { id: reservationId, userId },
-    });
-
-    console.log("Found reservation:", reservation);
+    const reservation = await getReservationByIdAndUser(reservationId, userId);
 
     if (!reservation) {
       return NextResponse.json(
