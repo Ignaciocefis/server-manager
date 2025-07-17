@@ -16,6 +16,7 @@ export interface GpuReservationFormProps {
   serverId: string;
   gpus: Gpu[];
   closeDialog: () => void;
+  onSuccess: () => void;
 }
 
 export type RawGpuReservationFormData = {

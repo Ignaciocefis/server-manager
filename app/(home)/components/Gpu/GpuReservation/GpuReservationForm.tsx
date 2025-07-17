@@ -24,6 +24,7 @@ export function GpuReservationForm({
   serverId,
   gpus,
   closeDialog,
+  onSuccess,
 }: GpuReservationFormProps) {
   const today = useMemo(() => new Date(), []);
   const maxDate = new Date(today);
@@ -188,6 +189,7 @@ export function GpuReservationForm({
       toast.success("Reserva creada correctamente");
 
       closeDialog();
+      onSuccess();
     } catch (error) {
       console.error("Error al crear la reserva:", error);
       const errorMessage = axios.isAxiosError(error)

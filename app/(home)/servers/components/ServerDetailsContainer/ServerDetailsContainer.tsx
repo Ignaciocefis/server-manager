@@ -13,6 +13,7 @@ export const ServerDetailsContainer = () => {
   const serverId = params.id as string;
   const router = useRouter();
 
+  const [refreshKey, setRefreshKey] = useState(0);
   const [server, setServer] = useState<ServerListItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,7 +49,9 @@ export const ServerDetailsContainer = () => {
     };
 
     fetchServer();
-  }, [serverId]);
+  }, [serverId, refreshKey]);
+
+  const triggerRefresh = () => setRefreshKey((prev) => prev + 1);
 
   const handleServerUpdate = (updatedServer: ServerListItem) => {
     setServer(updatedServer);
@@ -123,6 +126,7 @@ export const ServerDetailsContainer = () => {
         onUpdate={handleServerUpdate}
         onToggleAvailability={toggleAvailability}
         onDelete={handleDeleteServer}
+        onReservationSuccess={triggerRefresh}
       />
 
       <div className="flex flex-col items-center mt-8">

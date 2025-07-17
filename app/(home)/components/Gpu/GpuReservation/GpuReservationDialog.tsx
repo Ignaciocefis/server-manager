@@ -14,15 +14,19 @@ import { GpuReservationForm } from "./GpuReservationForm";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Gpu } from "./GpuReservation.types";
 
-export function GpuReservationDialog({ serverId }: { serverId: string }) {
+export function GpuReservationDialog({
+  serverId,
+  onSuccess,
+}: {
+  serverId: string;
+  onSuccess: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const [gpus, setGpus] = useState<Gpu[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!open) return;
-
-    console.log("Fetching GPUs for server:", serverId);
 
     const fetchData = async () => {
       setLoading(true);
@@ -68,6 +72,7 @@ export function GpuReservationDialog({ serverId }: { serverId: string }) {
             gpus={gpus}
             serverId={serverId}
             closeDialog={() => setOpen(false)}
+            onSuccess={onSuccess}
           />
         )}
       </DialogContent>

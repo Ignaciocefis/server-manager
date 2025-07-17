@@ -14,6 +14,9 @@ export function GpuReservationsList() {
 
   useEffect(() => {
     const fetchReservations = async () => {
+      setLoading(true);
+      setError("");
+
       try {
         const response = await axios.get("/api/gpu/list");
         setReservations(response.data);
