@@ -11,6 +11,7 @@ export function GpuReservationsList() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -29,7 +30,7 @@ export function GpuReservationsList() {
     };
 
     fetchReservations();
-  }, []);
+  }, [refresh]);
 
   const sortedReservations = [...reservations].sort((a, b) => {
     const getFinalEnd = (res: GpuReservationListProps) => {
@@ -67,12 +68,14 @@ export function GpuReservationsList() {
         sortedReservations.map((r) => (
           <GpuReservationCard
             key={r.id}
+            reservationId={r.id}
             gpu={r.gpu}
             server={r.server}
             status={r.status}
             startTime={r.startTime}
             endTime={r.endTime}
             extendedAt={r.extendedAt}
+            onRefresh={() => setRefresh((prev) => !prev)}
           />
         ))
       )}
