@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import { ServerDetailsInfo } from "../ServerDetailsInfo";
 import { GpuDonutChart } from "@/components/Shared/Server";
+import { GpuInUseTable } from "@/components/Shared/Gpu";
 
 export const ServerDetailsContainer = () => {
   const params = useParams();
@@ -135,6 +136,9 @@ export const ServerDetailsContainer = () => {
           availableGpus={server.availableGpus}
           size="md"
         />
+      </div>
+      <div className="flex flex-col items-center my-8">
+        <GpuInUseTable data={server} />
       </div>
     </>
   );

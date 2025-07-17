@@ -191,6 +191,28 @@ export const getServerById = async (id: string) => {
             },
           },
         },
+        reservations: {
+          where: {
+            status: {
+              in: ["ACTIVE", "EXTENDED"],
+            },
+          },
+          include: {
+            user: {
+              select: {
+                name: true,
+                firstSurname: true,
+                secondSurname: true,
+              },
+            },
+            gpu: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -198,10 +220,12 @@ export const getServerById = async (id: string) => {
 
     const installedGpus = server.gpus.length;
     const availableGpus = server.gpus.filter(
-      gpu => gpu.reservations.every(
-        r => r.status !== "ACTIVE" && r.status !== "EXTENDED"
-      )
+      gpu =>
+        gpu.reservations.every(
+          r => r.status !== "ACTIVE" && r.status !== "EXTENDED"
+        )
     ).length;
+
     return {
       ...server,
       installedGpus,
@@ -212,6 +236,7 @@ export const getServerById = async (id: string) => {
     return null;
   }
 };
+
 
 export const getUserServers = async (userId: string) => {
   try {
