@@ -101,7 +101,9 @@ export default function GpuReservationCard({
         </div>
 
         <div className="mb-4">
-          <h3 className="font-semibold mb-2 text-sm">Detalles del servidor:</h3>
+          <h3 className="font-semibold mb-2 text-sm">
+            Detalles del servidor {server.name}:
+          </h3>
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-app-100">
             <div className="flex items-center gap-1">
               <MemoryStick size={16} />
