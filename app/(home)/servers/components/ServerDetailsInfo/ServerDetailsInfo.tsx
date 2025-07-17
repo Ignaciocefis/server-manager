@@ -23,6 +23,7 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
   onUpdate,
   onToggleAvailability,
   onDelete,
+  onReservationSuccess,
 }) => {
   return (
     <div className="flex justify-center">
@@ -41,11 +42,17 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
           </p>
 
           <div className="flex flex-col items-center md:items-start gap-2 mt-4 w-full">
-            {server.available && (server.availableGpus ?? 0) > 0 ? (
-              <GpuReservationDialog serverId={server.id} />
+            {server.available ? (
+              <GpuReservationDialog
+                serverId={server.id}
+                onSuccess={onReservationSuccess}
+              />
             ) : (
-              <Button className="w-full max-w-xs bg-gray-app-300" disabled>
-                <CirclePlus size={16} className="mr-2" />
+              <Button
+                className="w-full max-w-xs bg-gray-app-300 text-white"
+                disabled
+              >
+                <CirclePlus size={20} />
                 No disponible
               </Button>
             )}

@@ -14,4 +14,21 @@ export interface ServerListItem {
     status: "AVAILABLE" | "IN_USE";
     userId: string | null;
   }[];
+  reservations?: {
+    id: string;
+    startTime: string;
+    endTime: string | null;
+    extendedUntil: string | null;
+    status: "ACTIVE" | "EXTENDED" | string;
+    gpuId: string | null;
+    user: {
+      name: string;
+      firstSurname: string;
+      secondSurname?: string | null;
+    };
+    gpu: {
+      id: string;
+      name: string;
+    };
+  }[];
 }

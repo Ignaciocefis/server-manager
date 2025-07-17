@@ -5,7 +5,11 @@ import axios from "axios";
 import { ServerListItem } from "./ServerList.types";
 import ServerCard from "@/components/Shared/Server/ServerCard/ServerCard";
 
-export function ServerList() {
+export function ServerList({
+  onReservationSuccess,
+}: {
+  onReservationSuccess: () => void;
+}) {
   const [servers, setServers] = useState<ServerListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,7 +50,11 @@ export function ServerList() {
   return (
     <div className="w-11/12 m-4 grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
       {servers.map((server: ServerListItem) => (
-        <ServerCard key={server.id} server={server} />
+        <ServerCard
+          key={server.id}
+          server={server}
+          onReservationSuccess={onReservationSuccess}
+        />
       ))}
     </div>
   );

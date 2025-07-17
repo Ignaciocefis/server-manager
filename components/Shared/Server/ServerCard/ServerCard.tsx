@@ -1,12 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Cpu, Gpu, Info, Plus, CirclePlus } from "lucide-react";
+import { CirclePlus, Cpu, Gpu, Info, PlusCircle } from "lucide-react";
 import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import Link from "next/link";
 import { GpuDonutChart } from "../GpuDonutChart";
 import { GpuReservationDialog } from "@/app/(home)/components";
 
-export default function ServerCard({ server }: { server: ServerListItem }) {
+export default function ServerCard({
+  server,
+  onReservationSuccess,
+}: {
+  server: ServerListItem;
+  onReservationSuccess: () => void;
+}) {
   return (
     <Card className="bg-gray-app-500 text-gray-app-100 rounded-xl p-4 w-[200px]">
       <CardContent className="flex flex-col gap-2 items-start p-0">
@@ -30,7 +36,7 @@ export default function ServerCard({ server }: { server: ServerListItem }) {
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-app-100">
-          <Plus size={16} />
+          <CirclePlus size={16} />
           <span>Gráficas disponibles: {server.availableGpus ?? 0}</span>
         </div>
 
@@ -44,15 +50,14 @@ export default function ServerCard({ server }: { server: ServerListItem }) {
           </Button>
         </Link>
 
-        {server.available && (server.availableGpus ?? 0) > 0 ? (
-          <GpuReservationDialog serverId={server.id} />
-        ) : server.available && (server.availableGpus ?? 0) === 0 ? (
-          <Button className="w-full mt-1 bg-gray-app-300 text-white" disabled>
-            <CirclePlus size={16} className="mr-2" />
-            No disponible
-          </Button>
+        {server.available ? (
+          <GpuReservationDialog
+            serverId={server.id}
+            onSuccess={onReservationSuccess}
+          />
         ) : (
           <Button className="w-full mt-1 bg-gray-app-300 text-white" disabled>
+            <PlusCircle size={16} className="mr-2" />
             No disponible
           </Button>
         )}

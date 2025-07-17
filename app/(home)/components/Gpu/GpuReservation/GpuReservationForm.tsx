@@ -24,6 +24,7 @@ export function GpuReservationForm({
   serverId,
   gpus,
   closeDialog,
+  onSuccess,
 }: GpuReservationFormProps) {
   const today = useMemo(() => new Date(), []);
   const maxDate = new Date(today);
@@ -56,6 +57,12 @@ export function GpuReservationForm({
     const [h, m] = time.split(":").map(Number);
     const d = new Date(date);
     d.setHours(h, m, 0, 0);
+    return d;
+  };
+
+  const truncateToMinutes = (date: Date): Date => {
+    const d = new Date(date);
+    d.setSeconds(0, 0);
     return d;
   };
 
@@ -126,7 +133,13 @@ export function GpuReservationForm({
       return;
     }
 
-    if (start < now || end <= now) {
+    const truncatedStart = truncateToMinutes(start);
+    const truncatedNow = truncateToMinutes(now);
+
+    if (
+      truncatedStart < truncatedNow ||
+      truncateToMinutes(end) <= truncatedNow
+    ) {
       toast.error("No puedes crear reservas en el pasado");
       return;
     }
@@ -142,11 +155,6 @@ export function GpuReservationForm({
       return;
     }
 
-    const truncateToMinutes = (date: Date): Date => {
-      const d = new Date(date);
-      d.setSeconds(0, 0);
-      return d;
-    };
     if (
       from.toDateString() === now.toDateString() &&
       truncateToMinutes(start) < truncateToMinutes(now)
@@ -181,6 +189,7 @@ export function GpuReservationForm({
       toast.success("Reserva creada correctamente");
 
       closeDialog();
+      onSuccess();
     } catch (error) {
       console.error("Error al crear la reserva:", error);
       const errorMessage = axios.isAxiosError(error)

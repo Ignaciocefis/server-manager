@@ -85,7 +85,7 @@ export function UserTable({ data, isLoading, refetch }: UserTableProps) {
               {hg.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className={`text-sm font-semibold ${
+                  className={`text-sm font-semibold${
                     header.column.id === "actions" ? "text-left w-1" : ""
                   }`}
                 >

@@ -31,6 +31,12 @@ export async function POST(req: Request) {
       return dt;
     };
 
+    const truncateToMinutes = (date: Date) => {
+      const d = new Date(date);
+      d.setSeconds(0, 0);
+      return d;
+    };
+
     const startDate = getDateTime(data.range.from, data.startHour);
     const endDate = getDateTime(data.range.to, data.endHour);
 
@@ -38,8 +44,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "La fecha y hora de inicio deben ser anteriores a las de fin." }, { status: 400 });
     }
 
+    const truncatedStart = truncateToMinutes(startDate);
+    const truncatedEnd = truncateToMinutes(endDate);
     const now = new Date();
-    if (endDate <= now || startDate < now) {
+    const truncatedNow = truncateToMinutes(now);
+
+    if (truncatedEnd <= truncatedNow || truncatedStart < truncatedNow) {
       return NextResponse.json({
         error: "No puedes crear reservas en el pasado.",
       }, { status: 400 });
