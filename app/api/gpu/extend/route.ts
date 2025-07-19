@@ -1,6 +1,7 @@
 import { auth } from "@/auth"
 import { db } from "@/lib/db"
 import { NextResponse } from "next/server"
+import { getOverlappingReservations } from "../../../../data/gpu"
 
 export async function PUT(
   req: Request) {
@@ -59,15 +60,11 @@ export async function PUT(
       )
     }
 
-    const overlapping = await db.gpuReservation.findFirst({
-      where: {
-        id: { not: reservation.id },
-        gpuId: reservation.gpuId,
-        cancelledAt: null,
-        startTime: { lt: extendedUntilDate },
-        endTime: { gt: currentEnd },
-      },
-    })
+    const overlapping = await getOverlappingReservations(
+      reservation.gpuId,
+      currentEnd,
+      extendedUntilDate
+    )
 
     if (overlapping) {
       return NextResponse.json(
