@@ -75,6 +75,7 @@ export function GpuReservationsList() {
             startTime={r.startTime}
             endTime={r.endTime}
             extendedAt={r.extendedAt}
+            extendedUntil={r.extendedUntil}
             onRefresh={() => setRefresh((prev) => !prev)}
           />
         ))

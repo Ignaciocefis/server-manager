@@ -8,6 +8,7 @@ export interface GpuReservationListProps {
   endTime: string | null;
   actualEndTime: string | null;
   extendedAt: string | null;
+  extendedUntil: string | null;
   gpu: {
     name: string;
     type: string;

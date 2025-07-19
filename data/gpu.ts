@@ -11,21 +11,34 @@ export const getGpusByIdsAndServer = async (selectedGpuIds: string[], serverId: 
   }
 }
 
-export const getOverlappingReservations = async (selectedGpuIds: string[], startDate: Date, endDate: Date) => {
+export const getOverlappingReservations = async (
+  selectedGpuIds: string[],
+  startDate: Date,
+  endDate: Date
+): Promise<boolean> => {
   try {
-    return await db.gpuReservation.findMany({
+    const reservations = await db.gpuReservation.findMany({
       where: {
         gpuId: { in: selectedGpuIds },
-        startTime: { lt: endDate },
-        endTime: { gt: startDate },
         status: { in: ["PENDING", "ACTIVE", "EXTENDED"] },
+        startTime: { lt: endDate },
       },
+      select: {
+        startTime: true,
+        endTime: true,
+        extendedUntil: true,
+      },
+    });
+
+    return reservations.some((res) => {
+      const effectiveEnd = res.extendedUntil ?? res.endTime ?? new Date(0);
+      return res.startTime !== null && startDate < effectiveEnd && endDate > res.startTime;
     });
   } catch (error) {
     console.error("Error checking overlapping reservations:", error);
     throw new Error("Error checking overlapping reservations");
   }
-}
+};
 
 export const createGpuReservations = async (selectedGpuIds: string[], userId: string, serverId: string, startDate: Date, endDate: Date) => {
   try {
