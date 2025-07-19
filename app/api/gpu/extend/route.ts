@@ -60,13 +60,9 @@ export async function PUT(
       )
     }
 
-    const overlapping = await getOverlappingReservations(
-      reservation.gpuId,
-      currentEnd,
-      extendedUntilDate
-    )
+    const hasOverlap = await getOverlappingReservations(reservation.gpuId, currentEnd, extendedUntilDate);
 
-    if (overlapping) {
+    if (hasOverlap) {
       return NextResponse.json(
         { error: "La prórroga se superpone con otra reserva existente" },
         { status: 400 }
