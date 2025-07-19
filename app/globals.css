@@ -44,22 +44,51 @@
 }
 
 @theme {
-    /* Grises */
+  /* Grises */
   --color-gray-app-0: #CDCDCD;
+  --color-gray-app-0-transparent: rgba(205, 205, 205, 0.5);
+
   --color-gray-app-100: #E4E4E5;
+  --color-gray-app-100-transparent: rgba(228, 228, 229, 0.5);
+
   --color-gray-app-200: #BEBEBE;
+  --color-gray-app-200-transparent: rgba(190, 190, 190, 0.5);
+
   --color-gray-app-300: #949494;
+  --color-gray-app-300-transparent: rgba(148, 148, 148, 0.5);
+
   --color-gray-app-400: #7A7A7A;
+  --color-gray-app-400-transparent: rgba(122, 122, 122, 0.5);
+
   --color-gray-app-500: #545454;
+  --color-gray-app-500-transparent: rgba(84, 84, 84, 0.5);
+
   --color-gray-app-600: #3C3C3C;
+  --color-gray-app-600-transparent: rgba(60, 60, 60, 0.5);
 
   /* Verde */
-  --color-green-app-500: #00BF63;
-  --color-green-app-500-transparent: rgba(0, 191, 99, 0.5);
+  --color-green-app: #00BF63;
+  --color-green-app-transparent: rgba(0, 191, 99, 0.5);
 
   /* Rojo */
-  --color-red-app-500: #FF3131;
-  --color-red-app-500-transparent: rgba(255, 49, 49, 0.5);
+  --color-red-app: #FF3131;
+  --color-red-app-transparent: rgba(255, 49, 49, 0.5);
+
+  /* Azul */
+  --color-blue-app: #007BFF;
+  --color-blue-app-transparent: rgba(0, 123, 255, 0.5);
+
+  /* Amarillo */
+  --color-yellow-app: #FFCC00;
+  --color-yellow-app-transparent: rgba(255, 204, 0, 0.5);
+
+  /* Naranja */
+  --color-orange-app: #FF7A00;
+  --color-orange-app-transparent: rgba(255, 122, 0, 0.5);
+
+  /* Cian */
+  --color-cyan-app: #00CFFF;
+  --color-cyan-app-transparent: rgba(0, 207, 255, 0.5);
 }
 
 :root {
