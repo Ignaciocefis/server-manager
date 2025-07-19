@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth } from "@/auth/auth";
 import { getServerById, hasAccessToServer } from "@/data/server";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";

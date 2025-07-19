@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth } from "@/auth/auth";
 import { assignServersToUser } from "@/data/server";
 import { NextResponse } from "next/server";
 

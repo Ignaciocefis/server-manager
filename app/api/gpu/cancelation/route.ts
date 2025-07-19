@@ -1,6 +1,6 @@
 
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { auth } from "@/auth/auth";
 import { cancelGpuReservation, getReservationByIdAndUser } from "@/data/gpu";
 
 export async function PUT(req: Request) {

@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth } from "@/auth/auth";
 import { db } from "@/lib/db";
 import { formSchema } from "@/lib/schemas/auth/changePassword.schema";
 import bcrypt, { compare } from "bcryptjs";

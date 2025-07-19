@@ -1,8 +1,8 @@
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { getUserByEmail } from "./data/user";
+import { getUserByEmail } from "../data/user";
 import bcryptjs from "bcryptjs";
-import { signInSchema } from "./lib/schemas/auth/login.schema";
+import { signInSchema } from "../lib/schemas/auth/login.schema";
 
 export default {
   providers: [

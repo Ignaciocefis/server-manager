@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth } from "@/auth/auth";
 import { createGpuReservations, getGpusByIdsAndServer, getOverlappingReservations } from "@/data/gpu";
 import { hasAccessToServer } from "@/data/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
