@@ -12,14 +12,14 @@ export const getGpusByIdsAndServer = async (selectedGpuIds: string[], serverId: 
 }
 
 export const getOverlappingReservations = async (
-  selectedGpuId: string,
+  selectedGpuIds: string[],
   startDate: Date,
   endDate: Date
 ): Promise<boolean> => {
   try {
     const reservations = await db.gpuReservation.findMany({
       where: {
-        gpuId: selectedGpuId,
+        gpuId: { in: selectedGpuIds },
         status: { in: ["PENDING", "ACTIVE", "EXTENDED"] },
         startTime: { lt: endDate },
       },

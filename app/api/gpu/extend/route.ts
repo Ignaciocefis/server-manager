@@ -60,7 +60,7 @@ export async function PUT(
       )
     }
 
-    const hasOverlap = await getOverlappingReservations(reservation.gpuId, currentEnd, extendedUntilDate);
+    const hasOverlap = await getOverlappingReservations([reservation.gpuId], currentEnd, extendedUntilDate);
 
     if (hasOverlap) {
       return NextResponse.json(
