@@ -74,17 +74,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Algunas GPUs no existen o no pertenecen al servidor indicado." }, { status: 400 });
     }
 
-    let overlappingReservations;
-    try {
-      overlappingReservations = await getOverlappingReservations(data.selectedGpuIds, startDate, endDate);
-    } catch (error) {
-      return NextResponse.json({ error: "Error al comprobar reservas solapadas.", details:error }, { status: 500 });
-    }
+    const hasOverlap = await getOverlappingReservations(data.selectedGpuIds, startDate, endDate);
 
-    if (overlappingReservations.length > 0) {
-      return NextResponse.json({
-        error: "Una o más GPUs ya están reservadas en ese rango de fechas.",
-      }, { status: 409 });
+    if (hasOverlap) {
+      return NextResponse.json(
+        { error: "Una o más GPUs ya están reservadas en ese rango de fechas." },
+        { status: 409 }
+      );
     }
 
     try {

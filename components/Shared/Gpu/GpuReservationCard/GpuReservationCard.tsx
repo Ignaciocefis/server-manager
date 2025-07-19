@@ -2,16 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { isAfter } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GpuReservationCardProps } from "./GpuReservationCard.types";
-import {
-  CirclePlus,
-  HardDrive,
-  MemoryStick,
-  Microchip,
-  MinusCircle,
-} from "lucide-react";
+import { HardDrive, MemoryStick, Microchip, MinusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { toast } from "sonner";
+import GpuExtendButton from "@/app/(home)/components/Gpu/gpuReservationExtend/gpuReservationExtend";
 
 function formatCountdown(seconds: number) {
   const h = Math.floor(seconds / 3600);
@@ -28,6 +23,7 @@ export default function GpuReservationCard({
   startTime,
   endTime,
   extendedAt,
+  extendedUntil,
   gpu,
   server,
   onRefresh,
@@ -36,13 +32,27 @@ export default function GpuReservationCard({
     () => (startTime ? new Date(startTime) : null),
     [startTime]
   );
+  const end = useMemo(() => (endTime ? new Date(endTime) : null), [endTime]);
+  const extended = useMemo(
+    () => (extendedAt ? new Date(extendedAt) : null),
+    [extendedAt]
+  );
+  const extendedUntilDate = useMemo(
+    () => (extendedUntil ? new Date(extendedUntil) : null),
+    [extendedUntil]
+  );
+
   const [cancelling, setCancelling] = useState(false);
 
-  const end = endTime ? new Date(endTime) : null;
-  const extended = extendedAt ? new Date(extendedAt) : null;
-
-  const finalEnd =
-    extended && end ? (isAfter(extended, end) ? extended : end) : end;
+  const finalEnd = useMemo(() => {
+    if (status === "EXTENDED" && extendedUntilDate) {
+      return extendedUntilDate;
+    }
+    if (extended && end) {
+      return isAfter(extended, end) ? extended : end;
+    }
+    return end;
+  }, [status, extendedUntilDate, extended, end]);
 
   const [countdown, setCountdown] = useState<string | null>(null);
 
@@ -176,17 +186,13 @@ export default function GpuReservationCard({
         </div>
 
         <div className="flex flex-col gap-2 w-full max-w-xs sm:w-auto">
-          {!isPending && (
-            <Button
-              className={`w-full text-gray-app-100 ${
-                isExtended
-                  ? "bg-gray-app-400 hover:bg-gray-app-600"
-                  : "bg-yellow-500 hover:bg-yellow-600"
-              }`}
-            >
-              <CirclePlus size={16} className="inline mr-1" />
-              Prórroga
-            </Button>
+          {!isPending && end && (
+            <GpuExtendButton
+              reservationId={reservationId}
+              currentEndTime={finalEnd ?? end}
+              isExtended={isExtended}
+              onSuccess={onRefresh ?? (() => {})}
+            />
           )}
           <Button
             onClick={() => handleCancelReservation()}
