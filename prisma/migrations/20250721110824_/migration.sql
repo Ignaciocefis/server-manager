@@ -66,9 +66,9 @@ CREATE TABLE "GpuReservation" (
     "serverId" TEXT NOT NULL,
     "status" "ReservationStatus" NOT NULL DEFAULT 'PENDING',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "startTime" TIMESTAMP(3),
-    "endTime" TIMESTAMP(3),
-    "actualEndTime" TIMESTAMP(3),
+    "startDate" TIMESTAMP(3),
+    "endDate" TIMESTAMP(3),
+    "actualEndDate" TIMESTAMP(3),
     "extendedAt" TIMESTAMP(3),
     "extendedUntil" TIMESTAMP(3),
     "cancelledAt" TIMESTAMP(3),
@@ -95,7 +95,7 @@ CREATE INDEX "GpuReservation_serverId_idx" ON "GpuReservation"("serverId");
 CREATE INDEX "GpuReservation_status_idx" ON "GpuReservation"("status");
 
 -- CreateIndex
-CREATE INDEX "GpuReservation_startTime_idx" ON "GpuReservation"("startTime");
+CREATE INDEX "GpuReservation_startDate_idx" ON "GpuReservation"("startDate");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
