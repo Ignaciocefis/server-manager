@@ -1,7 +1,7 @@
 "use client";
 
 import { AppImage } from "@/components/Shared/AppImage";
-import { LoginForm } from "./components/LoginForm";
+import { LoginForm } from "@/features/auth/components/LoginForm";
 import { Suspense } from "react";
 
 export default function Login() {

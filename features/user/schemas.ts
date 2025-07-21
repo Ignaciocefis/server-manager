@@ -1,10 +1,5 @@
 import z from "zod";
 
-export const signInSchema = z.object({
-  email: z.string({required_error: "Email requerido"}).email("Formato de email inválido").min(1, "Email requerido"),
-  password: z.string({required_error: "Contraseña requerida"}).min(6, "Contraseña debe tener al menos 6 caracteres")
-});
-
 export const createUserSchema = z
   .object({
     email: z.string().email("Correo inválido"),
