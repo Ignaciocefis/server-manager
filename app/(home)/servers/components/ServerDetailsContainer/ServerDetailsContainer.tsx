@@ -25,7 +25,7 @@ export const ServerDetailsContainer = () => {
 
     const fetchServer = async () => {
       try {
-        const user = await axios.get("/api/auth/me");
+        const user = await axios.get("/api/auth/me"); //TODO: Cambiar a hooks\useHasCategory.ts
         const userId = user.data?.user?.id;
         const userCategory = user.data?.user?.category;
         setIsAdmin(userCategory === "ADMIN");

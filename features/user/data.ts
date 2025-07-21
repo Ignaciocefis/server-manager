@@ -66,6 +66,27 @@ export const getUserByEmailWithPassword = async (email: string): Promise<ApiResp
   }
 };
 
+export const userIsActive = async (email: string): Promise<ApiResponse<boolean>> => {
+  if (!email) {
+    return { success: false, data: false, error: "No email provided" };
+  }
+  try {
+    const user = await db.user.findUnique({
+      where: { email },
+      select: { isActive: true },
+    });
+
+    if (!user) {
+      return { success: false, data: false, error: "User not found" };
+    }
+
+    return { success: true, data: user.isActive, error: null };
+  } catch (error) {
+    console.error("Error checking if user is active:", error);
+    return { success: false, data: false, error };
+  }
+};
+
 export const deleteUserById = async (id: string): Promise<ApiResponse<null>> => {
   if (!id) {
     return { success: false, data: null, error: "No ID provided" };

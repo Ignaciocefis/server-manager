@@ -17,7 +17,7 @@ export function ServerList({
   useEffect(() => {
     const fetchServers = async () => {
       try {
-        const user = await axios.get("/api/auth/me");
+        const user = await axios.get("/api/auth/me"); //TODO: Coger ip en backend, no en frontend
         const userId = user.data?.user?.id;
 
         const serverListResponse = await axios.get(
