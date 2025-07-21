@@ -338,3 +338,25 @@ export const assignServersToUser = async (
     return { success: false, data: false, error };
   }
 };
+
+export const changeServerAvailability = async (
+  serverId: string
+): Promise<ApiResponse<null>> => {
+  if (!serverId) return { success: false, data: null, error: "No server ID provided" };
+
+  try {
+    const server = await db.server.findUnique({ where: { id: serverId } });
+
+    if (!server) return { success: false, data: null, error: "Server not found" };
+
+    await db.server.update({
+      where: { id: serverId },
+      data: { available: !server.available },
+    });
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    console.error("Error changing server availability:", error);
+    return { success: false, data: null, error };
+  }
+};

@@ -6,8 +6,8 @@ export async function updateGpuReservationStatuses() {
   const activate = await db.gpuReservation.updateMany({
     where: {
       status: "PENDING",
-      startTime: { lte: now },
-      endTime: { gte: now },
+      startDate: { lte: now },
+      endDate: { gte: now },
     },
     data: {
       status: "ACTIVE",
@@ -17,7 +17,7 @@ export async function updateGpuReservationStatuses() {
   const complete = await db.gpuReservation.updateMany({
     where: {
       status: { in: ["ACTIVE", "EXTENDED"] },
-      endTime: { lt: now },
+      endDate: { lt: now },
     },
     data: {
       status: "COMPLETED",

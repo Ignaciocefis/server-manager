@@ -1,48 +1,58 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { getServerById, updateServerWithGpus } from "@/features/server/data";
+import { changeServerAvailability } from "@/features/server/data";
 
 export async function PUT(request: Request) {
   try {
+    const { isCategory } = await hasCategory("ADMIN");
 
-    const isAdmin = await hasCategory("ADMIN");
-    
-    if (!isAdmin) {
+    if (!isCategory) {
       return NextResponse.json(
-        { error: "No tienes permisos para cambiar la disponibilidad de servidores" },
+        {
+          success: false,
+          data: null,
+          error: "No tienes permisos para cambiar la disponibilidad de servidores",
+        },
         { status: 403 }
       );
     }
 
-    const { serverId } = await request.json();
+    const body = await request.json();
+    const { serverId } = body;
 
-    if (!serverId) {
-      return NextResponse.json({ error: "Id del servidor requerido" }, { status: 400 });
+    if (!serverId || typeof serverId !== "string") {
+      return NextResponse.json(
+        { success: false, data: null, error: "ID del servidor requerido" },
+        { status: 400 }
+      );
     }
 
-    const server = await getServerById(serverId);
+    const updated = await changeServerAvailability(serverId);
 
-    if (!server.data) {
-      return NextResponse.json({ error: "Servidor no encontrado" }, { status: 404 });
+    if (!updated?.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: updated?.error || "No se pudo actualizar el servidor",
+        },
+        { status: 500 }
+      );
     }
 
-    const updatedServer = await updateServerWithGpus({
-      serverId: server.data.id,
-      name: server.data.name,
-      ramGB: server.data.ramGB,
-      diskCount: server.data.diskCount,
-      available: !server.data.available,
-      gpus: server.data.gpus.map(gpu => ({
-        id: gpu.id,
-        type: gpu.type,
-        name: gpu.name,
-        ramGB: gpu.ramGB
-      })),
-    });
-
-    return NextResponse.json({ updatedServer });
+    return NextResponse.json(
+      {
+        success: true,
+        data: null,
+        error: null,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error cambiando disponibilidad:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    console.error("Error en PUT /api/server/availability:", error);
+    return NextResponse.json(
+      { success: false, data: null, error: "Error interno del servidor" },
+      { status: 500 }
+    );
   }
 }
