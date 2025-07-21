@@ -1,4 +1,4 @@
-import { reservationSummary, reservationSummaryWithServerAndGpu } from "@/features/gpu/types";
+import { reservationSummary, reservationSummaryWithExtendedUntil, reservationSummaryWithServerAndGpu } from "@/features/gpu/types";
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
 
@@ -148,7 +148,7 @@ export const cancelGpuReservation = async (
 export const getReservationByIdAndUser = async (
   reservationId: string,
   userId: string
-): Promise<ApiResponse<reservationSummary | null>> => {
+): Promise<ApiResponse<reservationSummaryWithExtendedUntil | null>> => {
   try {
     const reservation = await db.gpuReservation.findUnique({
       where: { id: reservationId, userId },
@@ -162,9 +162,33 @@ export const getReservationByIdAndUser = async (
       return { success: false, data: null, error: "Reservation not found" };
     }
 
-    return { success: true, data: reservation, error: null };
+    const fixedReservation = reservation
+      ? { ...reservation, extendedUntil: reservation.extendedUntil ?? undefined }
+      : null;
+    return { success: true, data: fixedReservation, error: null };
   } catch (error) {
     console.error("Error fetching reservation by ID and user:", error);
+    return { success: false, data: null, error };
+  }
+};
+
+export const extendGpuReservation = async (
+  reservationId: string,
+  extendedUntil: Date,
+): Promise<ApiResponse<null>> => {
+  try {
+    await db.gpuReservation.update({
+      where: { id: reservationId },
+      data: {
+        extendedUntil,
+        status: "EXTENDED",
+        extendedAt: new Date(),
+      },
+    });
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    console.error("Error extending GPU reservation:", error);
     return { success: false, data: null, error };
   }
 };

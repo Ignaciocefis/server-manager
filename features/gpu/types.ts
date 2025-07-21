@@ -38,3 +38,7 @@ export interface reservationSummaryWithServerAndGpu extends reservationSummary {
     ramGB: number;
   };
 }
+
+export interface reservationSummaryWithExtendedUntil extends reservationSummary {
+  extendedUntil?: Date;
+}
