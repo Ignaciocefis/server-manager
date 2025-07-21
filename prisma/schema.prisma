@@ -70,9 +70,9 @@ model GpuReservation {
   serverId      String
   status        ReservationStatus @default(PENDING)
   createdAt     DateTime          @default(now())
-  startDate     DateTime?
-  endDate       DateTime?
-  actualEndDate DateTime?
+  startDate     DateTime
+  endDate       DateTime
+  actualEndDate DateTime
   extendedAt    DateTime?
   extendedUntil DateTime?
   cancelledAt   DateTime?
