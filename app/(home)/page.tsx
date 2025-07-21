@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CreateServerDialog, GpuReservationsList } from "./components";
-import { PageTitle } from "./components/PageTitle";
+import { PageTitle } from "../../components/Shared/PageTitle";
 import { ServerList } from "./components/Server/ServerList";
 
 export default function Home() {

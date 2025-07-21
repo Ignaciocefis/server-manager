@@ -16,13 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Researcher } from "./Researcher.types";
-
-interface ComboboxResearchersProps {
-  value: string;
-  onChange: (value: string) => void;
-  researchers: Researcher[];
-}
+import { ComboboxResearchersProps } from "./ComboboxResearchers.types";
 
 export function ComboboxResearchers({
   value,

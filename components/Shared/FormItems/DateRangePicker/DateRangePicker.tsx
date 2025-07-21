@@ -8,12 +8,7 @@ import {
 } from "@/components/ui/form";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-
-type DateRangePickerProps = {
-  name: string;
-  minDate: Date;
-  maxDate: Date;
-};
+import { DateRangePickerProps } from "./DateRangePicker.types";
 
 export function DateRangePicker({
   name,

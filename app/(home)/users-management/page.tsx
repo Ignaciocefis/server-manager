@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PageTitle } from "../components/PageTitle";
+import { PageTitle } from "../../../components/Shared/PageTitle";
 import { CreateUserDialog } from "./components/CreateUser";
 import { UserTable } from "./components/UsersTable";
 import axios from "axios";

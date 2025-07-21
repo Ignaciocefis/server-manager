@@ -11,7 +11,7 @@ import { Paperclip } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import { ComboboxResearchers } from "@/components/Shared/FormItems/ComboboxResearchers";
-import { Researcher } from "@/components/Shared/FormItems/ComboboxResearchers/Researcher.types";
+import { Researcher } from "@/components/Shared/FormItems/ComboboxResearchers/ComboboxResearchers.types";
 import { AssignResearcherPopoverProps } from "./AssignResearcherPopover.types";
 
 export function AssignResearcherPopover({
