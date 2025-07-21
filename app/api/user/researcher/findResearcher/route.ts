@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserById } from "@/features/user/data";
+import { getUserNameById } from "@/features/user/data";
 
 export async function GET(request: Request) {
   try {
@@ -7,20 +7,36 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ error: "El id es obligatorio" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, data: null, error: "El id es obligatorio" },
+        { status: 400 }
+      );
     }
 
-    const user = await getUserById(id);
+    const result = await getUserNameById(id);
 
-    if (!user) {
-      return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: result.error || "Error al consultar el usuario" },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ user });
-  } catch (error) {
-    console.error("Error al obtener el usuario:", error);
+    if (!result.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Usuario no encontrado" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Error interno del servidor" },
+      { success: true, data: result.data, error: null },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error en GET /api/user/researcher/findResearcher:", error);
+    return NextResponse.json(
+      { success: false, data: null, error: "Error interno del servidor" },
       { status: 500 }
     );
   }

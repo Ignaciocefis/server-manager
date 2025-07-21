@@ -1,49 +1,50 @@
-import { auth } from "@/auth/auth";
-import { db } from "@/lib/db";
-import { formSchema } from "@/lib/schemas/auth/updateProfile.schema";
+import { updateUser } from "@/features/user/data";
+import { updateUserSchema } from "@/features/user/schemas";
+import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
-  const body = await request.json();
-
-  const data = formSchema.parse(body);
-
-  const { name, firstSurname, secondSurname } = data;
-
   try {
-    const session = await auth();
-    const userId = session?.user?.id;
-
+    const { userId } = await hasCategory();
     if (!userId) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, data: null, error: "No autorizado" },
+        { status: 401 }
+      );
     }
 
-    const updatedUser = await db.user.update({
-      where: { id: userId },
-      data: {
-        name,
-        firstSurname,
-        secondSurname: secondSurname || null,
-      },
-      select: {
-        id: true,
-        name: true,
-        firstSurname: true,
-        secondSurname: true,
-        email: true,
-        category: true,
-      },
+    const body = await request.json();
+    const parsed = updateUserSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Datos inválidos" },
+        { status: 400 }
+      );
+    }
+
+    const data = parsed.data;
+
+    const result = await updateUser(userId, {
+      ...data,
+      secondSurname: typeof data.secondSurname === "undefined" ? null : data.secondSurname,
     });
 
-    return NextResponse.json({
-      message: "Perfil actualizado correctamente",
-      user: updatedUser,
-    });
+    if (!result || !result.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al actualizar el perfil" },
+        { status: 500 }
+      );
+    }
 
-  } catch (error) {
-    console.error(error);
     return NextResponse.json(
-      { error: "Error al actualizar el perfil" },
+      { success: true, data: result.data, error: null },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error en PUT /api/user/update/profile:", error);
+    return NextResponse.json(
+      { success: false, data: null, error: "Error al actualizar el perfil" },
       { status: 500 }
     );
   }

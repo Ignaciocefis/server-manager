@@ -1,49 +1,74 @@
-import { auth } from "@/auth/auth";
-import { db } from "@/lib/db";
-import { formSchema } from "@/lib/schemas/auth/changePassword.schema";
+import { getUserByIdWithPassword, updatePassword } from "@/features/user/data";
+import { updateUserPasswordSchema } from "@/features/user/schemas";
+import { hasCategory } from "@/lib/auth/hasCategory";
 import bcrypt, { compare } from "bcryptjs";
 import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
-  const body = await req.json();
-
-  const data = formSchema.parse(body);
-
-  const { currentPassword, newPassword } = data;
-
-
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId || !currentPassword || !newPassword) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-  }
-
   try {
-    const user = await db.user.findUnique({
-      where: { id: userId },
-    });
+    const { userId } = await hasCategory();
 
-    if (!user || !user.password) {
-      return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, data: null, error: "No autorizado" },
+        { status: 401 }
+      );
     }
 
-    const passwordMatch = await compare(currentPassword, user.password);
+    const body = await req.json();
+    const parsed = updateUserPasswordSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Datos inválidos" },
+        { status: 400 }
+      );
+    }
+
+    const { currentPassword, newPassword } = parsed.data;
+
+    const user = await getUserByIdWithPassword(userId);
+
+    if (!user || !user.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Usuario no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const passwordMatch = await compare(currentPassword, user.data.password);
+
     if (!passwordMatch) {
-      return NextResponse.json({ error: "Contraseña actual incorrecta" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, data: null, error: "Contraseña actual incorrecta" },
+        { status: 401 }
+      );
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    await db.user.update({
-      where: { id: user.id },
-      data: { password: hashedNewPassword },
-    });
+    const updatedUser = await updatePassword(userId, hashedNewPassword);
 
-    return NextResponse.json({ success: true, message: "Contraseña actualizada correctamente" });
+    if (!updatedUser || !updatedUser.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al actualizar la contraseña" },
+        { status: 500 }
+      );
+    }
 
+    return NextResponse.json(
+      {
+        success: true,
+        data: null,
+        error: null,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error al cambiar contraseña:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    console.error("Error en PUT /api/user/update/password:", error);
+    return NextResponse.json(
+      { success: false, data: null, error: "Error interno del servidor" },
+      { status: 500 }
+    );
   }
 }

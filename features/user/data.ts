@@ -1,6 +1,9 @@
-import { UserSummary, UserSummaryWithAssignedTo, UserWithPassword } from "@/features/user/types";
+import { UserName, UserSummary, UserSummaryWithAssignedTo, UserWithOnlyPassword, UserWithPassword } from "@/features/user/types";
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
+import { createUserSchema } from "./schemas";
+import z from "zod";
+import bcrypt from "bcryptjs";
 
 export const getUserById = async (id: string): Promise<ApiResponse<UserSummary | null>> => {
   if (!id) {
@@ -238,3 +241,148 @@ export const getAssignedUsers = async (investigatorId: string): Promise<ApiRespo
     return { success: false, data: null, error };
   }
 };
+
+export const createUser = async (
+  data: z.infer<typeof createUserSchema>,
+  generatedPassword: string
+): Promise<ApiResponse<null>> => {
+  const { email, name, firstSurname, secondSurname, category, assignedToId } = data;
+  const password = generatedPassword;
+
+  if (!email || !name || !firstSurname || !category || !password) {
+    return { success: false, data: null, error: "Missing required fields" };
+  }
+
+  try {
+    await db.user.create({
+      data: {
+        email,
+        password: await bcrypt.hash(generatedPassword, 10),
+        name,
+        firstSurname,
+        secondSurname,
+        category,
+        assignedTo: category === "JUNIOR" && assignedToId
+          ? { connect: { id: assignedToId } }
+          : undefined,
+      },
+    });
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    console.error("Error creating user:", error);
+    return { success: false, data: null, error };
+  }
+};
+
+export const existsUserByEmail = async (email: string): Promise<ApiResponse<boolean>> => {
+  if (!email) {
+    return { success: false, data: false, error: "No email provided" };
+  }
+
+  try {
+    const user = await db.user.findUnique({ where: { email } });
+    return { success: true, data: user !== null, error: null };
+  } catch (error) {
+    console.error("Error checking if user exists by email:", error);
+    return { success: false, data: false, error };
+  }
+}
+
+export const getUserNameById = async (id: string): Promise<ApiResponse<UserName | null>> => {
+  if (!id) {
+    return { success: false, data: null, error: "No id provided" };
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: { id },
+      select: {
+        name: true,
+        firstSurname: true,
+        secondSurname: true,
+      },
+    });
+
+    if (!user) {
+      return { success: false, data: null, error: "User not found" };
+    }
+
+    return { success: true, data: user, error: null };
+  } catch (error) {
+    console.error("Error fetching user name by id:", error);
+    return { success: false, data: null, error: "Internal server error" };
+  }
+};
+
+export const getUserByIdWithPassword = async (id: string): Promise<ApiResponse<UserWithOnlyPassword | null>> => {
+  if (!id) {
+    return { success: false, data: null, error: "No id provided" };
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        password: true,
+      },
+    });
+
+    if (!user) {
+      return { success: false, data: null, error: "User not found" };
+    }
+
+    return { success: true, data: user, error: null };
+  } catch (error) {
+    console.error("Error fetching user by id with password:", error);
+    return { success: false, data: null, error };
+  }
+};
+
+export const updatePassword = async (
+  userId: string,
+  newPassword: string
+): Promise<ApiResponse<null>> => {
+  if (!userId || !newPassword) {
+    return { success: false, data: null, error: "Missing required fields" };
+  }
+
+  try {
+    await db.user.update({
+      where: { id: userId },
+      data: { password: newPassword },
+    });
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    console.error("Error updating password:", error);
+    return { success: false, data: null, error };
+  }
+};
+
+export const updateUser = async (
+  userId: string,
+  data: UserName
+): Promise<ApiResponse<null>> => {
+  if (!userId || !data) {
+    return { success: false, data: null, error: "Missing required fields" };
+  }
+
+  const { name, firstSurname, secondSurname } = data;
+
+  try {
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        name,
+        firstSurname,
+        secondSurname,
+      },
+    });
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return { success: false, data: null, error };
+  }
+}

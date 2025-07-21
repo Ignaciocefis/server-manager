@@ -3,33 +3,48 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 
 export async function PATCH(request: Request) {
-
-  const body = await request.json();
-
-  const { userId } = body;
-
   try {
-    const isAdmin = await hasCategory("ADMIN");
-    if (!isAdmin) {
+    const { isCategory } = await hasCategory("ADMIN");
+
+    if (!isCategory) {
       return NextResponse.json(
-        { error: "No tienes permisos para modificar usuarios" },
+        { success: false, data: null, error: "No tienes permisos para modificar usuarios" },
         { status: 403 }
       );
     }
 
-    if (!userId) {
-      return NextResponse.json({ error: "ID de usuario no proporcionado" }, { status: 400 });
+    const body = await request.json();
+    const { userId } = body;
+
+    if (!userId || typeof userId !== "string") {
+      return NextResponse.json(
+        { success: false, data: null, error: "ID de usuario no proporcionado o inválido" },
+        { status: 400 }
+      );
     }
 
-    const updated = await toggleUserActiveStatus(userId);
+    const result = await toggleUserActiveStatus(userId);
 
-    if (updated) {
-      return NextResponse.json({ message: "Estado de usuario actualizado" }, { status: 200 });
-    } else {
-      return NextResponse.json({ error: "No se pudo actualizar el estado del usuario" }, { status: 500 });
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: "No se pudo actualizar el estado del usuario" },
+        { status: 500 }
+      );
     }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: result.data,
+        error: null,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "No se pudo actualizar el estado del usuario" }, { status: 500 });
+    console.error("Error en PATCH /api/user/researcher/toggleActive:", error);
+    return NextResponse.json(
+      { success: false, data: null, error: "Error interno del servidor" },
+      { status: 500 }
+    );
   }
 }

@@ -18,3 +18,14 @@ export interface UserWithPassword extends UserSummary {
   password: string;
   isActive: boolean;
 };
+
+export interface UserWithOnlyPassword {
+  id: string;
+  password: string;
+} 
+
+export interface UserName {
+  name: string;
+  firstSurname: string;
+  secondSurname: string | null;
+}
