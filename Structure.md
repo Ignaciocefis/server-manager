@@ -233,7 +233,7 @@ export async function POST(req: Request) {
 ## Buenas prácticas en funciones de acceso a datos
 
 1. **Extraer lógica repetida en helpers para evitar duplicación.**  
-2. **Validar datos antes de operar para evitar errores** con schemas con Zod.
+2. **Validar datos antes de operar para evitar errores.**
 3. **Usar `use cache` y `cacheTag` en funciones de lectura** para aprovechar la caché de Next.js.
 4. **Usar try-catch para capturar errores**.
 5. **Devolver siempre un objeto uniforme:**  
@@ -245,7 +245,7 @@ export async function POST(req: Request) {
 
 ## Buenas prácticas para API Routes
 
-1. **Valida la entrada** con schemas con Zod.  
+1. **Valida la entrada.**  
 2. **Maneja errores y responde con códigos HTTP adecuados** (400, 401, 500).  
 3. **Separa la lógica de negocio en funciones externas** (ej. `/features/.../data.ts`).  
 4. **Comprueba autenticación/autorización antes de operar**.  
