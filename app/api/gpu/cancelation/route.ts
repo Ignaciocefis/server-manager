@@ -1,7 +1,7 @@
 
 import { NextResponse } from "next/server";
 import { auth } from "@/auth/auth";
-import { cancelGpuReservation, getReservationByIdAndUser } from "@/data/gpu";
+import { cancelGpuReservation, getReservationByIdAndUser } from "@/features/gpu/data";
 
 export async function PUT(req: Request) {
   try {
@@ -26,14 +26,14 @@ export async function PUT(req: Request) {
 
     const reservation = await getReservationByIdAndUser(reservationId, userId);
 
-    if (!reservation) {
+    if (!reservation || !reservation.data) {
       return NextResponse.json(
         { error: "Reserva no encontrada" },
         { status: 404 }
       );
     }
 
-    if (reservation.status === "CANCELLED") {
+    if (reservation.data.status === "CANCELLED") {
       return NextResponse.json(
         { error: "La reserva ya está cancelada" },
         { status: 409 }

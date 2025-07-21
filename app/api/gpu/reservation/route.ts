@@ -1,5 +1,9 @@
 import { auth } from "@/auth/auth";
-import { createGpuReservations, getGpusByIdsAndServer, getOverlappingReservations } from "@/data/gpu";
+import {
+  createGpuReservations,
+  existGpusByIdsAndServer,
+  getOverlappingReservations
+} from "@/features/gpu/data";
 import { hasAccessToServer } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { gpuReservationFormSchema } from "@/lib/schemas/gpu/reservation.schema";
@@ -9,11 +13,8 @@ import { z } from "zod";
 export async function POST(req: Request) {
   const session = await auth();
   const userId = session?.user?.id;
+  if (!userId) return NextResponse.json({ error: "Usuario requerido" }, { status: 400 });
 
-  if (!userId) {
-    return NextResponse.json({ error: "Usuario requerido" }, { status: 400 });
-  }
-  
   const isAdmin = await hasCategory("ADMIN");
 
   try {
@@ -37,56 +38,44 @@ export async function POST(req: Request) {
       return d;
     };
 
-    const startDate = getDateTime(data.range.from, data.startHour);
-    const endDate = getDateTime(data.range.to, data.endHour);
+    const startDate = truncateToMinutes(getDateTime(data.range.from, data.startHour));
+    const endDate = truncateToMinutes(getDateTime(data.range.to, data.endHour));
+    const now = truncateToMinutes(new Date());
 
     if (startDate >= endDate) {
       return NextResponse.json({ error: "La fecha y hora de inicio deben ser anteriores a las de fin." }, { status: 400 });
     }
 
-    const truncatedStart = truncateToMinutes(startDate);
-    const truncatedEnd = truncateToMinutes(endDate);
-    const now = new Date();
-    const truncatedNow = truncateToMinutes(now);
-
-    if (truncatedEnd <= truncatedNow || truncatedStart < truncatedNow) {
-      return NextResponse.json({
-        error: "No puedes crear reservas en el pasado.",
-      }, { status: 400 });
+    if (endDate <= now || startDate < now) {
+      return NextResponse.json({ error: "No puedes crear reservas en el pasado." }, { status: 400 });
     }
 
     if (!isAdmin) {
       const access = await hasAccessToServer(userId, data.serverId);
       if (!access) {
-        return NextResponse.json({
-          error: "No tienes acceso al servidor especificado.",
-        }, { status: 403 });
+        return NextResponse.json({ error: "No tienes acceso al servidor especificado." }, { status: 403 });
       }
     }
 
-    let gpus;
-    try {
-      gpus = await getGpusByIdsAndServer(data.selectedGpuIds, data.serverId);
-    } catch (error) {
-      return NextResponse.json({ error: "Error al obtener las GPUs.", details: error }, { status: 500 });
+    const gpuCheck = await existGpusByIdsAndServer(data.selectedGpuIds, data.serverId);
+    if (!gpuCheck.success) {
+      return NextResponse.json({ error: "Error al verificar GPUs", details: gpuCheck.error }, { status: 500 });
     }
-    if (gpus.length !== data.selectedGpuIds.length) {
+    if (!gpuCheck.data) {
       return NextResponse.json({ error: "Algunas GPUs no existen o no pertenecen al servidor indicado." }, { status: 400 });
     }
 
-    const hasOverlap = await getOverlappingReservations(data.selectedGpuIds, startDate, endDate);
-
-    if (hasOverlap) {
-      return NextResponse.json(
-        { error: "Una o más GPUs ya están reservadas en ese rango de fechas." },
-        { status: 409 }
-      );
+    const overlapCheck = await getOverlappingReservations(data.selectedGpuIds, startDate, endDate);
+    if (!overlapCheck.success) {
+      return NextResponse.json({ error: "Error al comprobar solapamientos", details: overlapCheck.error }, { status: 500 });
+    }
+    if (overlapCheck.data) {
+      return NextResponse.json({ error: "Una o más GPUs ya están reservadas en ese rango de fechas." }, { status: 409 });
     }
 
-    try {
-      await createGpuReservations(data.selectedGpuIds, userId, data.serverId, startDate, endDate);
-    } catch (error) {
-      return NextResponse.json({ error: "Error al crear las reservas.", details: error }, { status: 500 });
+    const creation = await createGpuReservations(data.selectedGpuIds, userId, data.serverId, startDate, endDate);
+    if (!creation.success) {
+      return NextResponse.json({ error: "Error al crear la reserva", details: creation.error }, { status: 500 });
     }
 
     return NextResponse.json({ success: true }, { status: 201 });
@@ -94,6 +83,7 @@ export async function POST(req: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 });
     }
+
     console.error("Reserva error:", error);
     return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }

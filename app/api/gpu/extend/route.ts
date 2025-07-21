@@ -1,7 +1,7 @@
 import { auth } from "@/auth/auth"
 import { db } from "@/lib/db"
 import { NextResponse } from "next/server"
-import { getOverlappingReservations } from "../../../../data/gpu"
+import { getOverlappingReservations } from "../../../../features/gpu/data"
 
 export async function PUT(
   req: Request) {
@@ -51,7 +51,7 @@ export async function PUT(
       )
     }
 
-    const currentEnd = reservation.extendedUntil ?? reservation.endTime
+    const currentEnd = reservation.extendedUntil ?? reservation.endDate
 
     if (!currentEnd || extendedUntilDate <= currentEnd) {
       return NextResponse.json(

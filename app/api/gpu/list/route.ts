@@ -1,5 +1,5 @@
 import { auth } from "@/auth/auth";
-import { getActiveOrFutureUserReservations } from "@/data/gpu";
+import { getActiveOrFutureUserReservations } from "@/features/gpu/data";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
