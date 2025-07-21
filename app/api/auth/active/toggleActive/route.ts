@@ -1,4 +1,4 @@
-import { toggleUserActiveStatus } from "@/data/user";
+import { toggleUserActiveStatus } from "@/features/user/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 

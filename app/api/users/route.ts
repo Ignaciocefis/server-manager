@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAllUsers, getAssignedUsers } from "@/data/user";
+import { getAllUsers, getAssignedUsers } from "@/features/user/data";
 import { db } from "@/lib/db";
 import { auth } from "@/auth/auth";
 

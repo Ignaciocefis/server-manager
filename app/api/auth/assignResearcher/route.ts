@@ -1,4 +1,4 @@
-import { assignJuniorToResearcher, getUserById } from "@/data/user";
+import { assignJuniorToResearcher, userExistsById } from "@/features/user/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { assignResearcherFormSchema } from "@/lib/schemas/auth/assignResearcher.schema";
 import { NextResponse } from "next/server";
@@ -19,8 +19,8 @@ export async function PUT(request: Request) {
       );
     }
 
-    const junior = await getUserById(userId);
-    const researcher = await getUserById(researcherId);
+    const junior = await userExistsById(userId);
+    const researcher = await userExistsById(researcherId);
 
     if (!junior || !researcher) {
       return NextResponse.json(

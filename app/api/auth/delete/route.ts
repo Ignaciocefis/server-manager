@@ -1,4 +1,4 @@
-import { deleteUserById } from "@/data/user";
+import { deleteUserById } from "@/features/user/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 

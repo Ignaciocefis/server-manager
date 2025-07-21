@@ -1,4 +1,4 @@
-import { getAllResearchers } from "@/data/user";
+import { getAllResearchers } from "@/features/user/data";
 import { NextResponse } from "next/server";
 
 export async function GET() {
