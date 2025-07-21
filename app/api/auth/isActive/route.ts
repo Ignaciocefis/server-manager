@@ -3,20 +3,21 @@ import { userIsActive } from "@/features/user/data";
 
 export async function GET(req: Request) {
   try {
-    const { email } = await req.json();
+    const body = await req.json();
+    const { email } = body;
 
-    if (!email) {
+    if (!email || typeof email !== "string") {
       return NextResponse.json(
         { data: null, success: false, error: "Email inválido" },
         { status: 400 }
       );
     }
 
-    const user = await userIsActive(email);
+    const result = await userIsActive(email);
 
-    if (!user) {
+    if (!result?.success || result.data == null) {
       return NextResponse.json(
-        { data: { exists: false }, success: true, error: null },
+        { data: { exists: false }, success: false, error: "Usuario no encontrado" },
         { status: 404 }
       );
     }
@@ -25,7 +26,7 @@ export async function GET(req: Request) {
       {
         data: {
           exists: true,
-          isActive: user.data ?? false,
+          isActive: result.data ?? false,
         },
         success: true,
         error: null,
