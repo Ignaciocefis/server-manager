@@ -1,4 +1,4 @@
-import { getUserServers } from "@/data/server";
+import { getUserAccessibleServers } from "@/features/server/data";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "El id es obligatorio" }, { status: 400 });
     }
 
-    const serverList = await getUserServers(id);
+    const serverList = await getUserAccessibleServers(id);
 
     return NextResponse.json(serverList);
     

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { existsServerByName, createServer } from "@/data/server";
+import { existsServerByName, createServer } from "@/features/server/data";
 import { createServerFormSchema } from "@/lib/schemas/server/create.schema";
 
 export async function POST(request: Request) {

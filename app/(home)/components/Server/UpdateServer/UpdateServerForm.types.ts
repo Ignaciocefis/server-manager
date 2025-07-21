@@ -13,7 +13,6 @@ export interface UpdateServerFormProps {
       name: string;
       type: string;
       ramGB: number;
-      status: "AVAILABLE" | "IN_USE";
       userId: string | null;
     }[];
   };

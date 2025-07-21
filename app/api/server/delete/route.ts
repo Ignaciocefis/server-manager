@@ -1,4 +1,4 @@
-import { deleteServer, existsServerById } from "@/data/server";
+import { deleteServer, existsServerById } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 

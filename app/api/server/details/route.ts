@@ -1,5 +1,5 @@
 import { auth } from "@/auth/auth";
-import { getServerById, hasAccessToServer } from "@/data/server";
+import { getServerByIdWithReservations, hasAccessToServer } from "@/features/server/data";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     }
 
 
-    const server = await getServerById(id);
+    const server = await getServerByIdWithReservations(id);
     if (!server) {
       return NextResponse.json({ error: "Servidor no encontrado" }, { status: 404 });
     }

@@ -1,6 +1,6 @@
-import { existsServerByName, getServerById, updateServerWithGpus } from "@/data/server";
+import { existsServerByName, getServerById, updateServerWithGpus } from "@/features/server/data";
+import { updateServerFormSchema } from "@/features/server/shemas";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
@@ -27,7 +27,7 @@ export async function PUT(request: Request) {
       );
     }
 
-    if (existingServer.name !== serverData.name) {
+    if (existingServer.data && existingServer.data.name !== serverData.name) {
       const nameExists = await existsServerByName(serverData.name);
       if (nameExists) {
         return NextResponse.json(

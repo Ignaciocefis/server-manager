@@ -1,5 +1,5 @@
 import { auth } from "@/auth/auth";
-import { assignServersToUser } from "@/data/server";
+import { assignServersToUser } from "@/features/server/data";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {

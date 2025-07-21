@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { getServerById, updateServerWithGpus } from "@/data/server";
+import { getServerById, updateServerWithGpus } from "@/features/server/data";
 
 export async function PUT(request: Request) {
   try {
@@ -22,17 +22,17 @@ export async function PUT(request: Request) {
 
     const server = await getServerById(serverId);
 
-    if (!server) {
+    if (!server.data) {
       return NextResponse.json({ error: "Servidor no encontrado" }, { status: 404 });
     }
 
     const updatedServer = await updateServerWithGpus({
-      serverId: server.id,
-      name: server.name,
-      ramGB: server.ramGB,
-      diskCount: server.diskCount,
-      available: !server.available,
-      gpus: server.gpus.map(gpu => ({
+      serverId: server.data.id,
+      name: server.data.name,
+      ramGB: server.data.ramGB,
+      diskCount: server.data.diskCount,
+      available: !server.data.available,
+      gpus: server.data.gpus.map(gpu => ({
         id: gpu.id,
         type: gpu.type,
         name: gpu.name,

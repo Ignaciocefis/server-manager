@@ -1,6 +1,6 @@
 import { auth } from "@/auth/auth";
 import { createGpuReservations, getGpusByIdsAndServer, getOverlappingReservations } from "@/data/gpu";
-import { hasAccessToServer } from "@/data/server";
+import { hasAccessToServer } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { gpuReservationFormSchema } from "@/lib/schemas/gpu/reservation.schema";
 import { NextResponse } from "next/server";
