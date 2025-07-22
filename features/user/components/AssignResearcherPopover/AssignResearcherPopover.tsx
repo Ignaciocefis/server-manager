@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -8,11 +8,10 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Paperclip } from "lucide-react";
-import axios from "axios";
-import { toast } from "sonner";
 import { AssignResearcherPopoverProps } from "./AssignResearcherPopover.types";
-import { Researcher } from "@/lib/types/user";
 import { ComboboxResearchers } from "@/components/Shared";
+import { useResearchers } from "./useAssignResearcherPopover";
+import { assignResearcher } from "./AssignResearcherPopover.handlers";
 
 export function AssignResearcherPopover({
   userId,
@@ -20,32 +19,19 @@ export function AssignResearcherPopover({
   researcherId,
 }: AssignResearcherPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [researchers, setResearchers] = useState<Researcher[]>([]);
   const [selected, setSelected] = useState(researcherId || "");
+  const researchers = useResearchers(open);
 
-  useEffect(() => {
-    if (!open) return;
-    axios
-      .get("/api/researcher/allResearchers")
-      .then((res) => setResearchers(res.data.researchers || []))
-      .catch(() => toast.error("Error al cargar investigadores"));
-  }, [open]);
-
-  const handleAssign = async (researcherId: string) => {
-    try {
-      await axios.put("/api/auth/assignResearcher", {
-        userId,
-        researcherId,
-      });
-
-      toast.success("Investigador asignado correctamente");
-      onAssigned(researcherId);
-      setSelected(researcherId);
-      setOpen(false);
-    } catch (error) {
-      toast.error("No se pudo asignar el investigador");
-      console.error("Error al asignar investigador:", error);
-    }
+  const handleAssign = (researcherId: string) => {
+    assignResearcher({
+      userId,
+      researcherId,
+      onSuccess: () => {
+        onAssigned(researcherId);
+        setSelected(researcherId);
+        setOpen(false);
+      },
+    });
   };
 
   return (

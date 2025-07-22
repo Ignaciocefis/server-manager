@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -8,12 +7,12 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { ServerIcon } from "lucide-react";
-import axios from "axios";
-import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Server } from "@prisma/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { assignServers } from "./handlers/assignServers";
+import { useState } from "react";
 import { AssignServersPopoverProps } from "./AssignServerPopover.types";
+import { useServerAssignment } from "./useAssignServerPopover";
 
 export function AssignServersPopover({
   userId,
@@ -21,62 +20,26 @@ export function AssignServersPopover({
   onAssigned,
 }: AssignServersPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [servers, setServers] = useState<Server[]>([]);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    if (!open) return;
-
-    const fetchServers = async () => {
-      setLoading(true);
-      try {
-        const [availableRes, assignedRes] = await Promise.all([
-          axios.get(`/api/server/list?id=${editorId}`),
-          axios.get(`/api/server/list?id=${userId}`),
-        ]);
-
-        setServers(availableRes.data ?? []);
-        const assignedIds = (assignedRes.data ?? []).map((s: Server) => s.id);
-        setSelected(assignedIds);
-      } catch (error) {
-        console.error("Error fetching servers:", error);
-        toast.error("No se pudo cargar la lista de servidores");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchServers();
-  }, [open, userId, editorId]);
-
-  const handleToggle = (serverId: string) => {
-    setSelected((prev) =>
-      prev.includes(serverId)
-        ? prev.filter((id) => id !== serverId)
-        : [...prev, serverId]
-    );
-  };
+  const {
+    selected,
+    search,
+    setSearch,
+    loading,
+    filteredServers,
+    toggleServer,
+  } = useServerAssignment(open, editorId, userId);
 
   const handleSave = async () => {
-    try {
-      await axios.put("/api/server/assignServers", {
-        userId,
-        serverIds: selected,
-      });
-      toast.success("Servidores asignados correctamente");
-      setOpen(false);
-      onAssigned?.();
-    } catch (error) {
-      toast.error("No se pudo asignar los servidores");
-      console.error("Error al guardar:", error);
-    }
+    await assignServers({
+      userId,
+      serverIds: selected,
+      onSuccess: () => {
+        setOpen(false);
+        onAssigned?.();
+      },
+    });
   };
-
-  const filteredServers = servers.filter((server) =>
-    server.name.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -111,7 +74,7 @@ export function AssignServersPopover({
               <div
                 key={server.id}
                 className="flex items-center justify-between py-2 px-2 hover:bg-gray-100 rounded-md cursor-pointer"
-                onClick={() => handleToggle(server.id)}
+                onClick={() => toggleServer(server.id)}
               >
                 <span className="text-sm font-medium">{server.name}</span>
                 <Checkbox checked={selected.includes(server.id)} />

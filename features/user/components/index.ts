@@ -1,3 +1,5 @@
+export * from "./AssignResearcherPopover/AssignResearcherPopover";
+export * from "./AssignServerPopover/AssignServerPopover";
 export * from "./CreateUser/CreateUserForm/CreateUserForm";
 export * from "./CreateUser/CreateUserDialog/CreateUserDialog";
 export * from "./Profile/ChangePassword/ChangePassword";
