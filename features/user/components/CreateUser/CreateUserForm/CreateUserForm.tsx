@@ -1,9 +1,13 @@
 "use client";
 
-import { useForm, useWatch } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,79 +17,37 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
-import { formSchema } from "@/lib/schemas/auth/register.schema";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { CircleMinus, CirclePlus } from "lucide-react";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useWatch } from "react-hook-form";
+
 import { ComboboxResearchers } from "@/components/Shared/FormItems/ComboboxResearchers/ComboboxResearchers";
-import { Researcher } from "@/components/Shared/FormItems/ComboboxResearchers/ComboboxResearchers.types";
+import { handleCreateUser } from "./CreateUserForm.handlers";
+import { CreateUserFormProps } from "./CreateUserForm.types";
+import { useCreateUserForm } from "./hooks/useCreateUserForm";
+import { useFetchResearchers } from "./hooks/useFetchResearchers";
 
 export function CreateUserForm({
   closeDialog,
   onSuccess,
-}: {
-  closeDialog?: () => void;
-  onSuccess?: () => void;
-}) {
-  const [researchers, setResearchers] = useState<Researcher[]>([]);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      name: "",
-      firstSurname: "",
-      secondSurname: "",
-      category: "JUNIOR",
-      assignedToId: "",
-    },
-  });
+}: CreateUserFormProps) {
+  const { form } = useCreateUserForm();
 
   const selectedCategory = useWatch({
     control: form.control,
     name: "category",
   });
 
-  useEffect(() => {
-    if (selectedCategory === "JUNIOR") {
-      axios.get("/api/researcher/allResearchers").then((res) => {
-        setResearchers(res.data.researchers || []);
-      });
-    }
-  }, [selectedCategory]);
+  const { researchers } = useFetchResearchers(selectedCategory);
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      const response = await axios.post("/api/auth/register", data);
-
-      closeDialog?.();
-      onSuccess?.();
-      toast.success(response.data.message || "Usuario creado correctamente");
-    } catch (error: unknown) {
-      console.error({ error });
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.error || "Error desconocido";
-        toast.error(errorMessage);
-      } else {
-        toast.error("Error de red o inesperado");
-      }
-    }
-  };
+  const onSubmit = form.handleSubmit((data) =>
+    handleCreateUser(data, onSuccess, closeDialog)
+  );
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
         <div className="space-y-6">
@@ -102,7 +64,6 @@ export function CreateUserForm({
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="name"
@@ -116,7 +77,6 @@ export function CreateUserForm({
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="firstSurname"
@@ -130,7 +90,6 @@ export function CreateUserForm({
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="secondSurname"

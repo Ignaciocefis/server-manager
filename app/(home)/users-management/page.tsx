@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PageTitle } from "../../../components/Shared/PageTitle";
-import { CreateUserDialog } from "./components/CreateUser";
+import { CreateUserDialog } from "../../../features/user/components/CreateUser";
 import { UserTable } from "./components/UsersTable";
 import axios from "axios";
 import { UsersTableDataProps } from "./components/UsersTable/UsersTable.data.type";

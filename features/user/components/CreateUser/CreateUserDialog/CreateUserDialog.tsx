@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
-import { CreateUserForm } from "./CreateUserForm";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { CreateUserForm } from "..";
 
 export function CreateUserDialog({
   onUserCreated,
