@@ -8,8 +8,6 @@ export interface UsersTableDataProps {
   email: string;
   category: Category;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
   assignedToId?: string | null;
 
   assignedTo?: {

@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { UsersTableDataProps } from "./UsersTable.data.type";
 import { Category } from "@prisma/client";
 import { CheckCheck, Pause, Trash2 } from "lucide-react";
-import { AssignResearcherPopover } from "../AssignResearcherPopover";
-import { AssignServersPopover } from "../AssignServerPopover";
+import { AssignServersPopover } from "@/app/(home)/users-management/components/AssignServerPopover";
+import { AssignResearcherPopover } from "@/app/(home)/users-management/components/AssignResearcherPopover";
 
 export function getUserColumns(
   userId: string,
