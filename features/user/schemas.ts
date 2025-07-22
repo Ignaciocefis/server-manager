@@ -21,10 +21,31 @@ export const createUserSchema = z
     }
   });
 
+export const updateUserProfileSchema = z.object({
+  name: z.string().min(1, "El nombre es obligatorio"),
+  firstSurname: z.string().min(1, "El primer apellido es obligatorio"),
+  secondSurname: z.string().optional(),
+  email: z.string().email("Correo inválido"),
+  category: z.enum(["JUNIOR", "RESEARCHER", "ADMIN"]),
+  assignedToId: z.string().optional().nullable(),
+});
+
 export const updateUserSchema = z.object({
   name: z.string().min(1, "Nombre obligatorio"),
   firstSurname: z.string().min(1, "Primer apellido obligatorio"),
   secondSurname: z.string().optional(),
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: 
+    z.string().min(1, "La contraseña actual es obligatoria"),
+  newPassword: 
+    z.string().min(6, "La nueva contraseña debe tener al menos 6 caracteres"),
+  confirmPassword: 
+    z.string().min(1, "Debes confirmar la nueva contraseña"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Las contraseñas no coinciden",
+  path: ["confirmPassword"],
 });
 
 export const updateUserPasswordSchema = z.object({

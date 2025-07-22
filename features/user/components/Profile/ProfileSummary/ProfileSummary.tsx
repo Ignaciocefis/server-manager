@@ -1,45 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import { ProfileSheet } from "@/components/Shared/Profile";
-import { User } from "lucide-react";
-import { getCategory, getFullName } from "../Profile.utils";
-import axios from "axios";
+import { User as UserIcon } from "lucide-react";
+
+import { ProfileSheet } from "../ProfileSheet/ProfileSheet";
+import { getCategory, getFullName } from "@/features/user/utils";
+import { useCurrentUser } from "./useProfileSummary";
+import { useState } from "react";
 
 export function ProfileSummary() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, loading } = useCurrentUser(open);
 
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get("/api/auth/me");
-      setUser(response.data.user);
-    } catch (error) {
-      console.error("Error al obtener el usuario:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const handleOpenChange = async (isOpen: boolean) => {
-    if (!isOpen) {
-      await fetchUser();
-    }
-    setOpen(isOpen);
-  };
-
-  if (!user) return <span>Cargando perfil...</span>;
+  if (loading || !user) return <span>Cargando perfil...</span>;
 
   const { name, category, firstSurname, secondSurname } = user;
-  const fullName = getFullName(firstSurname, secondSurname, name);
+  const fullName = getFullName(
+    firstSurname ?? undefined,
+    secondSurname ?? undefined,
+    name ?? undefined
+  );
   const userCategory = getCategory(category);
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           className="hidden md:flex items-center gap-3 w-auto px-3 py-2"
@@ -51,7 +36,7 @@ export function ProfileSummary() {
               {userCategory}
             </span>
           </div>
-          <User className="w-6 h-6 text-gray-app-700" />
+          <UserIcon className="w-6 h-6 text-gray-app-700" />
         </Button>
       </SheetTrigger>
 
@@ -61,7 +46,7 @@ export function ProfileSummary() {
           variant="ghost"
           size="icon"
         >
-          <User className="w-4 h-4 text-gray-app-700" />
+          <UserIcon className="w-4 h-4 text-gray-app-700" />
         </Button>
       </SheetTrigger>
 

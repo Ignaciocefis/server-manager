@@ -29,7 +29,8 @@ export async function handleToggleActive(
     userId,
   }).then((res) => {
     if (!res.data.success) {
-      throw new Error(res.data.message || "Error al cambiar el estado del usuario");
+      toast.error(res.data.message || "Error al cambiar el estado del usuario");
+      return;
     }
 
     toast.success(`Usuario ${newStatus ? "activado" : "desactivado"}`);

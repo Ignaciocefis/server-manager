@@ -18,24 +18,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import axios from "axios";
-import { toast } from "sonner";
 import { ChangePasswordProps } from "./ChangePassword.types";
-import { formSchema } from "./ChangePassword.form";
-import { z } from "zod";
+import { handleChangePassword } from "./ChangePassword.handlers";
+import { useChangePasswordForm } from "./useChangePassword";
 
 export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
+  const form = useChangePasswordForm();
 
   const { handleSubmit, reset } = form;
 
@@ -43,24 +32,9 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
     if (!open) reset();
   }, [open, reset]);
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      await axios.put("/api/auth/update/password", {
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-      });
-
-      toast.success("Contraseña actualizada correctamente");
-      onOpenChange(false);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.error || "Error desconocido");
-      } else {
-        toast.error("Error al cambiar la contraseña");
-      }
-      console.error("Cambio de contraseña:", error);
-    }
-  };
+  const onSubmit = handleSubmit((data) =>
+    handleChangePassword(data, () => onOpenChange(false))
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -70,7 +44,7 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+          <form onSubmit={onSubmit} className="space-y-4 mt-4">
             <FormField
               control={form.control}
               name="currentPassword"

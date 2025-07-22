@@ -1,5 +1,5 @@
 import { NotificationButton } from "@/components/Shared/NotificationButton";
-import { ProfileSummary } from "@/components/Shared/Profile";
+import { ProfileSummary } from "@/features/user/components/Profile";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppImage } from "..";
 
