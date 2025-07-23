@@ -10,75 +10,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { updateServerFormSchema } from "@/lib/schemas/server/update.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { CircleMinus, Save } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { z } from "zod";
+import { Save, CircleMinus } from "lucide-react";
+import { GpuForm } from "@/app/(home)/components/Gpu";
+import { useUpdateServerFormSchema } from "./hooks/useUpdateServerFormSchema";
+import { useUpdateServerForm } from "./hooks/useUpdateServerForm";
 import { UpdateServerFormProps } from "./UpdateServerForm.types";
-import { GpuForm } from "../../Gpu";
 
 export function UpdateServerForm({
   serverToEdit,
   closeDialog,
   onUpdate,
 }: UpdateServerFormProps) {
-  const form = useForm<z.infer<typeof updateServerFormSchema>>({
-    resolver: zodResolver(updateServerFormSchema),
-    defaultValues: {
-      serverId: serverToEdit!.id,
-      name: serverToEdit!.name,
-      ramGB: serverToEdit!.ramGB,
-      diskCount: serverToEdit!.diskCount,
-      available: serverToEdit!.available,
-      gpus:
-        serverToEdit!.gpus && serverToEdit!.gpus.length > 0
-          ? serverToEdit!.gpus.map((gpu) => ({
-              ...gpu,
-              userId: gpu.userId === null ? undefined : gpu.userId,
-            }))
-          : [
-              {
-                name: "",
-                type: "",
-                ramGB: 1,
-                status: "AVAILABLE",
-                userId: undefined,
-              },
-            ],
-    },
+  const form = useUpdateServerFormSchema(serverToEdit);
+  const { onSubmit } = useUpdateServerForm({
+    form,
+    closeDialog,
+    onUpdate,
   });
 
-  const onSubmit = async (data: z.infer<typeof updateServerFormSchema>) => {
-    try {
-      const response = await axios.put("/api/server/update", data);
-      toast.success(
-        response.data.message || "Servidor actualizado correctamente"
-      );
-
-      if (response.data.server && onUpdate) {
-        onUpdate(response.data.server);
-      }
-
-      closeDialog?.();
-    } catch (error: unknown) {
-      console.error({ error });
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.error || "Error desconocido";
-        toast.error(errorMessage);
-      } else {
-        toast.error("Error de red o inesperado");
-      }
-    }
-  };
+  if (!serverToEdit) {
+    return null;
+  }
 
   return (
     <Form {...form}>
       <form
-        key={serverToEdit!.id}
+        key={serverToEdit.id}
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8"
       >
