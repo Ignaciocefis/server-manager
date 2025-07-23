@@ -17,3 +17,11 @@ export interface GpuReservationCardProps {
   };
   onRefresh?: () => void;
 }
+
+export interface UseRersevationIdCardProps {
+  status: "PENDING" | "ACTIVE" | "EXTENDED";
+  startTime: Date | null;
+  endTime: Date | null;
+  extendedAt?: Date | null;
+  extendedUntil?: Date | null;
+}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import GpuReservationCard from "@/components/Shared/Gpu/GpuReservationCard/GpuReservationCard";
+import GpuReservationCard from "@/features/gpu/components/GpuReservationCard/GpuReservationCard";
 import { GpuReservationListProps } from "./GpuReservationsList.types";
 
 export function GpuReservationsList() {

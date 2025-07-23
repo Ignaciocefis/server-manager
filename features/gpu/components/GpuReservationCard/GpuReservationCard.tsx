@@ -1,21 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { isAfter } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GpuReservationCardProps } from "./GpuReservationCard.types";
-import { HardDrive, MemoryStick, Microchip, MinusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { toast } from "sonner";
-import GpuExtendButton from "@/app/(home)/components/Gpu/gpuReservationExtend/gpuReservationExtend";
+"use client";
 
-function formatCountdown(seconds: number) {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  return `${h.toString().padStart(2, "0")}:${m
-    .toString()
-    .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { HardDrive, MemoryStick, Microchip, MinusCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import GpuExtendButton from "@/app/(home)/components/Gpu/gpuReservationExtend/gpuReservationExtend";
+import { GpuReservationCardProps } from "./GpuReservationCard.types";
+import { useGpuCountdown } from "./useGpuReservationCard";
+import { handleCancelReservation } from "./GpuReservationCard.handlers";
 
 export default function GpuReservationCard({
   reservationId,
@@ -42,87 +34,22 @@ export default function GpuReservationCard({
     [extendedUntil]
   );
 
+  const { countdown, finalEnd } = useGpuCountdown({
+    status,
+    startTime: start,
+    endTime: end,
+    extendedAt: extended,
+    extendedUntil: extendedUntilDate,
+  });
+
   const [cancelling, setCancelling] = useState(false);
-
-  const finalEnd = useMemo(() => {
-    if (status === "EXTENDED" && extendedUntilDate) {
-      return extendedUntilDate;
-    }
-    if (extended && end) {
-      return isAfter(extended, end) ? extended : end;
-    }
-    return end;
-  }, [status, extendedUntilDate, extended, end]);
-
-  const [countdown, setCountdown] = useState<string | null>(null);
-
-  useEffect(() => {
-    const interval = setInterval(updateCountdown, 1000);
-
-    function updateCountdown() {
-      const now = new Date();
-
-      if (status === "PENDING" && start) {
-        const diffSeconds = Math.max(
-          0,
-          Math.floor((start.getTime() - now.getTime()) / 1000)
-        );
-        if (diffSeconds === 0) {
-          setCountdown("Comenzando...");
-        } else {
-          setCountdown(formatCountdown(diffSeconds));
-        }
-      } else if ((status === "ACTIVE" || status === "EXTENDED") && finalEnd) {
-        const diffSeconds = Math.max(
-          0,
-          Math.floor((finalEnd.getTime() - now.getTime()) / 1000)
-        );
-        if (diffSeconds === 0) {
-          setCountdown("Finalizado");
-        } else {
-          setCountdown(formatCountdown(diffSeconds));
-        }
-      } else {
-        setCountdown(null);
-      }
-    }
-
-    updateCountdown();
-
-    return () => clearInterval(interval);
-  }, [status, start, finalEnd]);
-
   const isPending = status === "PENDING";
   const isExtended = status === "EXTENDED";
 
-  const handleCancelReservation = async () => {
-    try {
-      setCancelling(true);
-      const res = await axios.put("/api/gpu/cancelation", {
-        reservationId,
-      });
-
-      if (res.status === 200) {
-        toast.success("Reserva cancelada exitosamente");
-      } else {
-        toast.error("Error al cancelar la reserva");
-      }
-      onRefresh?.();
-    } catch (error) {
-      console.error(error);
-      if (axios.isAxiosError(error)) {
-        toast.error(
-          error.response?.data?.error ??
-            "Error inesperado al cancelar la reserva. Intenta nuevamente."
-        );
-      } else {
-        toast.error(
-          "Error inesperado al cancelar la reserva. Intenta nuevamente."
-        );
-      }
-    } finally {
-      setCancelling(false);
-    }
+  const handleCancel = async () => {
+    setCancelling(true);
+    await handleCancelReservation(reservationId, onRefresh);
+    setCancelling(false);
   };
 
   return (
@@ -134,7 +61,7 @@ export default function GpuReservationCard({
       <CardContent className="p-0">
         <div className="mb-4">
           <h3 className="font-semibold mb-2 text-sm">Detalles de la GPU:</h3>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-app-100">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
             <div className="flex items-center gap-1">
               <MemoryStick size={16} />
               <span>RAM: {gpu.ramGB} GB</span>
@@ -150,7 +77,7 @@ export default function GpuReservationCard({
           <h3 className="font-semibold mb-2 text-sm">
             Detalles del servidor {server.name}:
           </h3>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-app-100">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
             <div className="flex items-center gap-1">
               <MemoryStick size={16} />
               <span>RAM: {server.ramGB} GB</span>
@@ -167,7 +94,7 @@ export default function GpuReservationCard({
         <div className="flex justify-center items-center w-full sm:w-auto">
           {countdown && (
             <Button
-              className={`w-full h-full flex flex-col items-center justify-center text-center py-2 ${
+              className={`w-full flex flex-col items-center justify-center text-center py-2 ${
                 isPending
                   ? "bg-gray-app-400 hover:bg-gray-app-600"
                   : "bg-green-app-500 hover:bg-green-app-500-transparent"
@@ -195,7 +122,7 @@ export default function GpuReservationCard({
             />
           )}
           <Button
-            onClick={() => handleCancelReservation()}
+            onClick={handleCancel}
             disabled={cancelling}
             className="w-full bg-red-app-500 hover:brightness-110 focus-visible:ring-2 focus-visible:ring-red-300"
           >
