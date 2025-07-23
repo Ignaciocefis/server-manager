@@ -14,8 +14,8 @@ import {
   GpuReservationDialog,
   UpdateServerDialog,
 } from "@/app/(home)/components";
-import { ServerDetailsInfoProps } from "@/app/(home)/servers/components/ServerDetailsInfo/ServerDetailsInfo.types";
-import { GpuDetailsInfo } from "../GpuDetailsInfo";
+import { ServerDetailsInfoProps } from "./ServerDetailsInfo.types";
+import { GpuDetailsInfo } from "@/app/(home)/servers/components/GpuDetailsInfo";
 
 export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
   server,
