@@ -36,8 +36,6 @@ export function useLoginForm() {
         params: { email },
       });
 
-      console.log("User active check result:", result.data.data);
-
       if (!result?.data?.data?.isActive) {
         toast.error("Usuario inactivo, habla con un administrador para solicitar el alta de tu cuenta");
         return;
