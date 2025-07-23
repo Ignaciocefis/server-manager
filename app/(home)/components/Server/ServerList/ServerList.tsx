@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ServerListItem } from "./ServerList.types";
-import ServerCard from "@/components/Shared/Server/ServerCard/ServerCard";
+import ServerCard from "@/features/server/components/ServerCard/ServerCard";
 
 export function ServerList({
   onReservationSuccess,

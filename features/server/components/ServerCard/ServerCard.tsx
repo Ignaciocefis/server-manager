@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, Cpu, Gpu, Info, PlusCircle } from "lucide-react";
-import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
 import Link from "next/link";
-import { GpuDonutChart } from "../GpuDonutChart";
+import { GpuDonutChart } from "..";
 import { GpuReservationDialog } from "@/app/(home)/components";
+import { ServerListItem } from "../../types";
 
 export default function ServerCard({
   server,
