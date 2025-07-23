@@ -32,13 +32,13 @@ export function useLoginForm() {
     const { email, password } = result.data;
 
     try {
-      const result = await axios.post("/api/auth/isActive", {
-        email,
+      const result = await axios.get("/api/auth/isActive", {
+        params: { email },
       });
 
-      console.log("User active check result:", result.data);
+      console.log("User active check result:", result.data.data);
 
-      if (!result?.data?.isActive) {
+      if (!result?.data?.data?.isActive) {
         toast.error("Usuario inactivo, habla con un administrador para solicitar el alta de tu cuenta");
         return;
       }

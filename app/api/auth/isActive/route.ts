@@ -3,8 +3,8 @@ import { userIsActive } from "@/features/user/data";
 
 export async function GET(req: Request) {
   try {
-    const body = await req.json();
-    const { email } = body;
+    const { searchParams } = new URL(req.url);
+    const email = searchParams.get("email");
 
     if (!email || typeof email !== "string") {
       return NextResponse.json(
