@@ -1,3 +1,4 @@
+export * from "./GpuExtendButton/GpuExtendButton";
 export * from "./GpuForm/GpuForm";
 export * from "./GpuInUseTable/GpuInUseTable";
 export * from "./GpuReservation/GpuReservationDialog/GpuReservationDialog";

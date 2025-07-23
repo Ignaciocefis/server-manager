@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -8,16 +7,9 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CircleMinus, CirclePlus } from "lucide-react";
-import { addHours } from "date-fns";
-import axios from "axios";
-import { toast } from "sonner";
-
-interface GpuExtendButtonProps {
-  reservationId: string;
-  currentEndTime: Date;
-  isExtended: boolean;
-  onSuccess: () => void;
-}
+import { handleExtendReservation } from "./GpuExtendButton.handlers";
+import { GpuExtendButtonProps } from "./gpuExtendButton.types";
+import { useState } from "react";
 
 export default function GpuExtendButton({
   reservationId,
@@ -30,33 +22,16 @@ export default function GpuExtendButton({
   const [error, setError] = useState<string | null>(null);
   const [hoursToExtend, setHoursToExtend] = useState<number>(1);
 
-  const handleExtend = async () => {
-    if (hoursToExtend < 1 || hoursToExtend > 12) {
-      setError("El número de horas debe estar entre 1 y 12.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const extendedUntil = addHours(currentEndTime, hoursToExtend);
-
-      await axios.put("/api/gpu/extend", {
-        reservationId,
-        extendedUntil: extendedUntil.toISOString(),
-      });
-
-      toast.success(`Reserva extendida ${hoursToExtend} hora(s) correctamente`);
-      setShowPopover(false);
-      onSuccess();
-    } catch (err) {
-      console.error("Error al extender reserva:", err);
-      setError("No se pudo extender la reserva");
-      toast.error("No se pudo extender la reserva");
-    } finally {
-      setLoading(false);
-    }
+  const onConfirmExtend = () => {
+    handleExtendReservation(
+      reservationId,
+      currentEndTime,
+      hoursToExtend,
+      onSuccess,
+      setLoading,
+      setError,
+      setShowPopover
+    );
   };
 
   return (
@@ -88,7 +63,7 @@ export default function GpuExtendButton({
         {error && <p className="text-sm text-red-500 mb-2">{error}</p>}
         <div className="flex gap-2 w-full">
           <Button
-            onClick={handleExtend}
+            onClick={onConfirmExtend}
             disabled={loading}
             className="flex-1 bg-green-app-500 hover:bg-green-app-500-transparent"
           >

@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HardDrive, MemoryStick, Microchip, MinusCircle } from "lucide-react";
 import { useMemo, useState } from "react";
-import GpuExtendButton from "@/app/(home)/components/Gpu/gpuReservationExtend/gpuReservationExtend";
 import { GpuReservationCardProps } from "./GpuReservationCard.types";
 import { useGpuCountdown } from "./useGpuReservationCard";
 import { handleCancelReservation } from "./GpuReservationCard.handlers";
+import GpuExtendButton from "../GpuExtendButton/GpuExtendButton";
 
 export default function GpuReservationCard({
   reservationId,
