@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CreateServerDialog, GpuReservationsList } from "./components";
 import { PageTitle } from "../../components/Shared/PageTitle";
-import { ServerList } from "./components/Server/ServerList";
+import { ServerList } from "../../features/server/components/ServerList";
 
 export default function Home() {
   const [refreshKey, setRefreshKey] = useState(0);

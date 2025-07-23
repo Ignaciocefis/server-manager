@@ -1,4 +1,4 @@
-import { ServerListItem } from "@/app/(home)/components/Server/ServerList/ServerList.types";
+import { ServerListItem } from "@/features/server/components/ServerList/ServerList.types";
 import { ColumnDef } from "@tanstack/react-table";
 import { GpuInUseTableRow } from "./GpuInUseTable.data.types";
 

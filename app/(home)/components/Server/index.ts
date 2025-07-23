@@ -1,3 +1,3 @@
 export * from "../../../../features/server/components/CreateServer"
-export * from "./ServerList"
+export * from "../../../../features/server/components/ServerList"
 export * from "./UpdateServer"
