@@ -1,64 +1,26 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
-  Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { createServerFormSchema } from "@/lib/schemas/server/create.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { CircleMinus, CirclePlus } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { z } from "zod";
-import { GpuForm } from "../../Gpu";
+import { CirclePlus, CircleMinus } from "lucide-react";
+import { useCreateServerForm } from "./useCreateServerForm";
+import { GpuForm } from "@/app/(home)/components";
 
 export function CreateServerForm({
   closeDialog,
 }: {
   closeDialog?: () => void;
 }) {
-  const router = useRouter();
-
-  const form = useForm<z.infer<typeof createServerFormSchema>>({
-    resolver: zodResolver(createServerFormSchema),
-    defaultValues: {
-      name: "",
-      ramGB: 1,
-      diskCount: 1,
-      gpus: [{ name: "", type: "", ramGB: 1 }],
-    },
-  });
-
-  const onSubmit = async (data: z.infer<typeof createServerFormSchema>) => {
-    try {
-      const response = await axios.post("/api/server/create", data);
-      toast.success(response.data.message || "Servidor creado correctamente");
-
-      closeDialog?.();
-
-      const newServerId = response.data.server?.id;
-      if (newServerId) {
-        router.push(`/servers/${newServerId}`);
-      }
-    } catch (error: unknown) {
-      console.error({ error });
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.error || "Error desconocido";
-        toast.error(errorMessage);
-      } else {
-        toast.error("Error de red o inesperado");
-      }
-    }
-  };
+  const { form, onSubmit } = useCreateServerForm(closeDialog);
 
   return (
     <Form {...form}>
