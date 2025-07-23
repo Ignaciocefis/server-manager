@@ -42,3 +42,14 @@ export interface reservationSummaryWithServerAndGpu extends reservationSummary {
 export interface reservationSummaryWithExtendedUntil extends reservationSummary {
   extendedUntil?: Date;
 }
+
+export type Reservation = {
+  startTime: string;
+  endTime: string;
+};
+
+export type Gpu = {
+  id: string;
+  name: string;
+  reservations: Reservation[];
+};

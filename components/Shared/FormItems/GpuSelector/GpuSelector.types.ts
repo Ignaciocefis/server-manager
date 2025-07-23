@@ -1,4 +1,4 @@
-import { Gpu } from "@/app/(home)/components/Gpu/GpuReservation/GpuReservation.types";
+import { Gpu } from "@/features/gpu/types";
 
 export interface GpuReservationProps {
   name: string;

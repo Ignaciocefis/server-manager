@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -9,42 +8,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
-import axios from "axios";
-import { GpuReservationForm } from "./GpuReservationForm";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { Gpu } from "./GpuReservation.types";
+import { GpuReservationForm } from "../..";
+import { useState } from "react";
+import { useAvailableGpus } from "./useGpuReservationDialog";
+import { GpuReservationDialogProps } from "./GpuReservationDialog.types";
 
 export function GpuReservationDialog({
   serverId,
   onSuccess,
-}: {
-  serverId: string;
-  onSuccess: () => void;
-}) {
+}: GpuReservationDialogProps) {
   const [open, setOpen] = useState(false);
-  const [gpus, setGpus] = useState<Gpu[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `/api/server/details?serverId=${serverId}`
-        );
-        setGpus(response.data.gpus);
-      } catch (error) {
-        console.error("Error fetching server details:", error);
-        setGpus([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [open, serverId]);
+  const { gpus, loading } = useAvailableGpus(open, serverId);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -72,7 +47,7 @@ export function GpuReservationDialog({
             gpus={gpus}
             serverId={serverId}
             closeDialog={() => setOpen(false)}
-            onSuccess={onSuccess}
+            onSuccess={onSuccess ?? (() => {})}
           />
         )}
       </DialogContent>

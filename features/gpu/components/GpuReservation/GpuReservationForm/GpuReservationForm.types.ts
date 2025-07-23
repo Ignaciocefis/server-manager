@@ -1,13 +1,5 @@
-export type Reservation = {
-  startTime: string;
-  endTime: string;
-};
+import { Gpu } from "@/features/gpu/types";
 
-export type Gpu = {
-  id: string;
-  name: string;
-  reservations: Reservation[];
-};
 
 export type DateRange = { from: Date | undefined; to?: Date | undefined };
 

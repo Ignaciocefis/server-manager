@@ -2,122 +2,46 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import {
-  Gpu,
   GpuReservationFormProps,
   RawGpuReservationFormData,
-} from "./GpuReservation.types";
-import { gpuReservationFormSchema } from "@/lib/schemas/gpu/reservation.schema";
+} from "./GpuReservationForm.types";
+import { gpuReservationFormSchema } from "@/features/gpu/schemas";
 import {
   DateRangePicker,
   GpuSelector,
   TimePickerField,
-} from "@/components/Shared/FormItems";
-import { useEffect, useMemo, useState } from "react";
+} from "@/components/Shared";
 import axios from "axios";
 import { toast } from "sonner";
+import { useDynamicTimeDefaults } from "./hooks/useDynamicTimeDefaults";
+import { useAvailableGpus } from "../GpuReservationDialog/useGpuReservationDialog";
+import { getDateWithTime, truncateToMinutes } from "@/features/gpu/utils";
 
 export function GpuReservationForm({
   serverId,
-  gpus,
   closeDialog,
   onSuccess,
 }: GpuReservationFormProps) {
-  const today = useMemo(() => new Date(), []);
+  const today = new Date();
   const maxDate = new Date(today);
   maxDate.setDate(today.getDate() + 30);
-
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  const nowTime = `${pad(today.getHours())}:${pad(today.getMinutes())}`;
-
-  const defaultStartHour = nowTime;
-  const defaultEndHour = "23:59";
 
   const form = useForm<RawGpuReservationFormData>({
     resolver: zodResolver(gpuReservationFormSchema),
     defaultValues: {
-      serverId: serverId,
-      range: { from: new Date(), to: new Date() },
+      serverId,
+      range: { from: today, to: today },
       startHour: "09:00",
       endHour: "18:00",
       selectedGpuIds: [],
     },
   });
 
-  const watchRange = form.watch("range");
-  const watchStartHour = form.watch("startHour");
-  const watchEndHour = form.watch("endHour");
-
-  const [availableGpus, setAvailableGpus] = useState<Gpu[]>([]);
-
-  const getDateWithTime = (date: Date, time: string): Date => {
-    const [h, m] = time.split(":").map(Number);
-    const d = new Date(date);
-    d.setHours(h, m, 0, 0);
-    return d;
-  };
-
-  const truncateToMinutes = (date: Date): Date => {
-    const d = new Date(date);
-    d.setSeconds(0, 0);
-    return d;
-  };
-
-  const hasOverlap = (
-    start1: Date,
-    end1: Date,
-    start2: Date,
-    end2: Date
-  ): boolean => start1 < end2 && end1 > start2;
-
-  useEffect(() => {
-    const { from, to } = watchRange;
-    if (!from || !to) return;
-
-    const isFromToday =
-      from instanceof Date && from.toDateString() === new Date().toDateString();
-
-    form.setValue("startHour", isFromToday ? nowTime : "00:00", {
-      shouldValidate: true,
-    });
-    form.setValue("endHour", "23:59", { shouldValidate: true });
-  }, [watchRange, nowTime, form]);
-
-  useEffect(() => {
-    const { from, to } = watchRange;
-    if (!from || !to) return;
-
-    const startDateTime =
-      from instanceof Date ? getDateWithTime(from, watchStartHour) : new Date();
-    const endDateTime =
-      to instanceof Date ? getDateWithTime(to, watchEndHour) : new Date();
-
-    if (startDateTime >= endDateTime) {
-      setAvailableGpus([]);
-      return;
-    }
-
-    const filtered = gpus.filter(
-      (gpu) =>
-        !gpu.reservations.some((r) => {
-          const rStart = new Date(r.startTime);
-          const rEnd = new Date(r.endTime);
-          return hasOverlap(startDateTime, endDateTime, rStart, rEnd);
-        })
-    );
-
-    setAvailableGpus(filtered);
-
-    form.setValue(
-      "selectedGpuIds",
-      form
-        .getValues("selectedGpuIds")
-        .filter((id) => filtered.some((g) => g.id === id))
-    );
-  }, [watchRange, watchStartHour, watchEndHour, gpus, form]);
+  useDynamicTimeDefaults(form);
+  const availableGpus = useAvailableGpus(true, serverId);
 
   const onSubmit = async (data: RawGpuReservationFormData) => {
     const from = new Date(data.range.from as string | number | Date);
@@ -166,7 +90,8 @@ export function GpuReservationForm({
     }
 
     const diffMs = end.getTime() - start.getTime();
-    const maxDurationMs = 1000 * 60 * 60 * 24 * 3; // 3 días
+    const maxDurationMs = 1000 * 60 * 60 * 24 * 3;
+
     if (diffMs > maxDurationMs) {
       toast.error("La duración máxima de una reserva es de 3 días");
       return;
@@ -187,7 +112,6 @@ export function GpuReservationForm({
       });
 
       toast.success("Reserva creada correctamente");
-
       closeDialog();
       onSuccess();
     } catch (error) {
@@ -206,22 +130,15 @@ export function GpuReservationForm({
         className="max-w-lg mx-auto p-4 space-y-6 flex flex-col"
       >
         <DateRangePicker name="range" minDate={today} maxDate={maxDate} />
-
         <div className="flex gap-4">
           <TimePickerField
             name="startHour"
             label="Hora inicio"
-            selectedHour={defaultStartHour}
+            selectedHour={""}
           />
-          <TimePickerField
-            name="endHour"
-            label="Hora fin"
-            selectedHour={defaultEndHour}
-          />
+          <TimePickerField name="endHour" label="Hora fin" selectedHour={""} />
         </div>
-
-        <GpuSelector name="selectedGpuIds" availableGpus={availableGpus} />
-
+        <GpuSelector name="selectedGpuIds" availableGpus={availableGpus.gpus} />
         <div className="flex gap-4 justify-center">
           <Button
             type="submit"
