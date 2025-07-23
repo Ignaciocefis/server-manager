@@ -9,24 +9,24 @@ export const submitServer = async (
   router: AppRouterInstance,
   closeDialog?: () => void
 ) => {
-  try {
-    const response = await axios.post("/api/server/create", data);
-    toast.success(response.data.message || "Servidor creado correctamente");
-
+  await axios.post("/api/server/create", data)
+  .then((res) => {
+    if(!res.data.success) {
+      toast.error(res.data.message || "Error al crear el servidor");
+      console.error("Error al crear el servidor:", res.data.message);
+      return;
+    }
+    toast.success(res.data.message || "Servidor creado correctamente");
     closeDialog?.();
-
-    const newServerId = response.data.server?.id;
+    const newServerId = res.data.server?.id;
     if (newServerId) {
       router.push(`/servers/${newServerId}`);
     }
-  } catch (error: unknown) {
-    console.error({ error });
-
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.error || "Error desconocido";
-      toast.error(errorMessage);
-    } else {
-      toast.error("Error de red o inesperado");
-    }
-  }
+  })
+  .catch((error) => {
+    console.error("Error al crear el servidor:", error);
+    toast.error(
+      error.response?.data?.error || "Error al crear el servidor"
+    );
+  });
 };
