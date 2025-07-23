@@ -10,12 +10,11 @@ import {
   ServerOff,
   Trash2,
 } from "lucide-react";
-import {
-  GpuReservationDialog,
-  UpdateServerDialog,
-} from "@/app/(home)/components";
+
 import { ServerDetailsInfoProps } from "./ServerDetailsInfo.types";
 import { GpuDetailsInfo } from "../GpuDetailsInfo/GpuDetailsInfo";
+import { GpuReservationDialog } from "@/features/gpu/components";
+import { UpdateServerDialog } from "../../UpdateServer/UpdateServerDialog/UpdateServerDialog";
 
 export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
   server,

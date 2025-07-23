@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { CirclePlus, CircleMinus } from "lucide-react";
 import { useCreateServerForm } from "./useCreateServerForm";
-import { GpuForm } from "@/app/(home)/components";
+import { GpuForm } from "@/features/gpu/components";
 
 export function CreateServerForm({
   closeDialog,

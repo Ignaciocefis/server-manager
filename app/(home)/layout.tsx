@@ -1,6 +1,5 @@
+import { AppSidebar, Navbar } from "@/components/Shared";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/Shared/AppSidebar";
-import { Navbar } from "@/components/Shared/Navbar";
 
 export default function AppLayout({
   children,

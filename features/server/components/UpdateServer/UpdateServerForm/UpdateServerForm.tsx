@@ -12,10 +12,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Save, CircleMinus } from "lucide-react";
-import { GpuForm } from "@/app/(home)/components/Gpu";
 import { useUpdateServerFormSchema } from "./hooks/useUpdateServerFormSchema";
 import { useUpdateServerForm } from "./hooks/useUpdateServerForm";
 import { UpdateServerFormProps } from "./UpdateServerForm.types";
+import { GpuForm } from "@/features/gpu/components";
 
 export function UpdateServerForm({
   serverToEdit,

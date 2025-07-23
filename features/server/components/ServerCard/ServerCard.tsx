@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { CirclePlus, Cpu, Gpu, Info, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { GpuDonutChart } from "..";
-import { GpuReservationDialog } from "@/app/(home)/components";
 import { ServerListItem } from "../../types";
+import { GpuReservationDialog } from "@/features/gpu/components";
 
 export default function ServerCard({
   server,

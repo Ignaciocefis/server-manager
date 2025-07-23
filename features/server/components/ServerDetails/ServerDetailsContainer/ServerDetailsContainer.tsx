@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { GpuInUseTable } from "@/components/Shared/Gpu";
 import { GpuDonutChart, ServerDetailsInfo } from "../..";
 import { useServerDetails } from "./useServerDetailsContainer";
 import { toggleAvailability } from "./handlers/toggleAvailabilityHandler";
 import { handleDeleteServer } from "./handlers/deleteServerHandler";
+import { GpuInUseTable } from "@/features/gpu/components";
 
 export const ServerDetailsContainer = () => {
   const router = useRouter();

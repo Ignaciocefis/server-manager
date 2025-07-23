@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PageTitle } from "../../../components/Shared/PageTitle";
-import { CreateUserDialog } from "../../../features/user/components/CreateUser";
-import { UserTable } from "./components/UsersTable";
 import axios from "axios";
-import { UsersTableDataProps } from "./components/UsersTable/UsersTable.data.type";
+import { UsersTableDataProps } from "@/features/user/components/UsersTable/UsersTable.data.type";
+import { PageTitle } from "@/components/Shared";
+import { CreateUserDialog, UserTable } from "@/features/user/components";
 
 export default function UsersManagement() {
   const [users, setUsers] = useState<UsersTableDataProps[]>([]);

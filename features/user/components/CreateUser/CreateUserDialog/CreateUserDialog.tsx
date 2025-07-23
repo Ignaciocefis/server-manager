@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { CreateUserForm } from "..";
+import { CreateUserForm } from "../..";
 
 export function CreateUserDialog({
   onUserCreated,

@@ -1,15 +1,15 @@
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
-import { signInSchema } from "../lib/schemas/auth/login.schema";
 import { getUserByEmailWithPassword } from "@/features/user/data";
+import { loginFormSchema } from "@/features/auth/schemas";
 
 export default {
   providers: [
     Credentials({
       async authorize(credentials) {
 
-        const validatedFields = signInSchema.safeParse(credentials);
+        const validatedFields = loginFormSchema.safeParse(credentials);
 
         if (!validatedFields.success) {
           return null;
@@ -36,7 +36,7 @@ export default {
             };
           }
         }
-      return null;
+        return null;
       },
     }),
   ],
