@@ -13,8 +13,6 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   const { server, loading, error, isAdmin, triggerRefresh, setServer } =
     useServerDetails(serverId);
 
-  console.log("Server details:", server);
-
   if (loading)
     return (
       <div className="flex justify-center items-center h-full min-h-[300px]">
