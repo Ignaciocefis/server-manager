@@ -21,3 +21,8 @@ export type RawGpuReservationFormData = {
   endHour: string;
   selectedGpuIds: string[];
 };
+
+export type SubmitHandlerOptionsProps = {
+  onSuccess: () => void;
+  closeDialog: () => void;
+};

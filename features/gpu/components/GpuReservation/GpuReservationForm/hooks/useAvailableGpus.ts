@@ -9,40 +9,58 @@ export function useAvailableGpus(
   form: UseFormReturn<RawGpuReservationFormData>
 ) {
   const [availableGpus, setAvailableGpus] = useState<Gpu[]>([]);
-  const watchRange = form.watch("range");
-  const watchStartHour = form.watch("startHour");
-  const watchEndHour = form.watch("endHour");
 
   useEffect(() => {
-    const { from, to } = watchRange;
-    if (!from || !to) return;
+    const subscription = form.watch((values) => {
+      const { range, startHour, endHour, selectedGpuIds } = values;
+      const { from, to } = range || {};
 
-    const startDateTime = from instanceof Date ? getDateWithTime(from, watchStartHour) : new Date();
-    const endDateTime = to instanceof Date ? getDateWithTime(to, watchEndHour) : new Date();
+      if (!from || !to) {
+        setAvailableGpus([]);
+        return;
+      }
 
-    if (startDateTime >= endDateTime) {
-      setAvailableGpus([]);
-      return;
-    }
+      const startDateTime = from instanceof Date && typeof startHour === "string"
+        ? getDateWithTime(from, startHour)
+        : new Date();
+      const endDateTime = to instanceof Date && typeof endHour === "string"
+        ? getDateWithTime(to, endHour)
+        : new Date();
 
-    const filtered = gpus.filter(
-      (gpu) =>
+      if (startDateTime >= endDateTime) {
+        setAvailableGpus([]);
+        return;
+      }
+
+      if (!Array.isArray(gpus)) {
+        setAvailableGpus([]);
+        return;
+      }
+
+      const filtered = gpus.filter((gpu) =>
         !gpu.reservations.some((r) => {
-          const rStart = new Date(r.startTime);
-          const rEnd = new Date(r.endTime);
+          const rStart = new Date(r.startDate);
+          const rEnd = new Date(r.endDate);
+
           return hasOverlap(startDateTime, endDateTime, rStart, rEnd);
         })
-    );
+      );
 
-    setAvailableGpus(filtered);
+      setAvailableGpus(filtered);
 
-    form.setValue(
-      "selectedGpuIds",
-      form
-        .getValues("selectedGpuIds")
-        .filter((id) => filtered.some((g) => g.id === id))
-    );
-  }, [watchRange, watchStartHour, watchEndHour, gpus, form]);
+      const filteredIds = selectedGpuIds
+        ?.filter((id): id is string => typeof id === "string" && filtered.some((g) => g.id === id)) || [];
+      const sameSelection =
+        selectedGpuIds?.length === filteredIds.length &&
+        selectedGpuIds?.every((id) => typeof id === "string" && filteredIds.includes(id));
+
+      if (!sameSelection) {
+        form.setValue("selectedGpuIds", filteredIds, { shouldValidate: true, shouldDirty: true });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form, gpus]);
 
   return availableGpus;
 }

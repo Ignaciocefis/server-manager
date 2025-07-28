@@ -18,7 +18,7 @@ export function useAvailableGpus(open: boolean, serverId: string) {
             console.error("Error fetching GPUs:", res.data.error);
             toast.error(res.data.error || "Error al obtener las GPUs disponibles");
           }
-          setGpus(res.data.data ?? []);
+          setGpus(res.data.data.data.gpus ?? []);
         })
         .catch(error => {
           console.error("Error fetching GPUs:", error);

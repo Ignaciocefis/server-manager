@@ -44,8 +44,8 @@ export interface reservationSummaryWithExtendedUntil extends reservationSummary 
 }
 
 export type Reservation = {
-  startTime: string;
-  endTime: string;
+  startDate: string;
+  endDate: string;
 };
 
 export type Gpu = {
