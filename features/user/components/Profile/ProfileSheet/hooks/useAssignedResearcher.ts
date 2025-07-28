@@ -9,18 +9,18 @@ export function useAssignedResearcher(category: string, assignedToId: string | n
     const fetchResearcher = async () => {
       if (category === "JUNIOR" && assignedToId) {
         axios.get(`/api/researcher/findResearcher?id=${assignedToId}`)
-        .then((res) => {
-          if (!res.data.success) {
-            toast.error(res.data.error || "Error al actualizar el perfil");
-            return;
-          }
-          
-          const researcher = res.data.data;
-          setResearcherName(researcher)
-        }).catch((error) => {
-          console.error("Error al cambiar la contraseña:", error);
-          toast.error("Error al cambiar la contraseña");
-        });
+          .then((res) => {
+            if (!res.data.success) {
+              toast.error(res.data.error || "Error al actualizar el perfil");
+              return;
+            }
+
+            const researcher = res.data.data;
+            setResearcherName(researcher)
+          }).catch((error) => {
+            console.error("Error al obtener el investigador:", error);
+            toast.error("Error al obtener el investigador");
+          });
       } else {
         setResearcherName(null);
       }

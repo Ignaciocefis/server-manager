@@ -56,7 +56,12 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
 
       <Form {...form}>
         <form
-          onSubmit={onSubmit}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (isEditing) {
+              onSubmit(e);
+            }
+          }}
           className="mt-6 flex flex-col items-center gap-4 text-gray-app-600"
         >
           {(
@@ -139,16 +144,21 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
               <>
                 <Button
                   type="submit"
-                  className="w-full bg-green-app-500 text-white"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSubmit(e);
+                  }}
+                  className="w-full bg-green-app text-white"
                 >
                   Guardar cambios
                 </Button>
                 <Button
                   type="button"
-                  className="w-full bg-red-app-500 text-white"
-                  onClick={() => {
+                  className="w-full bg-red-app text-white"
+                  onClick={(e) => {
                     reset();
                     setIsEditing(false);
+                    e.preventDefault();
                   }}
                 >
                   Cancelar
@@ -159,14 +169,20 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
                 <Button
                   type="button"
                   className="w-full bg-gray-app-600 text-white"
-                  onClick={() => setIsEditing(true)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsEditing(true);
+                  }}
                 >
                   Editar Perfil
                 </Button>
                 <Button
                   type="button"
                   className="w-full bg-gray-app-600 text-white"
-                  onClick={() => setIsPasswordDialogOpen(true)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsPasswordDialogOpen(true);
+                  }}
                 >
                   Cambiar contraseña
                 </Button>
