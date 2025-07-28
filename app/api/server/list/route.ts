@@ -2,10 +2,13 @@ import { getUserAccessibleServers } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const url = new URL(req.url);
+    const searchParams = url.searchParams;
+    const idParam = searchParams.get("id");
 
-    const { userId } = await hasCategory();
+    let { userId } = await hasCategory();
 
     if (!userId) {
       return NextResponse.json(
@@ -14,10 +17,19 @@ export async function GET() {
       );
     }
 
+    if (idParam) userId = idParam;
+
     const serverList = await getUserAccessibleServers(userId);
 
+    if (!serverList.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: serverList.error || "Error al obtener los servidores" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { success: true, data: serverList, error: null },
+      { success: true, data: serverList.data, error: null },
       { status: 200 }
     );
 

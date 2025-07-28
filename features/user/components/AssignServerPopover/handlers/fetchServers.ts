@@ -19,9 +19,10 @@ export async function fetchServers(editorId: string, userId: string) {
         toast.error(errorMsg);
         return;
       }
-
       servers = availableRes.data.data ?? [];
-      selectedIds = (assignedRes.data.data ?? []).map((s: ServerSummary) => s.id);
+      const assignedData = Array.isArray(assignedRes.data.data) ? assignedRes.data.data : [];
+      selectedIds = assignedData.map((s: ServerSummary) => s.id);
+
     })
     .catch((error) => {
       toast.error("No se pudieron obtener los servidores");
