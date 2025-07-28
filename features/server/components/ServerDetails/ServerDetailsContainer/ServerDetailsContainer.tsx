@@ -7,11 +7,13 @@ import { toggleAvailability } from "./handlers/toggleAvailabilityHandler";
 import { handleDeleteServer } from "./handlers/deleteServerHandler";
 import { GpuInUseTable } from "@/features/gpu/components";
 
-export const ServerDetailsContainer = () => {
+export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   const router = useRouter();
 
   const { server, loading, error, isAdmin, triggerRefresh, setServer } =
-    useServerDetails();
+    useServerDetails(serverId);
+
+  console.log("Server details:", server);
 
   if (loading)
     return (
