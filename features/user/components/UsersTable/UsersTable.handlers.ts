@@ -11,7 +11,7 @@ export async function handleDeleteUser(
     if (!res.data.success) {
       throw new Error(res.data.message || "Error al eliminar el usuario");
     }
-    
+
     toast.success("Usuario eliminado correctamente.");
     refetch();
   }).catch((error) => {
@@ -22,7 +22,6 @@ export async function handleDeleteUser(
 
 export async function handleToggleActive(
   userId: string,
-  newStatus: boolean,
   refetch: () => void
 ) {
   await axios.patch("/api/user/toggleActive", {
@@ -33,10 +32,10 @@ export async function handleToggleActive(
       return;
     }
 
-    toast.success(`Usuario ${newStatus ? "activado" : "desactivado"}`);
+    toast.success(`Usuario ${res.data.data ? "activado" : "desactivado"}`);
     refetch();
   }).catch((error) => {
     console.error("Error al cambiar estado del usuario:", error)
-    toast.error("No se pudo cambiar el estado del usuario.");
+    toast.error(error.response?.data?.error || "No se pudo cambiar el estado del usuario.");
   });
 }

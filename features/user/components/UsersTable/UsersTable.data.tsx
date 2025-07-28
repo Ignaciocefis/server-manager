@@ -9,7 +9,7 @@ export function getUserColumns(
   userId: string,
   userCategory: Category,
   onDelete: (userId: string) => void,
-  handleToggleActive: (userId: string, newStatus: boolean) => void,
+  handleToggleActive: (userId: string) => void,
   handleRefresh: () => void
 ): ColumnDef<UsersTableDataProps>[] {
   const isAdmin = userCategory === "ADMIN";
@@ -84,7 +84,7 @@ export function getUserColumns(
                     ? "bg-green-app-transparent hover:bg-green-app"
                     : "bg-red-app-transparent hover:bg-red-app"
                 }
-                onClick={() => handleToggleActive(u.id, !u.isActive)}
+                onClick={() => handleToggleActive(u.id)}
               >
                 {u.isActive ? (
                   <CheckCheck className="w-4 h-4 mr-1" />

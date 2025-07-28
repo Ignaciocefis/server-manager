@@ -20,7 +20,7 @@ export function useUserTable(data: UsersTableDataProps[], refetch: () => void) {
           userId,
           category,
           (id) => handleDeleteUser(id, refetch),
-          (id, newStatus) => handleToggleActive(id, newStatus, refetch),
+          (id) => handleToggleActive(id, refetch),
           handleRefresh
         )
       : [];

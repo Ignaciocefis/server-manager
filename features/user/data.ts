@@ -120,12 +120,13 @@ export const toggleUserActiveStatus = async (id: string): Promise<ApiResponse<bo
       return { success: false, data: null, error: "User not found" };
     }
 
-    await db.user.update({
+    const updatedUser = await db.user.update({
       where: { id },
       data: { isActive: !user.isActive },
+      select: { isActive: true },
     });
 
-    return { success: true, data: true, error: null };
+    return { success: true, data: updatedUser.isActive, error: null };
   } catch (error) {
     console.error("Error toggling user active status:", error);
     return { success: false, data: null, error };
@@ -165,6 +166,7 @@ export const getAllUsers = async (): Promise<ApiResponse<UserSummaryWithAssigned
         email: true,
         category: true,
         assignedToId: true,
+        isActive: true,
         assignedTo: {
           select: {
             id: true,
@@ -221,6 +223,7 @@ export const getAssignedUsers = async (investigatorId: string): Promise<ApiRespo
         secondSurname: true,
         email: true,
         category: true,
+        isActive: true,
         assignedToId: true,
         assignedTo: {
           select: {
