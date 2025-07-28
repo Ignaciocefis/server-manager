@@ -1,7 +1,7 @@
 export interface GpuInUseTableRow {
   gpuName: string;
   userFullName: string;
-  startTime: string;
-  endTime: string | null;
+  startDate: string | null;
+  endDate: string | null;
   status: "ACTIVE" | "EXTENDED";
 }

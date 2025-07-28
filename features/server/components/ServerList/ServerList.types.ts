@@ -15,8 +15,8 @@ export interface ServerListItem {
   }[];
   reservations?: {
     id: string;
-    startTime: string;
-    endTime: string | null;
+    startDate: string;
+    endDate: string | null;
     extendedUntil: string | null;
     status: "ACTIVE" | "EXTENDED" | string;
     gpuId: string | null;

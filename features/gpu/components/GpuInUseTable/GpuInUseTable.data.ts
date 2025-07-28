@@ -12,11 +12,11 @@ export const mapReservationsFromServer = (
       rows.push({
         gpuName: res.gpu?.name ?? "-",
         userFullName: `${res.user.name} ${res.user.firstSurname} ${res.user.secondSurname ?? ""}`,
-        startTime: res.startTime,
-        endTime: res.extendedUntil ?? res.endTime ?? null,
+        startDate: res.startDate,
+        endDate: res.extendedUntil ?? res.endDate ?? null,
         status: res.status,
       });
-    } 
+    }
   });
 
   return rows;
@@ -32,13 +32,13 @@ export const gpuInUseColumns: ColumnDef<GpuInUseTableRow>[] = [
     header: "Usuario",
   },
   {
-    accessorKey: "startTime",
+    accessorKey: "startDate",
     header: "Inicio",
     cell: ({ getValue }) =>
       new Date(getValue<string>()).toLocaleString("es-ES"),
   },
   {
-    accessorKey: "endTime",
+    accessorKey: "endDate",
     header: "Fin",
     cell: ({ getValue }) => {
       const val = getValue<string | null>();
