@@ -97,7 +97,7 @@ export default function GpuReservationCard({
               className={`w-full flex flex-col items-center justify-center text-center py-2 ${
                 isPending
                   ? "bg-gray-app-400 hover:bg-gray-app-600"
-                  : "bg-green-app-500 hover:bg-green-app-500-transparent"
+                  : "bg-green-app hover:bg-green-app-transparent"
               }`}
             >
               <span className="text-sm font-semibold tracking-wide">
@@ -124,7 +124,7 @@ export default function GpuReservationCard({
           <Button
             onClick={handleCancel}
             disabled={cancelling}
-            className="w-full bg-red-app-500 hover:brightness-110 focus-visible:ring-2 focus-visible:ring-red-300"
+            className="w-full bg-red-app hover:brightness-110 focus-visible:ring-2 focus-visible:ring-red-300"
           >
             <MinusCircle size={16} className="inline mr-1" />
             {cancelling ? "Cancelando..." : "Cancelar uso"}

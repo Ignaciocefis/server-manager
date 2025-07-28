@@ -157,7 +157,7 @@ export function CreateUserForm({
         <div className="md:col-span-2 flex justify-center gap-4 mt-4">
           <Button
             type="submit"
-            className="w-40 bg-green-app-500 hover:bg-green-app-500-transparent"
+            className="w-40 bg-green-app hover:bg-green-app-transparent"
           >
             <CirclePlus />
             Añadir usuario
@@ -165,7 +165,7 @@ export function CreateUserForm({
           <DialogClose asChild>
             <Button
               type="button"
-              className="w-40 bg-red-app-500 hover:bg-red-app-500-transparent"
+              className="w-40 bg-red-app hover:bg-red-app-transparent"
             >
               <CircleMinus />
               Cancelar

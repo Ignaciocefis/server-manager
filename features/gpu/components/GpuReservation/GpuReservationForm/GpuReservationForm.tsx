@@ -142,14 +142,14 @@ export function GpuReservationForm({
         <div className="flex gap-4 justify-center">
           <Button
             type="submit"
-            className="bg-green-app-500 hover:bg-green-app-500-transparent w-40 max-w-xs"
+            className="bg-green-app hover:bg-green-app-transparent w-40 max-w-xs"
           >
             Reservar
           </Button>
           <Button
             type="button"
             onClick={closeDialog}
-            className="bg-red-app-500 hover:bg-red-app-500-transparent w-40 max-w-xs"
+            className="bg-red-app hover:bg-red-app-transparent w-40 max-w-xs"
           >
             Cancelar
           </Button>

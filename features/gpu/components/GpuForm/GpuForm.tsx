@@ -91,7 +91,7 @@ export function GpuForm() {
                   className={`w-40 ${
                     fields.length === 1
                       ? "opacity-50 cursor-not-allowed"
-                      : "bg-red-app-500 hover:bg-red-app-500-transparent"
+                      : "bg-red-app hover:bg-red-app-transparent"
                   }`}
                 >
                   <XCircle className="mr-2 h-4 w-4" />

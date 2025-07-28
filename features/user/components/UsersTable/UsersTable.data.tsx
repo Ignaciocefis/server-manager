@@ -81,8 +81,8 @@ export function getUserColumns(
                 size="sm"
                 className={
                   u.isActive
-                    ? "bg-green-app-500-transparent hover:bg-green-app-500"
-                    : "bg-red-app-500-transparent hover:bg-red-app-500"
+                    ? "bg-green-app-transparent hover:bg-green-app"
+                    : "bg-red-app-transparent hover:bg-red-app"
                 }
                 onClick={() => handleToggleActive(u.id, !u.isActive)}
               >
@@ -98,7 +98,7 @@ export function getUserColumns(
               <Button
                 variant="destructive"
                 size="sm"
-                className=" bg-red-app-500-transparent hover:bg-red-app-500"
+                className=" bg-red-app-transparent hover:bg-red-app"
                 onClick={() => onDelete(u.id)}
               >
                 <Trash2 className="w-4 h-4 mr-1" />

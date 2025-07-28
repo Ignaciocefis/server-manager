@@ -63,8 +63,8 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
                 <Button
                   className={`w-full max-w-xs ${
                     server.available
-                      ? "bg-green-app-500-transparent hover:bg-green-app-500"
-                      : "bg-red-app-500-transparent hover:bg-red-app-500"
+                      ? "bg-green-app-transparent hover:bg-green-app"
+                      : "bg-red-app-transparent hover:bg-red-app"
                   } text-white`}
                   onClick={onToggleAvailability}
                 >
@@ -79,7 +79,7 @@ export const ServerDetailsInfo: React.FC<ServerDetailsInfoProps> = ({
                 </Button>
 
                 <Button
-                  className="w-full max-w-xs bg-red-app-500-transparent hover:bg-red-app-500 text-white"
+                  className="w-full max-w-xs bg-red-app-transparent hover:bg-red-app text-white"
                   onClick={onDelete}
                 >
                   <Trash2 size={20} />

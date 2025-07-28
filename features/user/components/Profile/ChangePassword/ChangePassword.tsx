@@ -90,13 +90,13 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
             <DialogFooter className="flex flex-row justify-center gap-4 mt-8 w-full">
               <Button
                 type="submit"
-                className="w-40 bg-green-app-500 hover:bg-green-app-500-transparent text-white"
+                className="w-40 bg-green-app hover:bg-green-app-transparent text-white"
               >
                 Guardar
               </Button>
               <Button
                 type="button"
-                className="w-40 bg-red-app-500 hover:bg-red-app-500-transparent"
+                className="w-40 bg-red-app hover:bg-red-app-transparent"
                 onClick={() => onOpenChange(false)}
               >
                 Cancelar

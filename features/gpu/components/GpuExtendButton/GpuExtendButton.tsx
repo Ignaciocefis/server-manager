@@ -65,14 +65,14 @@ export default function GpuExtendButton({
           <Button
             onClick={onConfirmExtend}
             disabled={loading}
-            className="flex-1 bg-green-app-500 hover:bg-green-app-500-transparent"
+            className="flex-1 bg-green-app hover:bg-green-app-transparent"
           >
             <CirclePlus size={16} className="inline mr-1" />
             {loading ? "Extendiendo..." : "Confirmar"}
           </Button>
           <Button
             onClick={() => setShowPopover(false)}
-            className="flex-1 bg-red-app-500 hover:bg-red-app-500-transparent"
+            className="flex-1 bg-red-app hover:bg-red-app-transparent"
           >
             <CircleMinus size={16} className="inline mr-1" />
             Cancelar

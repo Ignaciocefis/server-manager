@@ -24,7 +24,7 @@ export function GpuReservationDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full max-w-xs bg-green-app-500 hover:bg-green-app-500-transparent">
+        <Button className="w-full max-w-xs bg-green-app hover:bg-green-app-transparent">
           <CirclePlus />
           Solicitar uso de GPUs
         </Button>
