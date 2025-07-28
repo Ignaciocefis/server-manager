@@ -11,7 +11,7 @@ export function useResearchers(open: boolean) {
 
     axios
       .get("/api/researcher/allResearchers")
-      .then((res) => setResearchers(res.data.researchers || []))
+      .then((res) => setResearchers(res.data.data || []))
       .catch(() => toast.error("Error al cargar investigadores"));
   }, [open]);
 

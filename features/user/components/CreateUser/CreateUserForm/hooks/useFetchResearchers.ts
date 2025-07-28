@@ -23,7 +23,7 @@ export function useFetchResearchers(category: string): UseFetchResearchersResult
           toast.error(res.data.error || "Error al cargar investigadores");
           return;
         }
-        setResearchers(res.data.researchers || []);
+        setResearchers(res.data.data || []);
       })
       .catch(() => setError("No se pudieron cargar los investigadores"))
       .finally(() => setLoading(false));

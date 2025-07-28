@@ -7,11 +7,11 @@ export async function GET() {
     const { userId } = await hasCategory();
 
     if (!userId) {
-        return NextResponse.json(
-          { data: null, success: false, error: "No autorizado" },
-          { status: 401 }
-        );
-      }
+      return NextResponse.json(
+        { data: null, success: false, error: "No autorizado" },
+        { status: 401 }
+      );
+    }
 
     const result = await getUserById(userId);
 
@@ -25,7 +25,7 @@ export async function GET() {
     return NextResponse.json(
       {
         data: {
-          result: result.data,
+          ...result.data,
         },
         success: true,
         error: null,
@@ -38,6 +38,6 @@ export async function GET() {
       { data: null, success: false, error: "Error interno del servidor" },
       { status: 500 }
     );
-    
+
   }
 }

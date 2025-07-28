@@ -10,7 +10,7 @@ export const fetchServers = async (): Promise<ServerListItem[]> => {
       `/api/server/list?id=${userId}`
     );
 
-    return serverListResponse.data;
+    return serverListResponse.data.data.data;
   } catch (error) {
     console.error("Error al cargar servidores:", error);
     throw new Error("No se pudieron cargar los servidores.");

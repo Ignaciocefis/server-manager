@@ -13,8 +13,8 @@ export default function UsersManagement() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get("/api/users");
-      setUsers(res.data);
+      const res = await axios.get("/api/user/list");
+      setUsers(res.data.data.data.result);
     } catch (error) {
       console.error("Error al cargar usuarios:", error);
     } finally {

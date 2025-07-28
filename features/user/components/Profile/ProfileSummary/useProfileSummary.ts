@@ -9,24 +9,20 @@ export function useCurrentUser(open: boolean) {
 
   const fetchUser = async () => {
     await axios.get("/api/auth/me")
-    .then((res) => {
-      if (!res.data.success) {
-        console.error("Error al obtener el usuario:", res.data.error);
-        toast.error(res.data.message || "Error al cambiar el estado del usuario");
-        return;
-      }
-      setUser(res.data.data);
-    }).catch((error) => {
-      console.error("Error al obtener el usuario:", error);
-      toast.error("Error al obtener el usuario");
-    }).finally(() => {
-      setLoading(false);
-    });
+      .then((res) => {
+        if (!res.data.success) {
+          console.error("Error al obtener el usuario:", res.data.error);
+          toast.error(res.data.message || "Error al cambiar el estado del usuario");
+          return;
+        }
+        setUser(res.data.data);
+      }).catch((error) => {
+        console.error("Error al obtener el usuario:", error);
+        toast.error("Error al obtener el usuario");
+      }).finally(() => {
+        setLoading(false);
+      });
   };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   useEffect(() => {
     if (!open) fetchUser();
