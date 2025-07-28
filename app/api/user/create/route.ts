@@ -29,7 +29,8 @@ export async function POST(request: Request) {
     const data = parsed.data;
 
     const exists = await existsUserByEmail(data.email);
-    if (exists) {
+    console.log("User exists by email:", exists);
+    if (exists.data) {
       return NextResponse.json(
         { success: false, data: null, error: "El usuario ya existe" },
         { status: 400 }

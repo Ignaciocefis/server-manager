@@ -20,6 +20,6 @@ export async function handleCreateUser(
     })
     .catch((error) => {
       console.error("Error al crear usuario:", error);
-      toast.error("Error al crear usuario");
+      toast.error(error.response?.data.error || "Error al crear usuario");
     });
 }

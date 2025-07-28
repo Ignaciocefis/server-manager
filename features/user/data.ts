@@ -13,15 +13,15 @@ export const getUserById = async (id: string): Promise<ApiResponse<UserSummary |
   try {
     const user = await db.user.findUnique({
       where: { id },
-        select: {
-          id: true,
-          name: true,
-          firstSurname: true,
-          secondSurname: true,
-          email: true,
-          category: true,
-          assignedToId: true,
-        },
+      select: {
+        id: true,
+        name: true,
+        firstSurname: true,
+        secondSurname: true,
+        email: true,
+        category: true,
+        assignedToId: true,
+      },
     });
     return { success: true, data: user, error: null };
   } catch (error) {
@@ -50,17 +50,18 @@ export const getUserByEmailWithPassword = async (email: string): Promise<ApiResp
   }
 
   try {
-    const user = await db.user.findUnique({ where: { email }, select: {
-      id: true,
-      email: true,
-      password: true,
-      name: true,
-      firstSurname: true,
-      secondSurname: true,
-      category: true,
-      isActive: true,
-      assignedToId: true,
-      }, 
+    const user = await db.user.findUnique({
+      where: { email }, select: {
+        id: true,
+        email: true,
+        password: true,
+        name: true,
+        firstSurname: true,
+        secondSurname: true,
+        category: true,
+        isActive: true,
+        assignedToId: true,
+      },
     });
     return { success: true, data: user, error: null };
   } catch (error) {
@@ -280,7 +281,7 @@ export const existsUserByEmail = async (email: string): Promise<ApiResponse<bool
   }
 
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({ where: { email }, select: { id: true } });
     return { success: true, data: user !== null, error: null };
   } catch (error) {
     console.error("Error checking if user exists by email:", error);
