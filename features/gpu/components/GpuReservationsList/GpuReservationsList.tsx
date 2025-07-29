@@ -24,8 +24,8 @@ export function GpuReservationsList() {
             gpu={r.gpu}
             server={r.server}
             status={r.status}
-            startTime={r.startTime}
-            endTime={r.endTime}
+            startDate={r.startDate}
+            endDate={r.endDate}
             extendedAt={r.extendedAt}
             extendedUntil={r.extendedUntil}
             onRefresh={refreshList}

@@ -4,9 +4,9 @@ export interface GpuReservationListProps {
   gpuId: string;
   serverId: string;
   status: "PENDING" | "ACTIVE" | "EXTENDED";
-  startTime: string | null;
-  endTime: string | null;
-  actualEndTime: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  actualendDate: string | null;
   extendedAt: string | null;
   extendedUntil: string | null;
   gpu: {

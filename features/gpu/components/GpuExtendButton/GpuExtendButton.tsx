@@ -13,7 +13,7 @@ import { useState } from "react";
 
 export default function GpuExtendButton({
   reservationId,
-  currentEndTime,
+  currentendDate,
   isExtended,
   onSuccess,
 }: GpuExtendButtonProps) {
@@ -25,7 +25,7 @@ export default function GpuExtendButton({
   const onConfirmExtend = () => {
     handleExtendReservation(
       reservationId,
-      currentEndTime,
+      currentendDate,
       hoursToExtend,
       onSuccess,
       setLoading,

@@ -21,7 +21,7 @@ export const useUpdateServerForm = ({
       toast.success(response.message || "Servidor actualizado correctamente");
 
       if (response.server && onUpdate) {
-        onUpdate(response.server);
+        onUpdate(response);
       }
 
       closeDialog?.();

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 export async function handleExtendReservation(
   reservationId: string,
-  currentEndTime: Date,
+  currentendDate: Date,
   hoursToExtend: number,
   onSuccess: () => void,
   setLoading: (value: boolean) => void,
@@ -19,7 +19,7 @@ export async function handleExtendReservation(
   setLoading(true);
   setError(null);
 
-  const extendedUntil = addHours(currentEndTime, hoursToExtend);
+  const extendedUntil = addHours(currentendDate, hoursToExtend);
 
   await axios.put("/api/gpu/extend", {
     reservationId,

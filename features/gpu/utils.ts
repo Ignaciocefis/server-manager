@@ -35,7 +35,7 @@ export const hasOverlap = (
 export function sortReservations(reservations: GpuReservationListProps[]) {
   return [...reservations].sort((a, b) => {
     const getFinalEnd = (res: GpuReservationListProps) => {
-      const end = res.endTime ? new Date(res.endTime) : new Date(0);
+      const end = res.endDate ? new Date(res.endDate) : new Date(0);
       const extended = res.extendedAt ? new Date(res.extendedAt) : null;
       return extended && extended > end ? extended : end;
     };

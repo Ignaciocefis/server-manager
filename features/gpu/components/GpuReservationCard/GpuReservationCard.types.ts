@@ -1,8 +1,8 @@
 export interface GpuReservationCardProps {
   reservationId: string;
   status: "PENDING" | "ACTIVE" | "EXTENDED";
-  startTime: string | null;
-  endTime: string | null;
+  startDate: string | null;
+  endDate: string | null;
   extendedAt: string | null;
   extendedUntil: string | null;
   gpu: {
@@ -20,8 +20,8 @@ export interface GpuReservationCardProps {
 
 export interface UseRersevationIdCardProps {
   status: "PENDING" | "ACTIVE" | "EXTENDED";
-  startTime: Date | null;
-  endTime: Date | null;
+  startDate: Date | null;
+  endDate: Date | null;
   extendedAt?: Date | null;
   extendedUntil?: Date | null;
 }

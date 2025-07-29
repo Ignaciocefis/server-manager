@@ -1,6 +1,6 @@
 export interface GpuExtendButtonProps {
   reservationId: string;
-  currentEndTime: Date;
+  currentendDate: Date;
   isExtended: boolean;
   onSuccess: () => void;
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { changeServerAvailability } from "@/features/server/data";
+import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
 
 export async function PUT(request: Request) {
   try {
@@ -40,10 +40,19 @@ export async function PUT(request: Request) {
       );
     }
 
+    const updatedServer = await getServerByIdWithReservations(serverId);
+
+    if (!updatedServer) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Servidor no encontrado" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json(
       {
         success: true,
-        data: null,
+        data: updatedServer.data,
         error: null,
       },
       { status: 200 }

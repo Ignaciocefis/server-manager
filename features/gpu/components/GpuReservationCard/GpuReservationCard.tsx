@@ -12,8 +12,8 @@ import GpuExtendButton from "../GpuExtendButton/GpuExtendButton";
 export default function GpuReservationCard({
   reservationId,
   status,
-  startTime,
-  endTime,
+  startDate,
+  endDate,
   extendedAt,
   extendedUntil,
   gpu,
@@ -21,10 +21,10 @@ export default function GpuReservationCard({
   onRefresh,
 }: GpuReservationCardProps) {
   const start = useMemo(
-    () => (startTime ? new Date(startTime) : null),
-    [startTime]
+    () => (startDate ? new Date(startDate) : null),
+    [startDate]
   );
-  const end = useMemo(() => (endTime ? new Date(endTime) : null), [endTime]);
+  const end = useMemo(() => (endDate ? new Date(endDate) : null), [endDate]);
   const extended = useMemo(
     () => (extendedAt ? new Date(extendedAt) : null),
     [extendedAt]
@@ -36,8 +36,8 @@ export default function GpuReservationCard({
 
   const { countdown, finalEnd } = useGpuCountdown({
     status,
-    startTime: start,
-    endTime: end,
+    startDate: start,
+    endDate: end,
     extendedAt: extended,
     extendedUntil: extendedUntilDate,
   });
@@ -116,7 +116,7 @@ export default function GpuReservationCard({
           {!isPending && end && (
             <GpuExtendButton
               reservationId={reservationId}
-              currentEndTime={finalEnd ?? end}
+              currentendDate={finalEnd ?? end}
               isExtended={isExtended}
               onSuccess={onRefresh ?? (() => {})}
             />

@@ -21,7 +21,7 @@ export const createServer = async (
             ramGB: gpu.ramGB,
           })),
         },
-      },select: {
+      }, select: {
         id: true,
       },
     });

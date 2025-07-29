@@ -15,11 +15,17 @@ export const toggleAvailability = async (
       setError(res.data.error || "No se pudo cambiar la disponibilidad.");
       return;
     }
+
+    console.log("Servidor actualizado:", res.data.data);
+
     toast.success(
-      `Servidor ${res.data.updatedServer.available ? "disponible" : "en mantenimiento"}`
+      `Servidor ${res.data.data.available ? "disponible" : "en mantenimiento"}`
     );
+
+
     setServer(res.data.data);
   }).catch((error) => {
+    toast.error(error.response?.data.error || "Error al cambiar la disponibilidad del servidor.");
     console.error("Error cambiando disponibilidad:", error);
     setError("No se pudo cambiar el estado del servidor.");
   });
