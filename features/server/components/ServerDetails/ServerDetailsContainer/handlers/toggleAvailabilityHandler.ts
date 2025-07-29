@@ -16,12 +16,9 @@ export const toggleAvailability = async (
       return;
     }
 
-    console.log("Servidor actualizado:", res.data.data);
-
     toast.success(
       `Servidor ${res.data.data.available ? "disponible" : "en mantenimiento"}`
     );
-
 
     setServer(res.data.data);
   }).catch((error) => {
