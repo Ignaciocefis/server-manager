@@ -49,7 +49,7 @@ export async function PUT(req: Request) {
       );
     }
 
-    const reservation = reservationResponse.data;
+    const reservation = reservationResponse.data ?? null;
 
     if (!reservation) {
       return NextResponse.json(
@@ -83,14 +83,13 @@ export async function PUT(req: Request) {
       );
     }
 
-    // Validar solapamientos con otras reservas
     const hasOverlap = await getOverlappingReservations(
       [reservation.gpuId],
       currentEnd,
       extendedUntilDate
     );
 
-    if (hasOverlap) {
+    if (!hasOverlap.success || hasOverlap.data) {
       return NextResponse.json(
         {
           success: false,

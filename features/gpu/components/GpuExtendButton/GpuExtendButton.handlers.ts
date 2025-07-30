@@ -26,16 +26,17 @@ export async function handleExtendReservation(
     extendedUntil: extendedUntil.toISOString(),
   }).then((res) => {
     if (!res.data.success) {
-      throw new Error(res.data.message || "Error al extender la reserva");
+      toast.error(res.data.error || "Error al extender la reserva");
+      return;
     }
 
     toast.success(`Reserva extendida ${hoursToExtend} hora(s) correctamente`);
     setShowPopover(false);
     onSuccess();
-  }).catch((err) => {
-    console.error("Error al extender reserva:", err);
-    setError("No se pudo extender la reserva");
-    toast.error("No se pudo extender la reserva");
+  }).catch((error) => {
+    console.error("Error al extender reserva:", error);
+    setError(error || "No se pudo extender la reserva");
+    toast.error(error?.response?.data?.error || "No se pudo extender la reserva");
   }).finally(() => {
     setLoading(false);
   });

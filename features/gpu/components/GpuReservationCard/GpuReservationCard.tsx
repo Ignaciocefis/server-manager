@@ -94,11 +94,12 @@ export default function GpuReservationCard({
         <div className="flex justify-center items-center w-full sm:w-auto">
           {countdown && (
             <Button
-              className={`w-full flex flex-col items-center justify-center text-center py-2 ${
-                isPending
-                  ? "bg-gray-app-400 hover:bg-gray-app-600"
-                  : "bg-green-app hover:bg-green-app-transparent"
-              }`}
+              className={`flex flex-col items-center justify-center text-center px-4 py-2 min-h-[3.5rem] whitespace-nowrap
+    ${
+      isPending
+        ? "bg-gray-app-400 hover:bg-gray-app-600"
+        : "bg-green-app hover:bg-green-app-transparent"
+    }`}
             >
               <span className="text-sm font-semibold tracking-wide">
                 {isPending

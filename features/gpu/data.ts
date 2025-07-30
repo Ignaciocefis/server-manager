@@ -137,7 +137,7 @@ export const cancelGpuReservation = async (
         cancelledAt: new Date(),
       },
     });
-    
+
     return { success: true, data: null, error: null };
   } catch (error) {
     console.error("Error canceling GPU reservation:", error);
