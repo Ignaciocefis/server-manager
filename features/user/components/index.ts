@@ -5,4 +5,5 @@ export * from "./CreateUser/CreateUserDialog/CreateUserDialog";
 export * from "./Profile/ChangePassword/ChangePassword";
 export * from "./Profile/ProfileSheet/ProfileSheet";
 export * from "./Profile/ProfileSummary/ProfileSummary";
+export * from "./UserManagementContainer/UserManagementContainer";
 export * from "./UsersTable/UsersTable";
