@@ -70,9 +70,9 @@ model GpuReservation {
   serverId      String
   status        ReservationStatus @default(PENDING)
   createdAt     DateTime          @default(now())
-  startTime     DateTime?
-  endTime       DateTime?
-  actualEndTime DateTime?
+  startDate     DateTime
+  endDate       DateTime
+  actualEndDate DateTime
   extendedAt    DateTime?
   extendedUntil DateTime?
   cancelledAt   DateTime?
@@ -84,7 +84,7 @@ model GpuReservation {
   @@index([gpuId])
   @@index([serverId])
   @@index([status])
-  @@index([startTime])
+  @@index([startDate])
 }
 
 enum Category {

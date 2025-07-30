@@ -1,0 +1,44 @@
+"use client";
+
+import GpuReservationCard from "@/features/gpu/components/GpuReservationCard/GpuReservationCard";
+import { useReservations } from "./useGpuReservationList";
+import { sortReservations } from "../../utils";
+import { JSX } from "react";
+
+export function GpuReservationsList({
+  refresh,
+}: {
+  refresh: () => void;
+}): JSX.Element {
+  const { reservations, loading, error } = useReservations();
+
+  const sortedReservations = sortReservations(reservations);
+
+  if (loading) return <p className="p-4">Cargando reservas...</p>;
+  if (error) return <p className="p-4 text-red-500">{error}</p>;
+
+  return (
+    <div className="w-11/12 m-4 grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
+      {sortedReservations.length === 0 ? (
+        <p className="col-span-full text-center">No tienes GPUs reservadas.</p>
+      ) : (
+        sortedReservations.map((r) => (
+          <GpuReservationCard
+            key={r.id}
+            reservationId={r.id}
+            gpu={r.gpu}
+            server={r.server}
+            status={r.status}
+            startDate={r.startDate}
+            endDate={r.endDate}
+            extendedAt={r.extendedAt}
+            extendedUntil={r.extendedUntil}
+            onRefresh={() => {
+              refresh();
+            }}
+          />
+        ))
+      )}
+    </div>
+  );
+}

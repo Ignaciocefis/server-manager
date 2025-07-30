@@ -1,21 +1,43 @@
-import { getUserServers } from "@/data/server";
+import { getUserAccessibleServers } from "@/features/server/data";
+import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+    const url = new URL(req.url);
+    const searchParams = url.searchParams;
+    const idParam = searchParams.get("id");
 
-    if (!id) {
-      return NextResponse.json({ error: "El id es obligatorio" }, { status: 400 });
+    let { userId } = await hasCategory();
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, data: null, error: "El ID de usuario es obligatorio" },
+        { status: 400 }
+      );
     }
 
-    const serverList = await getUserServers(id);
+    if (idParam) userId = idParam;
 
-    return NextResponse.json(serverList);
-    
+    const serverList = await getUserAccessibleServers(userId);
+
+    if (!serverList.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: serverList.error || "Error al obtener los servidores" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, data: serverList.data, error: null },
+      { status: 200 }
+    );
+
   } catch (error) {
-    console.error("Error fetching server list:", error);
-    return NextResponse.json({ error: "Error fetching server list" }, { status: 500 });
+    console.error("Error al obtener los servidores accesibles:", error);
+    return NextResponse.json(
+      { success: false, data: null, error: "Error interno al obtener los servidores" },
+      { status: 500 }
+    );
   }
 }

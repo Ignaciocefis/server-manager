@@ -1,40 +1,59 @@
-import { auth } from "@/auth";
-import { getServerById, hasAccessToServer } from "@/data/server";
+import {
+  getServerByIdWithReservations,
+  hasAccessToServer,
+} from "@/features/server/data";
+import { hasCategory } from "@/lib/auth/hasCategory";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  await updateGpuReservationStatuses();
-    
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("serverId");
+    await updateGpuReservationStatuses();
 
-    if (!id) {
-      return NextResponse.json({ error: "ID requerido" }, { status: 400 });
+    const { searchParams } = new URL(request.url);
+    const serverId = searchParams.get("serverId");
+
+    if (!serverId || typeof serverId !== "string") {
+      return NextResponse.json(
+        { success: false, data: null, error: "ID del servidor requerido" },
+        { status: 400 }
+      );
     }
 
-    const session = await auth();
-    const userId = session?.user?.id;
+    const { userId } = await hasCategory();
 
     if (!userId) {
-      return NextResponse.json({ error: "Usuario requerido" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, data: null, error: "Usuario no autenticado" },
+        { status: 401 }
+      );
     }
 
-
-    const server = await getServerById(id);
+    const server = await getServerByIdWithReservations(serverId);
     if (!server) {
-      return NextResponse.json({ error: "Servidor no encontrado" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, data: null, error: "Servidor no encontrado" },
+        { status: 404 }
+      );
     }
 
-    const canAccess = await hasAccessToServer(userId, id);
+    const canAccess = await hasAccessToServer(userId, serverId);
     if (!canAccess) {
-      return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
+      return NextResponse.json(
+        { success: false, data: null, error: "Acceso denegado" },
+        { status: 403 }
+      );
     }
 
-    return NextResponse.json(server);
+    return NextResponse.json(
+      { success: true, data: server, error: null },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error en la API:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, data: null, error: "Error interno del servidor" },
+      { status: 500 }
+    );
   }
 }

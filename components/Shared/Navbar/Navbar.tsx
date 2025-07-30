@@ -1,7 +1,6 @@
-import { NotificationButton } from "@/components/Shared/NotificationButton";
-import { ProfileSummary } from "@/components/Shared/Profile";
-import { AppImage } from "../AppImage";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { AppImage, NotificationButton } from "..";
+import { ProfileSummary } from "@/features/user/components";
 
 export function Navbar() {
   return (

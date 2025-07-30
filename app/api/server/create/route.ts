@@ -1,47 +1,67 @@
 import { NextResponse } from "next/server";
-
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { existsServerByName, createServer } from "@/data/server";
-import { createServerFormSchema } from "@/lib/schemas/server/create.schema";
+import { existsServerByName, createServer } from "@/features/server/data";
+import { createServerFormSchema } from "@/features/server/shemas";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
     const data = createServerFormSchema.parse(body);
 
     const isAdmin = await hasCategory("ADMIN");
     if (!isAdmin) {
       return NextResponse.json(
-        { error: "No tienes permisos para crear servidores" },
+        {
+          success: false,
+          data: null,
+          error: "No tienes permisos para crear servidores",
+        },
         { status: 403 }
       );
     }
 
     const serverExists = await existsServerByName(data.name);
-    if (serverExists) {
+    if (serverExists.success && serverExists.data) {
       return NextResponse.json(
-        { error: "Ya existe un servidor con ese nombre" },
+        {
+          success: false,
+          data: null,
+          error: "Ya existe un servidor con ese nombre",
+        },
         { status: 409 }
       );
     }
 
     const serverCreated = await createServer(data);
-    if (!serverCreated) {
+
+    if (!serverCreated || !serverCreated.success || !serverCreated.data) {
       return NextResponse.json(
-        { error: "No se pudo crear el servidor" },
+        {
+          success: false,
+          data: null,
+          error: "No se pudo crear el servidor",
+        },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { message: "Servidor creado correctamente", server: serverCreated },
+      {
+        success: true,
+        data: { serverId: serverCreated.data },
+        error: null,
+      },
       { status: 201 }
     );
+
   } catch (error) {
-    console.error("Error interno:", error);
+    console.error("Error interno en POST /api/server/create:", error);
     return NextResponse.json(
-      { error: "Error interno del servidor" },
+      {
+        success: false,
+        data: null,
+        error: "Error interno del servidor",
+      },
       { status: 500 }
     );
   }

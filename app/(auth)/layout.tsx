@@ -1,4 +1,4 @@
-import { Title } from "./login/components/Title";
+import { Title } from "@/features/auth/components";
 
 export default function AppLayout({
   children,

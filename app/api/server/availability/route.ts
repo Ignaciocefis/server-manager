@@ -1,48 +1,67 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { getServerById, updateServerWithGpus } from "@/data/server";
+import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
 
 export async function PUT(request: Request) {
   try {
+    const { isCategory } = await hasCategory("ADMIN");
 
-    const isAdmin = await hasCategory("ADMIN");
-    
-    if (!isAdmin) {
+    if (!isCategory) {
       return NextResponse.json(
-        { error: "No tienes permisos para cambiar la disponibilidad de servidores" },
+        {
+          success: false,
+          data: null,
+          error: "No tienes permisos para cambiar la disponibilidad de servidores",
+        },
         { status: 403 }
       );
     }
 
-    const { serverId } = await request.json();
+    const body = await request.json();
+    const { serverId } = body;
 
-    if (!serverId) {
-      return NextResponse.json({ error: "Id del servidor requerido" }, { status: 400 });
+    if (!serverId || typeof serverId !== "string") {
+      return NextResponse.json(
+        { success: false, data: null, error: "ID del servidor requerido" },
+        { status: 400 }
+      );
     }
 
-    const server = await getServerById(serverId);
+    const updated = await changeServerAvailability(serverId);
 
-    if (!server) {
-      return NextResponse.json({ error: "Servidor no encontrado" }, { status: 404 });
+    if (!updated?.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: updated?.error || "No se pudo actualizar el servidor",
+        },
+        { status: 500 }
+      );
     }
 
-    const updatedServer = await updateServerWithGpus({
-      serverId: server.id,
-      name: server.name,
-      ramGB: server.ramGB,
-      diskCount: server.diskCount,
-      available: !server.available,
-      gpus: server.gpus.map(gpu => ({
-        id: gpu.id,
-        type: gpu.type,
-        name: gpu.name,
-        ramGB: gpu.ramGB
-      })),
-    });
+    const updatedServer = await getServerByIdWithReservations(serverId);
 
-    return NextResponse.json({ updatedServer });
+    if (!updatedServer) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Servidor no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: updatedServer.data,
+        error: null,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error cambiando disponibilidad:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    console.error("Error en PUT /api/server/availability:", error);
+    return NextResponse.json(
+      { success: false, data: null, error: "Error interno del servidor" },
+      { status: 500 }
+    );
   }
 }
