@@ -15,7 +15,7 @@ export const updateServer = async (
       return res.data.data;
     }).catch((error) => {
       console.error("Error updating server:", error);
-      toast.error("Error al actualizar el servidor");
+      toast.error(error.response?.data.error || "Error al actualizar el servidor");
     });
   return updatedServer;
 };

@@ -39,7 +39,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
       <ServerDetailsInfo
         server={server}
         isAdmin={isAdmin}
-        onUpdate={setServer}
+        onUpdate={triggerRefresh}
         onToggleAvailability={() =>
           toggleAvailability(server.id, setServer, () => {})
         }

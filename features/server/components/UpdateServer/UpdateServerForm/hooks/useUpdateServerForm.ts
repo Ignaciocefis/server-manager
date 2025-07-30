@@ -18,9 +18,9 @@ export const useUpdateServerForm = ({
   ) => {
     try {
       const response = await updateServer(data);
-      toast.success(response.message || "Servidor actualizado correctamente");
+      toast.success("Servidor actualizado correctamente");
 
-      if (response.server && onUpdate) {
+      if (response && onUpdate) {
         onUpdate(response);
       }
 
