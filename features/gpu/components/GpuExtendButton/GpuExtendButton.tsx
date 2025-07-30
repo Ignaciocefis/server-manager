@@ -8,8 +8,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { CircleMinus, CirclePlus } from "lucide-react";
 import { handleExtendReservation } from "./GpuExtendButton.handlers";
-import { GpuExtendButtonProps } from "./gpuExtendButton.types";
 import { useState } from "react";
+import { GpuExtendButtonProps } from "./GpuExtendButton.types";
 
 export default function GpuExtendButton({
   reservationId,
