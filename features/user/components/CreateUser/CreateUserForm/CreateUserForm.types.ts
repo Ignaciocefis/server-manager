@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createUserSchema } from "@/features/user/schemas";
-import { Researcher } from "@/components/Shared/FormItems/ComboboxResearchers/ComboboxResearchers.types";
+import { Researcher } from "@/lib/types/user";
 
 export type CreateUserFormProps = {
   closeDialog?: () => void;
