@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     }
 
     const serverExists = await existsServerByName(data.name);
-    if (serverExists) {
+    if (serverExists.success && serverExists.data) {
       return NextResponse.json(
         {
           success: false,

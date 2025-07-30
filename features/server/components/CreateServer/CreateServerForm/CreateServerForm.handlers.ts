@@ -18,7 +18,7 @@ export const submitServer = async (
     }
     toast.success(res.data.message || "Servidor creado correctamente");
     closeDialog?.();
-    const newServerId = res.data.server?.id;
+    const newServerId = res.data.data.serverId;
     if (newServerId) {
       router.push(`/servers/${newServerId}`);
     }
