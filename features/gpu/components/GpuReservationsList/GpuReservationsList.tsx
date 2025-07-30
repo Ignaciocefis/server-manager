@@ -3,9 +3,14 @@
 import GpuReservationCard from "@/features/gpu/components/GpuReservationCard/GpuReservationCard";
 import { useReservations } from "./useGpuReservationList";
 import { sortReservations } from "../../utils";
+import { JSX } from "react";
 
-export function GpuReservationsList() {
-  const { reservations, loading, error, refreshList } = useReservations();
+export function GpuReservationsList({
+  refresh,
+}: {
+  refresh: () => void;
+}): JSX.Element {
+  const { reservations, loading, error } = useReservations();
 
   const sortedReservations = sortReservations(reservations);
 
@@ -28,7 +33,9 @@ export function GpuReservationsList() {
             endDate={r.endDate}
             extendedAt={r.extendedAt}
             extendedUntil={r.extendedUntil}
-            onRefresh={refreshList}
+            onRefresh={() => {
+              refresh();
+            }}
           />
         ))
       )}

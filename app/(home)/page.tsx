@@ -7,9 +7,11 @@ import { useState } from "react";
 
 export default function Home() {
   const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshKeyServer, setRefreshKeyServer] = useState(1);
 
   const handleRefresh = () => {
     setRefreshKey((prev) => prev + 1);
+    setRefreshKeyServer((prev) => prev + 1);
   };
 
   return (
@@ -20,12 +22,12 @@ export default function Home() {
       <h2 className="mt-8 text-2xl font-semibold text-gray-app-600">
         Mis tarjetas gráficas reservadas
       </h2>
-      <GpuReservationsList key={refreshKey} />
+      <GpuReservationsList refresh={handleRefresh} key={refreshKey} />
       <hr className="w-4/5 mx-auto border-t-2 border-gray-app-600" />
       <h2 className="mt-8 text-2xl font-semibold text-gray-app-600">
         Mis servidores disponibles
       </h2>
-      <ServerList onReservationSuccess={handleRefresh} />
+      <ServerList onReservationSuccess={handleRefresh} key={refreshKeyServer} />
     </div>
   );
 }
