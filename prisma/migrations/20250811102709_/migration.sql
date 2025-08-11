@@ -4,6 +4,9 @@ CREATE TYPE "Category" AS ENUM ('ADMIN', 'RESEARCHER', 'JUNIOR');
 -- CreateEnum
 CREATE TYPE "ReservationStatus" AS ENUM ('PENDING', 'ACTIVE', 'EXTENDED', 'COMPLETED', 'CANCELLED');
 
+-- CreateEnum
+CREATE TYPE "EventType" AS ENUM ('USER_CREATED', 'USER_UPDATED', 'USER_DEACTIVATED', 'USER_REACTIVATED', 'USER_ASSIGNED_MENTOR', 'USER_GRANTED_SERVER_ACCESS', 'USER_REVOKED_SERVER_ACCESS', 'SERVER_CREATED', 'SERVER_UPDATED', 'SERVER_AVAILABLE', 'SERVER_DEACTIVATED', 'RESERVATION_CREATED', 'RESERVATION_UPDATED', 'RESERVATION_EXTENDED', 'RESERVATION_COMPLETED', 'RESERVATION_CANCELLED');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -76,6 +79,19 @@ CREATE TABLE "GpuReservation" (
     CONSTRAINT "GpuReservation_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "EventLog" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT,
+    "serverId" TEXT,
+    "gpuId" TEXT,
+    "eventType" "EventType" NOT NULL,
+    "message" TEXT NOT NULL,
+
+    CONSTRAINT "EventLog_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -97,6 +113,18 @@ CREATE INDEX "GpuReservation_status_idx" ON "GpuReservation"("status");
 -- CreateIndex
 CREATE INDEX "GpuReservation_startDate_idx" ON "GpuReservation"("startDate");
 
+-- CreateIndex
+CREATE INDEX "EventLog_createdAt_idx" ON "EventLog"("createdAt");
+
+-- CreateIndex
+CREATE INDEX "EventLog_eventType_idx" ON "EventLog"("eventType");
+
+-- CreateIndex
+CREATE INDEX "EventLog_userId_idx" ON "EventLog"("userId");
+
+-- CreateIndex
+CREATE INDEX "EventLog_serverId_idx" ON "EventLog"("serverId");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -117,3 +145,12 @@ ALTER TABLE "GpuReservation" ADD CONSTRAINT "GpuReservation_serverId_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "GpuReservation" ADD CONSTRAINT "GpuReservation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Server"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_gpuId_fkey" FOREIGN KEY ("gpuId") REFERENCES "Gpu"("id") ON DELETE SET NULL ON UPDATE CASCADE;

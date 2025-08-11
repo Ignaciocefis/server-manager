@@ -20,6 +20,7 @@ model User {
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
   assignedToId    String?
+  EventLog        EventLog[]
   gpuReservations GpuReservation[]
   assignedTo      User?              @relation("MentorJuniors", fields: [assignedToId], references: [id])
   juniors         User[]             @relation("MentorJuniors")
@@ -34,6 +35,7 @@ model Server {
   available    Boolean            @default(true)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
+  EventLog     EventLog[]
   gpus         Gpu[]
   reservations GpuReservation[]
   userAccess   UserServerAccess[]
@@ -47,6 +49,7 @@ model Gpu {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   serverId     String
+  EventLog     EventLog[]
   server       Server           @relation(fields: [serverId], references: [id], onDelete: Cascade)
   reservations GpuReservation[]
 }
@@ -87,6 +90,24 @@ model GpuReservation {
   @@index([startDate])
 }
 
+model EventLog {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  userId    String?
+  serverId  String?
+  gpuId     String?
+  eventType EventType
+  message   String
+  gpu       Gpu?      @relation(fields: [gpuId], references: [id])
+  server    Server?   @relation(fields: [serverId], references: [id])
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([eventType])
+  @@index([userId])
+  @@index([serverId])
+}
+
 enum Category {
   ADMIN
   RESEARCHER
@@ -99,4 +120,23 @@ enum ReservationStatus {
   EXTENDED
   COMPLETED
   CANCELLED
+}
+
+enum EventType {
+  USER_CREATED
+  USER_UPDATED
+  USER_DEACTIVATED
+  USER_REACTIVATED
+  USER_ASSIGNED_MENTOR
+  USER_GRANTED_SERVER_ACCESS
+  USER_REVOKED_SERVER_ACCESS
+  SERVER_CREATED
+  SERVER_UPDATED
+  SERVER_AVAILABLE
+  SERVER_DEACTIVATED
+  RESERVATION_CREATED
+  RESERVATION_UPDATED
+  RESERVATION_EXTENDED
+  RESERVATION_COMPLETED
+  RESERVATION_CANCELLED
 }
