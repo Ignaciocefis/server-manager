@@ -1,5 +1,7 @@
+import { createEventLog } from "@/features/eventLog/data";
 import { updateUser } from "@/features/user/data";
 import { updateUserSchema } from "@/features/user/schemas";
+import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 
@@ -33,6 +35,25 @@ export async function PUT(request: Request) {
     if (!result || !result.success) {
       return NextResponse.json(
         { success: false, data: null, error: "Error al actualizar el perfil" },
+        { status: 500 }
+      );
+    }
+
+    const userFullName = getFullName(
+      data.firstSurname ?? undefined,
+      data.secondSurname ?? undefined,
+      data.name ?? undefined
+    );
+
+    const log = await createEventLog({
+      eventType: "USER_UPDATED",
+      userId,
+      message: `Usuario ${userFullName} actualizado su perfil`,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
     }
