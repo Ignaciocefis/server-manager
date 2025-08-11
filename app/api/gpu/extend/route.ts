@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import {
   extendGpuReservation,
+  getGpuNameById,
   getOverlappingReservations,
   getReservationByIdAndUser,
 } from "@/features/gpu/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { createEventLog } from "@/features/eventLog/data";
+import { getServersNameById } from "@/features/server/data";
 
 export async function PUT(req: Request) {
   try {
@@ -101,6 +104,45 @@ export async function PUT(req: Request) {
     }
 
     const updated = await extendGpuReservation(reservationId, extendedUntilDate);
+
+    if (!updated || !updated.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al extender la reserva" },
+        { status: 500 }
+      );
+    }
+
+    const gpuName = await getGpuNameById(reservation.gpuId);
+
+    if (!gpuName || !gpuName.success || !gpuName.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "GPU no encontrada" },
+        { status: 404 }
+      );
+    }
+
+    const serverName = await getServersNameById([reservation.serverId]);
+
+    if (!serverName || !serverName.success || !serverName.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Servidor no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const log = await createEventLog({
+      eventType: "RESERVATION_EXTENDED",
+      message: `La reserva de la gráfica ${gpuName.data.name} del servidor ${serverName.data[0].name} ha sido extendida hasta ${extendedUntilDate.toISOString()}.`,
+      reservationId: reservationId,
+      userId: userId,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       { success: true, data: updated, error: null },

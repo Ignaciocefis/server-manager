@@ -1,4 +1,4 @@
-import { reservationSummary, reservationSummaryWithExtendedUntil, reservationSummaryWithServerAndGpu } from "@/features/gpu/types";
+import { gpuName, reservationSummary, reservationSummaryWithExtendedUntil, reservationSummaryWithServerAndGpu } from "@/features/gpu/types";
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
 
@@ -189,6 +189,26 @@ export const extendGpuReservation = async (
     return { success: true, data: null, error: null };
   } catch (error) {
     console.error("Error extending GPU reservation:", error);
+    return { success: false, data: null, error };
+  }
+};
+
+export const getGpuNameById = async (
+  id: string
+): Promise<ApiResponse<gpuName | null>> => {
+  try {
+    const gpu = await db.gpu.findUnique({
+      where: { id },
+      select: { id: true, name: true },
+    });
+
+    if (!gpu) {
+      return { success: false, data: null, error: "GPU not found" };
+    }
+
+    return { success: true, data: gpu, error: null };
+  } catch (error) {
+    console.error("Error fetching GPU name by ID:", error);
     return { success: false, data: null, error };
   }
 };

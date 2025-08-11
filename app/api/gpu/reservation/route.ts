@@ -1,10 +1,12 @@
+import { createEventLog } from "@/features/eventLog/data";
 import {
   createGpuReservations,
   existGpusByIdsAndServer,
+  getGpuNameById,
   getOverlappingReservations,
 } from "@/features/gpu/data";
 import { gpuReservationFormSchema } from "@/features/gpu/schemas";
-import { hasAccessToServer } from "@/features/server/data";
+import { getServersNameById, hasAccessToServer } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -104,6 +106,47 @@ export async function POST(req: Request) {
         { success: false, data: null, error: "Error al crear la reserva", details: creation.error },
         { status: 500 }
       );
+    }
+
+    if (!creation.data || !creation.success) {
+      return NextResponse.json(
+        { success: false, data: null, error: "No se pudo crear la reserva" },
+        { status: 500 }
+      );
+    }
+
+    for (const reservation of creation.data) {
+      const gpuName = await getGpuNameById(reservation.gpuId);
+
+      if (!gpuName || !gpuName.success || !gpuName.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "GPU no encontrada" },
+        { status: 404 }
+      );
+      }
+
+      const serverName = await getServersNameById([reservation.serverId]);
+
+      if (!serverName || !serverName.success || !serverName.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Servidor no encontrado" },
+        { status: 404 }
+      );
+      }
+
+      const log = await createEventLog({
+      eventType: "RESERVATION_CREATED",
+      message: `Reserva creada para la gráfica ${gpuName.data.name} en el servidor ${serverName.data[0].name} desde ${startDate.toISOString()} hasta ${endDate.toISOString()}.`,
+      reservationId: reservation.id,
+      userId: userId,
+      });
+
+      if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { status: 500 }
+      );
+      }
     }
 
     return NextResponse.json(
