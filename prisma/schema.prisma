@@ -49,7 +49,6 @@ model Gpu {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   serverId     String
-  EventLog     EventLog[]
   server       Server           @relation(fields: [serverId], references: [id], onDelete: Cascade)
   reservations GpuReservation[]
 }
@@ -79,6 +78,7 @@ model GpuReservation {
   extendedAt    DateTime?
   extendedUntil DateTime?
   cancelledAt   DateTime?
+  EventLog      EventLog[]
   gpu           Gpu               @relation(fields: [gpuId], references: [id], onDelete: Cascade)
   server        Server            @relation(fields: [serverId], references: [id], onDelete: Cascade)
   user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -91,16 +91,16 @@ model GpuReservation {
 }
 
 model EventLog {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  userId    String?
-  serverId  String?
-  gpuId     String?
-  eventType EventType
-  message   String
-  gpu       Gpu?      @relation(fields: [gpuId], references: [id])
-  server    Server?   @relation(fields: [serverId], references: [id])
-  user      User?     @relation(fields: [userId], references: [id])
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  userId        String?
+  serverId      String?
+  reservationId String?
+  eventType     EventType
+  message       String
+  reservation   GpuReservation? @relation(fields: [reservationId], references: [id])
+  server        Server?         @relation(fields: [serverId], references: [id])
+  user          User?           @relation(fields: [userId], references: [id])
 
   @@index([createdAt])
   @@index([eventType])
@@ -125,6 +125,7 @@ enum ReservationStatus {
 enum EventType {
   USER_CREATED
   USER_UPDATED
+  USER_DELETED
   USER_DEACTIVATED
   USER_REACTIVATED
   USER_ASSIGNED_MENTOR
@@ -132,10 +133,11 @@ enum EventType {
   USER_REVOKED_SERVER_ACCESS
   SERVER_CREATED
   SERVER_UPDATED
+  SERVER_DELETED
   SERVER_AVAILABLE
-  SERVER_DEACTIVATED
+  SERVER_UNAVAILABLE
   RESERVATION_CREATED
-  RESERVATION_UPDATED
+  RESERVATION_AVAILABLE
   RESERVATION_EXTENDED
   RESERVATION_COMPLETED
   RESERVATION_CANCELLED
