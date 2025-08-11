@@ -72,6 +72,7 @@ export async function PUT(req: Request) {
       message: `La reserva de la gráfica ${gpuName.data.name} del servidor ${serverName.data[0].name} ha sido cancelada.`,
       reservationId: reservationId,
       userId: userId,
+      serverId: reservation.data.serverId,
     });
 
     if (!log || log.error) {

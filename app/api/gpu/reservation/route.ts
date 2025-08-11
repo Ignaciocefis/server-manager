@@ -119,33 +119,34 @@ export async function POST(req: Request) {
       const gpuName = await getGpuNameById(reservation.gpuId);
 
       if (!gpuName || !gpuName.success || !gpuName.data) {
-      return NextResponse.json(
-        { success: false, data: null, error: "GPU no encontrada" },
-        { status: 404 }
-      );
+        return NextResponse.json(
+          { success: false, data: null, error: "GPU no encontrada" },
+          { status: 404 }
+        );
       }
 
       const serverName = await getServersNameById([reservation.serverId]);
 
       if (!serverName || !serverName.success || !serverName.data) {
-      return NextResponse.json(
-        { success: false, data: null, error: "Servidor no encontrado" },
-        { status: 404 }
-      );
+        return NextResponse.json(
+          { success: false, data: null, error: "Servidor no encontrado" },
+          { status: 404 }
+        );
       }
 
       const log = await createEventLog({
-      eventType: "RESERVATION_CREATED",
-      message: `Reserva creada para la gráfica ${gpuName.data.name} en el servidor ${serverName.data[0].name} desde ${startDate.toISOString()} hasta ${endDate.toISOString()}.`,
-      reservationId: reservation.id,
-      userId: userId,
+        eventType: "RESERVATION_CREATED",
+        message: `Reserva creada para la gráfica ${gpuName.data.name} en el servidor ${serverName.data[0].name} desde ${startDate.toISOString()} hasta ${endDate.toISOString()}.`,
+        reservationId: reservation.id,
+        userId: userId,
+        serverId: reservation.serverId,
       });
 
       if (!log || log.error) {
-      return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
-        { status: 500 }
-      );
+        return NextResponse.json(
+          { success: false, data: null, error: "Error al crear el registro de evento" },
+          { status: 500 }
+        );
       }
     }
 
