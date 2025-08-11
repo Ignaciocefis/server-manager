@@ -1,4 +1,5 @@
-import { deleteServer, existsServerById } from "@/features/server/data";
+import { createEventLog } from "@/features/eventLog/data";
+import { deleteServer, existsServerById, getServersNameById } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 
@@ -41,6 +42,15 @@ export async function DELETE(req: Request) {
       );
     }
 
+    const serverName = await getServersNameById([serverId]);
+
+    if (!serverName || serverName.error || !serverName.success || !serverName.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al obtener el nombre del servidor" },
+        { status: 500 }
+      );
+    }
+
     const deleted = await deleteServer(serverId);
 
     if (!deleted || !deleted.success) {
@@ -50,6 +60,19 @@ export async function DELETE(req: Request) {
           data: null,
           error: deleted?.error || "No se pudo eliminar el servidor",
         },
+        { status: 500 }
+      );
+    }
+
+    const log = await createEventLog({
+      eventType: "SERVER_DELETED",
+      message: `El servidor ${serverName.data[0].name} ha sido eliminado.`,
+      serverId: serverId,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
     }

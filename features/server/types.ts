@@ -61,3 +61,8 @@ export interface ServerListItem {
     };
   }[];
 }
+
+export interface ServerName {
+  id: string;
+  name: string;
+}

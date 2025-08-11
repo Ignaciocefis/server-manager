@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { existsServerByName, createServer } from "@/features/server/data";
 import { createServerFormSchema } from "@/features/server/shemas";
+import { createEventLog } from "@/features/eventLog/data";
 
 export async function POST(request: Request) {
   try {
@@ -41,6 +42,19 @@ export async function POST(request: Request) {
           data: null,
           error: "No se pudo crear el servidor",
         },
+        { status: 500 }
+      );
+    }
+
+    const log = await createEventLog({
+      eventType: "SERVER_CREATED",
+      message: `Se ha creado un nuevo servidor: ${data.name}`,
+      serverId: serverCreated.data,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
     }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
+import { createEventLog } from "@/features/eventLog/data";
 
 export async function PUT(request: Request) {
   try {
@@ -29,7 +30,7 @@ export async function PUT(request: Request) {
 
     const updated = await changeServerAvailability(serverId);
 
-    if (!updated?.success) {
+    if (!updated.success || !updated.data) {
       return NextResponse.json(
         {
           success: false,
@@ -42,10 +43,23 @@ export async function PUT(request: Request) {
 
     const updatedServer = await getServerByIdWithReservations(serverId);
 
-    if (!updatedServer) {
+    if (!updatedServer || !updatedServer.data) {
       return NextResponse.json(
         { success: false, data: null, error: "Servidor no encontrado" },
         { status: 404 }
+      );
+    }
+
+    const log = await createEventLog({
+      eventType: `${updated.data ? "SERVER_AVAILABLE" : "SERVER_UNAVAILABLE"}`,
+      message: `El estado de disponibilidad del servidor ${updatedServer.data.name} ha sido cambiada a ${updated.data ? "disponible" : "no disponible"}.`,
+      serverId: serverId,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { status: 500 }
       );
     }
 
