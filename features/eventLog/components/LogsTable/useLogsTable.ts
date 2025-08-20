@@ -69,7 +69,7 @@ export function useLogsTable(serverId?: string, limit?: number) {
         setLoading(false);
       }
     },
-    []
+    [serverId]
   );
 
   useEffect(() => {
