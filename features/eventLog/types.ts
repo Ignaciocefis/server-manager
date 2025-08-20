@@ -8,3 +8,28 @@ export interface EventLog {
   eventType: EventType;
   message: string;
 }
+export interface LogsTableDataProps {
+  id: string;
+  createdAt: string;
+  userFullName: string | null;
+  server?: {
+    name: string;
+  } | null;
+  reservation?: {
+    gpu?: {
+      name: string;
+    } | null;
+  } | null;
+  eventType: EventType;
+  message: string;
+};
+
+export interface GetLogsParams {
+  userId?: string;
+  page?: number;
+  limit?: number;
+  sortField?: string;
+  sortOrder?: "asc" | "desc";
+  filterTitle?: string;
+  typeFilter?: string;
+}
