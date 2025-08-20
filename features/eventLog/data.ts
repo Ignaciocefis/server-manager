@@ -1,28 +1,8 @@
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
-import { EventLog, GetLogsParams, LogsTableDataProps } from "./types";
-import { eventFormSchema } from "./schemas";
-import z from "zod";
+import { GetLogsParams, LogsTableDataProps } from "./types";
 import { getFullName } from "../user/utils";
 import { EventType, Prisma } from "@prisma/client";
-
-export const createEventLog = async (data: z.infer<typeof eventFormSchema>): Promise<ApiResponse<EventLog | null>> => {
-  try {
-    await db.eventLog.create({
-      data: {
-        userId: data.userId ?? null,
-        serverId: data.serverId ?? null,
-        reservationId: data.reservationId ?? null,
-        eventType: data.eventType,
-        message: data.message,
-      }
-    });
-    return { success: true, data: null, error: null };
-  } catch (err) {
-    console.error("Error creating EventLog:", err);
-    return { success: false, data: null, error: "Error creating EventLog" };
-  }
-};
 
 export const getAllLogs = async (
   params?: GetLogsParams,
@@ -145,28 +125,27 @@ export const getAllLogs = async (
   }
 };
 
-
 export const getAccessibleLogs = async (
   userId: string,
   serverId?: string,
   params?: GetLogsParams,
 ): Promise<ApiResponse<{ rows: LogsTableDataProps[]; total: number; totalPages: number; hasNext: boolean; hasPrev: boolean }>> => {
   try {
-    const page = params?.page ?? 1
-    const limit = params?.limit ?? 20
-    const skip = (page - 1) * limit
-    const sortField = params?.sortField ?? "createdAt"
-    const sortOrder = params?.sortOrder ?? "desc"
-    const filterTitle = params?.filterTitle ?? ""
-    const typeFilter = params?.typeFilter ?? "all"
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 20;
+    const skip = (page - 1) * limit;
+    const sortField = params?.sortField ?? "createdAt";
+    const sortOrder = params?.sortOrder ?? "desc";
+    const filterTitle = params?.filterTitle ?? "";
+    const typeFilter = params?.typeFilter ?? "all";
 
-    let serverIds: string[] = []
+    let serverIds: string[] = [];
     if (!serverId) {
       const accessibleServers = await db.userServerAccess.findMany({
         where: { userId },
         select: { serverId: true },
-      })
-      serverIds = accessibleServers.map((s) => s.serverId)
+      });
+      serverIds = accessibleServers.map((s) => s.serverId);
     }
 
     const orFilters = [
@@ -195,45 +174,52 @@ export const getAccessibleLogs = async (
           },
         },
       },
-    ]
+    ];
 
-    const andFilters: object[] = []
+    const andFilters: object[] = [];
     if (typeFilter !== "all" && EventType[typeFilter as keyof typeof EventType]) {
-      andFilters.push({ eventType: typeFilter as EventType })
+      andFilters.push({ eventType: typeFilter as EventType });
     }
 
-    let orderBy: Prisma.EventLogOrderByWithRelationInput = { createdAt: sortOrder }
+    const whereConditions: Prisma.EventLogWhereInput = {
+      ...(andFilters.length > 0 ? { AND: andFilters } : {}),
+    };
+
+    if (serverId) {
+      whereConditions.serverId = serverId;
+    } else {
+      whereConditions.OR = [
+        { userId },
+        ...(serverIds.length > 0 ? [{ serverId: { in: serverIds } }] : []),
+      ];
+    }
+
+    if (filterTitle) {
+      whereConditions.AND = [
+        ...((Array.isArray(whereConditions.AND) ? whereConditions.AND : [])),
+        { OR: orFilters },
+      ];
+    }
+
+    let orderBy: Prisma.EventLogOrderByWithRelationInput = { createdAt: sortOrder };
     switch (sortField) {
       case "userFullName":
-        orderBy = { user: { firstSurname: sortOrder } }
-        break
+        orderBy = { user: { firstSurname: sortOrder } };
+        break;
       case "server.name":
-        orderBy = { server: { name: sortOrder } }
-        break
+        orderBy = { server: { name: sortOrder } };
+        break;
       case "reservation.gpu.name":
-        orderBy = { reservation: { gpu: { name: sortOrder } } }
-        break
+        orderBy = { reservation: { gpu: { name: sortOrder } } };
+        break;
       default:
-        orderBy = { [sortField]: sortOrder }
-        break
+        orderBy = { [sortField]: sortOrder };
+        break;
     }
-
-    const serverCondition = serverId
-      ? { serverId }
-      : serverIds.length > 0
-        ? { serverId: { in: serverIds } }
-        : {}
 
     const [logs, total] = await Promise.all([
       db.eventLog.findMany({
-        where: {
-          OR: [
-            { userId },
-            serverCondition,
-            ...orFilters,
-          ],
-          ...(andFilters.length > 0 ? { AND: andFilters } : {}),
-        },
+        where: whereConditions,
         orderBy,
         skip,
         take: limit,
@@ -243,21 +229,12 @@ export const getAccessibleLogs = async (
           reservation: { select: { gpu: { select: { name: true } } } },
         },
       }),
-      db.eventLog.count({
-        where: {
-          OR: [
-            { userId },
-            serverCondition,
-            ...orFilters,
-          ],
-          ...(andFilters.length > 0 ? { AND: andFilters } : {}),
-        },
-      }),
-    ])
+      db.eventLog.count({ where: whereConditions }),
+    ]);
 
-    const totalPages = Math.ceil(total / limit)
-    const hasNext = page < totalPages
-    const hasPrev = page > 1
+    const totalPages = Math.ceil(total / limit);
+    const hasNext = page < totalPages;
+    const hasPrev = page > 1;
 
     const formattedLogs = logs.map((log) => ({
       id: log.id,
@@ -270,10 +247,12 @@ export const getAccessibleLogs = async (
         )
         : null,
       server: log.server ? { name: log.server.name } : null,
-      reservation: log.reservation ? { gpu: log.reservation.gpu ? { name: log.reservation.gpu.name } : null } : null,
+      reservation: log.reservation
+        ? { gpu: log.reservation.gpu ? { name: log.reservation.gpu.name } : null }
+        : null,
       eventType: log.eventType,
       message: log.message,
-    }))
+    }));
 
     return {
       success: true,
@@ -285,9 +264,9 @@ export const getAccessibleLogs = async (
         hasPrev,
       },
       error: null,
-    }
+    };
   } catch (error) {
     console.error("Error en getAccessibleLogs:", error);
     return { success: false, data: null, error: "Error al obtener logs accesibles" };
   }
-}
+};
