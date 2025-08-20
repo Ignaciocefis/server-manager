@@ -25,7 +25,6 @@ export interface LogsTableDataProps {
 };
 
 export interface GetLogsParams {
-  userId?: string;
   page?: number;
   limit?: number;
   sortField?: string;

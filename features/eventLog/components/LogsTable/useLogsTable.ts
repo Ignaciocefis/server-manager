@@ -6,13 +6,13 @@ import { LogsTableDataProps } from "../../types";
 import { LogsTableColumn } from "./LogsTable.types";
 import { INITIAL_COLUMNS } from "./LogsTable.data";
 
-export function useLogsTable() {
+export function useLogsTable(serverId?: string, limit?: number) {
   const [logs, setLogs] = useState<LogsTableDataProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 25,
+    limit: limit || 25,
     total: 0,
     totalPages: 1,
     hasNext: false,
@@ -37,13 +37,13 @@ export function useLogsTable() {
       search = "",
       type = "all",
       sortField = "createdAt",
-      sortOrder = "desc"
+      sortOrder = "desc",
     ) => {
       setLoading(true);
       setError(null);
       try {
         const { data } = await axios.get(`/api/eventLogs/list`, {
-          params: { page, limit, filterTitle: search, type, sortField, sortOrder },
+          params: { page, limit, filterTitle: search, type, sortField, sortOrder, serverId },
         });
 
         if (!data?.success) throw new Error(data?.error || "Error al cargar los logs");

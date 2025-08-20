@@ -23,13 +23,15 @@ export async function GET(request: Request) {
     const sortOrder = (url.searchParams.get("sortOrder") as "asc" | "desc") ?? "desc"
     const filterTitle = url.searchParams.get("filterTitle") ?? ""
     const typeFilter = url.searchParams.get("type") ?? "all";
+    const serverId = url.searchParams.get("serverId") ?? undefined;
 
     let logsResult;
     if (isCategory) {
-      logsResult = await getAllLogs({ page, limit, sortField, sortOrder, filterTitle, typeFilter })
+      logsResult = await getAllLogs({ page, limit, sortField, sortOrder, filterTitle, typeFilter }, serverId);
     } else {
-      logsResult = await getAccessibleLogs(userId, { page, limit, sortField, sortOrder, filterTitle, typeFilter })
+      logsResult = await getAccessibleLogs(userId, serverId, { page, limit, sortField, sortOrder, filterTitle, typeFilter });
     }
+
 
     if (!logsResult || logsResult.error || logsResult.data === null) {
       return NextResponse.json(

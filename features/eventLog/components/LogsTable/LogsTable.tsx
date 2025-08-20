@@ -49,7 +49,13 @@ import {
   handleLimitChange,
 } from "./LogsTable.helpers";
 
-export function LogsTable() {
+export function LogsTable({
+  serverId,
+  limit,
+}: {
+  serverId?: string;
+  limit?: number;
+}) {
   const {
     logs,
     loading,
@@ -66,7 +72,7 @@ export function LogsTable() {
     sortOrder,
     setSortOrder,
     fetchLogs,
-  } = useLogsTable();
+  } = useLogsTable(serverId, limit);
 
   return (
     <div className="space-y-4 w-11/12 mx-auto mb-4">
