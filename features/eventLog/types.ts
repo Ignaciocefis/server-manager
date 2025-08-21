@@ -1,4 +1,4 @@
-import { EventType } from "@prisma/client";
+import { EventType, Prisma } from "@prisma/client";
 
 export interface EventLog {
   id: string;
@@ -32,3 +32,11 @@ export interface GetLogsParams {
   filterTitle?: string;
   typeFilter?: string;
 }
+
+export type EventLogWithRelations = Prisma.EventLogGetPayload<{
+  include: {
+    user: { select: { name: true; firstSurname: true; secondSurname: true } };
+    server: { select: { name: true } };
+    reservation: { select: { gpu: { select: { name: true } } } };
+  };
+}>;

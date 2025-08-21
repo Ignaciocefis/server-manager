@@ -1,10 +1,10 @@
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
 import { EventLog, GetLogsParams, LogsTableDataProps } from "./types";
-import { getFullName } from "../user/utils";
 import { EventType, Prisma } from "@prisma/client";
 import { eventFormSchema } from "./schemas";
 import z from "zod";
+import { buildOrderBy, buildOrFilters, formatLogs, getPaginationAndSort } from "./helpers";
 
 export const createEventLog = async (data: z.infer<typeof eventFormSchema>): Promise<ApiResponse<EventLog | null>> => {
   try {
@@ -29,41 +29,8 @@ export const getAllLogs = async (
   serverId?: string,
 ): Promise<ApiResponse<{ rows: LogsTableDataProps[]; total: number; totalPages: number; hasNext: boolean; hasPrev: boolean }>> => {
   try {
-    const page = params?.page ?? 1;
-    const limit = params?.limit ?? 20;
-    const skip = (page - 1) * limit;
-    const sortField = params?.sortField ?? "createdAt";
-    const sortOrder = params?.sortOrder ?? "desc";
-    const filterTitle = params?.filterTitle ?? "";
-    const typeFilter = params?.typeFilter ?? "all";
-
-    const orFilters = [
-      { message: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-      EventType[filterTitle as keyof typeof EventType]
-        ? { eventType: filterTitle as EventType }
-        : {},
-      {
-        user: {
-          OR: [
-            { name: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-            { firstSurname: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-            { secondSurname: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-          ],
-        },
-      },
-      {
-        server: {
-          name: { contains: filterTitle, mode: Prisma.QueryMode.insensitive },
-        },
-      },
-      {
-        reservation: {
-          gpu: {
-            name: { contains: filterTitle, mode: Prisma.QueryMode.insensitive },
-          },
-        },
-      },
-    ];
+    const { page, limit, skip, sortField, sortOrder, filterTitle, typeFilter } = getPaginationAndSort(params);
+    const orFilters = buildOrFilters(filterTitle);
 
     const andFilters: object[] = [];
     if (typeFilter !== "all" && EventType[typeFilter as keyof typeof EventType]) {
@@ -73,21 +40,7 @@ export const getAllLogs = async (
       andFilters.push({ serverId });
     }
 
-    let orderBy: Prisma.EventLogOrderByWithRelationInput;
-    switch (sortField) {
-      case "userFullName":
-        orderBy = { user: { firstSurname: sortOrder } };
-        break;
-      case "server.name":
-        orderBy = { server: { name: sortOrder } };
-        break;
-      case "reservation.gpu.name":
-        orderBy = { reservation: { gpu: { name: sortOrder } } };
-        break;
-      default:
-        orderBy = { [sortField]: sortOrder };
-        break;
-    }
+    const orderBy = buildOrderBy(sortField, sortOrder);
 
     const [logs, total] = await Promise.all([
       db.eventLog.findMany({
@@ -113,30 +66,16 @@ export const getAllLogs = async (
     ]);
 
     const totalPages = Math.ceil(total / limit);
-    const hasNext = page < totalPages;
-    const hasPrev = page > 1;
-
-    const formattedLogs = logs.map((log) => ({
-      id: log.id,
-      createdAt: new Date(log.createdAt.toISOString()).toLocaleString(),
-      userFullName: log.user
-        ? getFullName(
-          log.user.firstSurname ?? undefined,
-          log.user.secondSurname ?? undefined,
-          log.user.name ?? undefined,
-        )
-        : null,
-      server: log.server ? { name: log.server.name } : null,
-      reservation: log.reservation
-        ? { gpu: log.reservation.gpu ? { name: log.reservation.gpu.name } : null }
-        : null,
-      eventType: log.eventType,
-      message: log.message,
-    }));
 
     return {
       success: true,
-      data: { rows: formattedLogs, total, totalPages, hasNext, hasPrev },
+      data: {
+        rows: formatLogs(logs),
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
       error: null,
     };
   } catch (error) {
@@ -145,19 +84,15 @@ export const getAllLogs = async (
   }
 };
 
+// 🔹 Logs con restricción de accesos
 export const getAccessibleLogs = async (
   userId: string,
   serverId?: string,
   params?: GetLogsParams,
 ): Promise<ApiResponse<{ rows: LogsTableDataProps[]; total: number; totalPages: number; hasNext: boolean; hasPrev: boolean }>> => {
   try {
-    const page = params?.page ?? 1;
-    const limit = params?.limit ?? 20;
-    const skip = (page - 1) * limit;
-    const sortField = params?.sortField ?? "createdAt";
-    const sortOrder = params?.sortOrder ?? "desc";
-    const filterTitle = params?.filterTitle ?? "";
-    const typeFilter = params?.typeFilter ?? "all";
+    const { page, limit, skip, sortField, sortOrder, filterTitle, typeFilter } = getPaginationAndSort(params);
+    const orFilters = buildOrFilters(filterTitle);
 
     let serverIds: string[] = [];
     if (!serverId) {
@@ -167,34 +102,6 @@ export const getAccessibleLogs = async (
       });
       serverIds = accessibleServers.map((s) => s.serverId);
     }
-
-    const orFilters = [
-      { message: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-      EventType[filterTitle as keyof typeof EventType]
-        ? { eventType: filterTitle as EventType }
-        : {},
-      {
-        user: {
-          OR: [
-            { name: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-            { firstSurname: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-            { secondSurname: { contains: filterTitle, mode: Prisma.QueryMode.insensitive } },
-          ],
-        },
-      },
-      {
-        server: {
-          name: { contains: filterTitle, mode: Prisma.QueryMode.insensitive },
-        },
-      },
-      {
-        reservation: {
-          gpu: {
-            name: { contains: filterTitle, mode: Prisma.QueryMode.insensitive },
-          },
-        },
-      },
-    ];
 
     const andFilters: object[] = [];
     if (typeFilter !== "all" && EventType[typeFilter as keyof typeof EventType]) {
@@ -221,21 +128,7 @@ export const getAccessibleLogs = async (
       ];
     }
 
-    let orderBy: Prisma.EventLogOrderByWithRelationInput = { createdAt: sortOrder };
-    switch (sortField) {
-      case "userFullName":
-        orderBy = { user: { firstSurname: sortOrder } };
-        break;
-      case "server.name":
-        orderBy = { server: { name: sortOrder } };
-        break;
-      case "reservation.gpu.name":
-        orderBy = { reservation: { gpu: { name: sortOrder } } };
-        break;
-      default:
-        orderBy = { [sortField]: sortOrder };
-        break;
-    }
+    const orderBy = buildOrderBy(sortField, sortOrder);
 
     const [logs, total] = await Promise.all([
       db.eventLog.findMany({
@@ -253,35 +146,15 @@ export const getAccessibleLogs = async (
     ]);
 
     const totalPages = Math.ceil(total / limit);
-    const hasNext = page < totalPages;
-    const hasPrev = page > 1;
-
-    const formattedLogs = logs.map((log) => ({
-      id: log.id,
-      createdAt: new Date(log.createdAt.toISOString()).toLocaleString(),
-      userFullName: log.user
-        ? getFullName(
-          log.user.firstSurname ?? undefined,
-          log.user.secondSurname ?? undefined,
-          log.user.name ?? undefined,
-        )
-        : null,
-      server: log.server ? { name: log.server.name } : null,
-      reservation: log.reservation
-        ? { gpu: log.reservation.gpu ? { name: log.reservation.gpu.name } : null }
-        : null,
-      eventType: log.eventType,
-      message: log.message,
-    }));
 
     return {
       success: true,
       data: {
-        rows: formattedLogs,
+        rows: formatLogs(logs),
         total,
         totalPages,
-        hasNext,
-        hasPrev,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
       },
       error: null,
     };
