@@ -5,7 +5,7 @@ import { updateGpuReservationStatuses } from "@/lib/services/reservations/update
 
 export async function GET(request: Request) {
   try {
-    updateGpuReservationStatuses();
+    await updateGpuReservationStatuses();
 
     const { userId, isCategory } = await hasCategory("ADMIN");
 
