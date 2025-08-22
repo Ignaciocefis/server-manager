@@ -1,3 +1,4 @@
+import { createEventLog } from "@/features/eventLog/data";
 import { existsServerByName, getServerById, updateServerWithGpus } from "@/features/server/data";
 import { updateServerFormSchema } from "@/features/server/shemas";
 import { hasCategory } from "@/lib/auth/hasCategory";
@@ -45,9 +46,22 @@ export async function PUT(request: Request) {
 
     const updatedServer = await updateServerWithGpus(data);
 
-    if (!updatedServer) {
+    if (!updatedServer || !updatedServer.success || !updatedServer.data) {
       return NextResponse.json(
         { success: false, data: null, error: "Error actualizando el servidor" },
+        { status: 500 }
+      );
+    }
+
+    const log = await createEventLog({
+      eventType: "SERVER_UPDATED",
+      message: `El servidor ${updatedServer.data.name} ha sido actualizado.`,
+      serverId: serverId,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
     }

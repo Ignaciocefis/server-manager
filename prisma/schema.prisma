@@ -20,6 +20,7 @@ model User {
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
   assignedToId    String?
+  EventLog        EventLog[]
   gpuReservations GpuReservation[]
   assignedTo      User?              @relation("MentorJuniors", fields: [assignedToId], references: [id])
   juniors         User[]             @relation("MentorJuniors")
@@ -34,6 +35,7 @@ model Server {
   available    Boolean            @default(true)
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
+  EventLog     EventLog[]
   gpus         Gpu[]
   reservations GpuReservation[]
   userAccess   UserServerAccess[]
@@ -76,6 +78,7 @@ model GpuReservation {
   extendedAt    DateTime?
   extendedUntil DateTime?
   cancelledAt   DateTime?
+  EventLog      EventLog[]
   gpu           Gpu               @relation(fields: [gpuId], references: [id], onDelete: Cascade)
   server        Server            @relation(fields: [serverId], references: [id], onDelete: Cascade)
   user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -85,6 +88,24 @@ model GpuReservation {
   @@index([serverId])
   @@index([status])
   @@index([startDate])
+}
+
+model EventLog {
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  userId        String?
+  serverId      String?
+  reservationId String?
+  eventType     EventType
+  message       String
+  reservation   GpuReservation? @relation(fields: [reservationId], references: [id])
+  server        Server?         @relation(fields: [serverId], references: [id])
+  user          User?           @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([eventType])
+  @@index([userId])
+  @@index([serverId])
 }
 
 enum Category {
@@ -99,4 +120,25 @@ enum ReservationStatus {
   EXTENDED
   COMPLETED
   CANCELLED
+}
+
+enum EventType {
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  USER_DEACTIVATED
+  USER_REACTIVATED
+  USER_ASSIGNED_MENTOR
+  USER_GRANTED_SERVER_ACCESS
+  USER_REVOKED_SERVER_ACCESS
+  SERVER_CREATED
+  SERVER_UPDATED
+  SERVER_DELETED
+  SERVER_AVAILABLE
+  SERVER_UNAVAILABLE
+  RESERVATION_CREATED
+  RESERVATION_AVAILABLE
+  RESERVATION_EXTENDED
+  RESERVATION_COMPLETED
+  RESERVATION_CANCELLED
 }

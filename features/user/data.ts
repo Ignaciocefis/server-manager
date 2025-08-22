@@ -249,7 +249,7 @@ export const getAssignedUsers = async (investigatorId: string): Promise<ApiRespo
 export const createUser = async (
   data: z.infer<typeof createUserSchema>,
   generatedPassword: string
-): Promise<ApiResponse<null>> => {
+): Promise<ApiResponse<string | null>> => {
   const { email, name, firstSurname, secondSurname, category, assignedToId } = data;
   const password = generatedPassword;
 
@@ -258,7 +258,7 @@ export const createUser = async (
   }
 
   try {
-    await db.user.create({
+    const user = await db.user.create({
       data: {
         email,
         password: await bcrypt.hash(generatedPassword, 10),
@@ -269,9 +269,11 @@ export const createUser = async (
         assignedTo: category === "JUNIOR" && assignedToId
           ? { connect: { id: assignedToId } }
           : undefined,
-      },
+      }, select: {
+        id: true,
+      }
     });
-    return { success: true, data: null, error: null };
+    return { success: true, data: user.id, error: null };
   } catch (error) {
     console.error("Error creating user:", error);
     return { success: false, data: null, error };

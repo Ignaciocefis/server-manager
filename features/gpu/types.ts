@@ -53,3 +53,8 @@ export type Gpu = {
   name: string;
   reservations: Reservation[];
 };
+
+export interface gpuName {
+  id: string;
+  name: string;
+}

@@ -1,4 +1,6 @@
-import { deleteUserById } from "@/features/user/data";
+import { createEventLog } from "@/features/eventLog/data";
+import { deleteUserById, getUserNameById } from "@/features/user/data";
+import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { NextResponse } from "next/server";
 
@@ -21,12 +23,38 @@ export async function DELETE(request: Request) {
         { status: 403 }
       );
     }
+    const userName = await getUserNameById(userId);
 
+    if (userName.error || !userName.success || !userName.data) {
+      return NextResponse.json(
+        { data: null, success: false, error: "Usuario no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const userFullName = getFullName(
+      userName.data.firstSurname ?? undefined,
+      userName.data.secondSurname ?? undefined,
+      userName.data.name ?? undefined
+    );
     const deleted = await deleteUserById(userId);
 
     if (!deleted || deleted.error || !deleted.success) {
       return NextResponse.json(
         { data: null, success: false, error: "No se pudo eliminar el usuario" },
+        { status: 500 }
+      );
+    }
+
+    const log = await createEventLog({
+      eventType: "USER_DELETED",
+      userId: userId,
+      message: `Usuario ${userFullName} eliminado`,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { data: null, success: false, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
     }

@@ -6,6 +6,7 @@ import { useServerDetails } from "./useServerDetailsContainer";
 import { toggleAvailability } from "./handlers/toggleAvailabilityHandler";
 import { handleDeleteServer } from "./handlers/deleteServerHandler";
 import { GpuInUseTable } from "@/features/gpu/components";
+import { LogsTable } from "@/features/eventLog/components";
 
 export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   const router = useRouter();
@@ -57,6 +58,10 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
 
       <div className="flex flex-col items-center my-8">
         <GpuInUseTable data={server} />
+      </div>
+
+      <div>
+        <LogsTable serverId={server.id} limit={10} />
       </div>
     </>
   );

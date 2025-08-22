@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
 import z from "zod";
-import { ServerSummary, ServerSummaryWithReservations } from "@/features/server/types";
+import { ServerName, ServerSummary, ServerSummaryWithReservations } from "@/features/server/types";
 import { createServerFormSchema, updateServerFormSchema } from "@/features/server/shemas";
 import { getGpuAvailabilityStats } from "@/features/server/utils";
 
@@ -318,11 +318,24 @@ export const hasAccessToServer = async (userId: string, serverId: string): Promi
 export const assignServersToUser = async (
   userId: string,
   serverIds: string[]
-): Promise<ApiResponse<boolean>> => {
-  if (!userId) return { success: false, data: false, error: "No user ID provided" };
+): Promise<ApiResponse<{ removed: ServerName[] }>> => {
+  if (!userId) return { success: false, data: { removed: [] }, error: "No user ID provided" };
 
   try {
+    let removed: { id: string, name: string }[] = [];
     await db.$transaction(async (tx) => {
+      const currentAccess = await tx.userServerAccess.findMany({ where: { userId }, select: { serverId: true } });
+      const currentServerIds = currentAccess.map(a => a.serverId);
+
+      const removedIds = currentServerIds.filter(id => !serverIds.includes(id));
+      if (removedIds.length > 0) {
+        const removedServers = await tx.server.findMany({
+          where: { id: { in: removedIds } },
+          select: { id: true, name: true }
+        });
+        removed = removedServers;
+      }
+
       await tx.userServerAccess.deleteMany({ where: { userId } });
 
       if (serverIds.length > 0) {
@@ -332,31 +345,55 @@ export const assignServersToUser = async (
       }
     });
 
-    return { success: true, data: true, error: null };
+    return { success: true, data: { removed }, error: null };
   } catch (error) {
     console.error("Error assigning servers:", error);
-    return { success: false, data: false, error };
+    return { success: false, data: { removed: [] }, error };
   }
 };
 
 export const changeServerAvailability = async (
   serverId: string
-): Promise<ApiResponse<null>> => {
-  if (!serverId) return { success: false, data: null, error: "No server ID provided" };
+): Promise<ApiResponse<boolean>> => {
+  if (!serverId) return { success: false, data: false, error: "No server ID provided" };
 
   try {
     const server = await db.server.findUnique({ where: { id: serverId } });
 
-    if (!server) return { success: false, data: null, error: "Server not found" };
+    if (!server) return { success: false, data: false, error: "Server not found" };
 
-    await db.server.update({
+    const availability = await db.server.update({
       where: { id: serverId },
       data: { available: !server.available },
+      select: { available: true }
     });
 
-    return { success: true, data: null, error: null };
+    return { success: true, data: availability.available, error: null };
   } catch (error) {
     console.error("Error changing server availability:", error);
-    return { success: false, data: null, error };
+    return { success: false, data: false, error };
+  }
+};
+
+export const getServersNameById = async (
+  serversId: string[]
+): Promise<ApiResponse<ServerName[]>> => {
+  if (!Array.isArray(serversId) || serversId.length === 0) {
+    return { success: false, data: [], error: "Invalid server IDs" };
+  }
+
+  try {
+    const servers = await db.server.findMany({
+      where: { id: { in: serversId } },
+      select: {
+        id: true,
+        name: true
+      },
+    });
+
+    return { success: true, data: servers, error: null };
+  } catch (error) {
+    console.error("Error fetching server names:", error);
+    return { success: false, data: [], error };
   }
 };

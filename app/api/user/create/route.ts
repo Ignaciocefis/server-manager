@@ -3,8 +3,10 @@ import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { generateRandomPassword } from "@/lib/auth/generatePassword";
 import { sendEmailCreateAccount } from "@/lib/auth/resend/resend";
-import { createUser, existsUserByEmail } from "@/features/user/data";
+import { createUser, existsUserByEmail, getUserNameById } from "@/features/user/data";
 import { createUserSchema } from "@/features/user/schemas";
+import { createEventLog } from "@/features/eventLog/data";
+import { getFullName } from "@/features/user/utils";
 
 export async function POST(request: Request) {
   try {
@@ -53,9 +55,36 @@ export async function POST(request: Request) {
 
     const userCreated = await createUser(data, password);
 
-    if (!userCreated.success) {
+    if (!userCreated.success || userCreated.error || !userCreated.data) {
       return NextResponse.json(
         { success: false, data: null, error: userCreated.error || "No se pudo crear el usuario" },
+        { status: 500 }
+      );
+    }
+
+    const userName = await getUserNameById(userCreated.data);
+    if (userName.error || !userName.success || !userName.data) {
+      return NextResponse.json(
+        { data: null, success: false, error: "Usuario no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const userFullName = getFullName(
+      userName.data.firstSurname ?? undefined,
+      userName.data.secondSurname ?? undefined,
+      userName.data.name ?? undefined
+    );
+
+    const log = await createEventLog({
+      eventType: "USER_CREATED",
+      userId: userCreated.data,
+      message: `Usuario ${userFullName} creado`,
+    });
+
+    if (!log || log.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
     }
