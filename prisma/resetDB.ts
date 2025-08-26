@@ -4,7 +4,7 @@ import { join } from "path";
 
 const run = (cmd: string) => {
   console.log(`\n> ${cmd}`);
-  execSync(cmd, { stdio: "inherit", shell: "cmd.exe" });
+  execSync(cmd, { stdio: "inherit" });
 };
 
 try {
