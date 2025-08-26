@@ -98,6 +98,7 @@ model EventLog {
   reservationId String?
   eventType     EventType
   message       String
+  isRead        Boolean         @default(false)
   reservation   GpuReservation? @relation(fields: [reservationId], references: [id])
   server        Server?         @relation(fields: [serverId], references: [id])
   user          User?           @relation(fields: [userId], references: [id])

@@ -88,6 +88,7 @@ CREATE TABLE "EventLog" (
     "reservationId" TEXT,
     "eventType" "EventType" NOT NULL,
     "message" TEXT NOT NULL,
+    "isRead" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "EventLog_pkey" PRIMARY KEY ("id")
 );
