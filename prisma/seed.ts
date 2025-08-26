@@ -1,4 +1,5 @@
 import { PrismaClient, Category, ReservationStatus, EventType } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -8,7 +9,7 @@ async function main() {
       name: 'Admin',
       firstSurname: 'Root',
       email: 'admin@example.com',
-      password: process.env.SEED_USER_PASSWORD || 'defaultPassword',
+      password: process.env.SEED_USER_PASSWORD || await bcrypt.hash("defaultPassword", 10),
       category: Category.ADMIN,
     },
   });
@@ -18,7 +19,7 @@ async function main() {
       name: 'Alice',
       firstSurname: 'Researcher',
       email: 'alice@example.com',
-      password: process.env.SEED_USER_PASSWORD || 'defaultPassword',
+      password: process.env.SEED_USER_PASSWORD || await bcrypt.hash("defaultPassword", 10),
       category: Category.RESEARCHER,
     },
   });
@@ -28,7 +29,7 @@ async function main() {
       name: 'Bob',
       firstSurname: 'Researcher',
       email: 'bob@example.com',
-      password: process.env.SEED_USER_PASSWORD || 'defaultPassword',
+      password: process.env.SEED_USER_PASSWORD || await bcrypt.hash("defaultPassword", 10),
       category: Category.RESEARCHER,
     },
   });
@@ -38,7 +39,7 @@ async function main() {
       name: 'Charlie',
       firstSurname: 'Junior',
       email: 'charlie@example.com',
-      password: process.env.SEED_USER_PASSWORD || 'defaultPassword',
+      password: process.env.SEED_USER_PASSWORD || await bcrypt.hash("defaultPassword", 10),
       category: Category.JUNIOR,
       assignedToId: researcher1.id,
     },
@@ -49,7 +50,7 @@ async function main() {
       name: 'Diana',
       firstSurname: 'Junior',
       email: 'diana@example.com',
-      password: process.env.SEED_USER_PASSWORD || 'defaultPassword',
+      password: process.env.SEED_USER_PASSWORD || await bcrypt.hash("defaultPassword", 10),
       category: Category.JUNIOR,
       assignedToId: researcher2.id,
     },
