@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { sendEmailReservationActive } from "../resend/reservationActive/reservationActive";
 
 export async function updateGpuReservationStatuses() {
   const now = new Date();
@@ -17,6 +18,7 @@ export async function updateGpuReservationStatuses() {
       actualEndDate: true,
       gpu: true,
       server: true,
+      user: { select: { email: true } },
     }
   });
 
@@ -35,6 +37,11 @@ export async function updateGpuReservationStatuses() {
         createdAt: reservation.startDate,
       },
     });
+    await sendEmailReservationActive(
+      reservation.user.email,
+      reservation.gpu.name,
+      reservation.server.name
+    );
   }
 
   const toComplete = await db.gpuReservation.findMany({
@@ -71,7 +78,10 @@ export async function updateGpuReservationStatuses() {
   }
 
   return {
-    activated: toActivate.length,
-    completed: toComplete.length,
+    success: true,
+    data: {
+      activated: toActivate.length,
+      completed: toComplete.length,
+    }
   };
 }
