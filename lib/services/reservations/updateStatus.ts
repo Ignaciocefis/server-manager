@@ -37,6 +37,13 @@ export async function updateGpuReservationStatuses() {
         createdAt: reservation.startDate,
       },
     });
+    await db.userNotification.create({
+      data: {
+        userId: reservation.userId,
+        eventLogId: reservation.id,
+        isRead: false,
+      },
+    });
     await sendEmailReservationActive(
       reservation.user.email,
       reservation.gpu.name,
@@ -73,6 +80,13 @@ export async function updateGpuReservationStatuses() {
         userId: reservation.userId,
         serverId: reservation.serverId,
         createdAt: reservation.endDate,
+      },
+    });
+    await db.userNotification.create({
+      data: {
+        userId: reservation.userId,
+        eventLogId: reservation.id,
+        isRead: false,
       },
     });
   }
