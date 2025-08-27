@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
+import { changeServerAvailability, getServerByIdWithReservations, getAllUsersWithAccessToServer } from "@/features/server/data";
 import { createEventLog } from "@/features/eventLog/data";
+import { sendEmailAvailabilityChange } from "@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange";
 
 export async function PUT(request: Request) {
   try {
@@ -43,7 +44,7 @@ export async function PUT(request: Request) {
 
     const updatedServer = await getServerByIdWithReservations(serverId);
 
-    if (!updatedServer || !updatedServer.data) {
+    if (!updatedServer || !updatedServer.data || !updatedServer.data.name) {
       return NextResponse.json(
         { success: false, data: null, error: "Servidor no encontrado" },
         { status: 404 }
@@ -61,6 +62,27 @@ export async function PUT(request: Request) {
         { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
+    }
+
+    const usersWithAccess = await getAllUsersWithAccessToServer(serverId);
+
+    if (!usersWithAccess || usersWithAccess.error || !usersWithAccess.data) {
+      return NextResponse.json(
+        { success: false, data: null, error: "Error al obtener usuarios con acceso al servidor" },
+        { status: 500 }
+      );
+    }
+
+    for (const user of usersWithAccess.data) {
+      try {
+        await sendEmailAvailabilityChange(
+          user,
+          updatedServer.data?.name ?? "Servidor",
+          updatedServer.data?.available ? "disponible" : "no disponible"
+        );
+      } catch (error) {
+        console.error("Error al enviar correo de cambio de disponibilidad:", error);
+      }
     }
 
     return NextResponse.json(

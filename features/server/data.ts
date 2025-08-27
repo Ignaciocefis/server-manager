@@ -397,3 +397,27 @@ export const getServersNameById = async (
     return { success: false, data: [], error };
   }
 };
+
+export const getAllUsersWithAccessToServer = async (serverId: string): Promise<ApiResponse<string[]>> => {
+  if (!serverId) return { success: false, data: [], error: "No server ID provided" };
+
+  try {
+    const usersId = await db.user.findMany({
+      where: {
+        serverAccess: {
+          some: {
+            serverId
+          }
+        }
+      },
+      select: {
+        email: true,
+      },
+    });
+
+    return { success: true, data: usersId.map(user => user.email), error: null };
+  } catch (error) {
+    console.error("Error fetching users with access to server:", error);
+    return { success: false, data: null, error };
+  }
+};
