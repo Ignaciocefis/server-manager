@@ -58,25 +58,13 @@ async function main() {
 
   const servers = await Promise.all([
     prisma.server.create({
-      data: {
-        name: 'Server A',
-        ramGB: 128,
-        diskCount: 2,
-      },
+      data: { name: 'Server A', ramGB: 128, diskCount: 2 },
     }),
     prisma.server.create({
-      data: {
-        name: 'Server B',
-        ramGB: 256,
-        diskCount: 3,
-      },
+      data: { name: 'Server B', ramGB: 256, diskCount: 3 },
     }),
     prisma.server.create({
-      data: {
-        name: 'Server C',
-        ramGB: 512,
-        diskCount: 4,
-      },
+      data: { name: 'Server C', ramGB: 512, diskCount: 4 },
     }),
   ]);
 
@@ -139,13 +127,7 @@ async function main() {
     });
   };
 
-  const statuses: ReservationStatus[] = [
-    'PENDING',
-    'ACTIVE',
-    'EXTENDED',
-    'COMPLETED',
-    'CANCELLED',
-  ];
+  const statuses: ReservationStatus[] = ['PENDING', 'ACTIVE', 'EXTENDED', 'COMPLETED', 'CANCELLED'];
 
   if (allGpus.length < statuses.length + 8) {
     throw new Error('No hay suficientes GPUs para crear todas las reservas necesarias');
@@ -167,23 +149,11 @@ async function main() {
   let gpuIndex = statuses.length;
 
   for (const user of restUsers) {
-    reservations.push(
-      await createReservation({
-        userId: user.id,
-        gpu: allGpus[gpuIndex++],
-        status: 'ACTIVE',
-      })
-    );
-    reservations.push(
-      await createReservation({
-        userId: user.id,
-        gpu: allGpus[gpuIndex++],
-        status: 'PENDING',
-      })
-    );
+    reservations.push(await createReservation({ userId: user.id, gpu: allGpus[gpuIndex++], status: 'ACTIVE' }));
+    reservations.push(await createReservation({ userId: user.id, gpu: allGpus[gpuIndex++], status: 'PENDING' }));
   }
 
-  const createEventLog = async ({
+  const createEventLogWithNotifications = async ({
     userId = null,
     serverId = null,
     reservationId = null,
@@ -196,40 +166,42 @@ async function main() {
     eventType: EventType;
     message: string;
   }) => {
-    return await prisma.eventLog.create({
-      data: {
-        userId,
-        serverId,
-        reservationId,
-        eventType,
-        message,
-      },
+    const log = await prisma.eventLog.create({
+      data: { userId, serverId, reservationId, eventType, message },
     });
+
+    const recipients = new Set<string>();
+
+    if (userId) {
+      recipients.add(userId);
+    }
+
+    if (serverId) {
+      const accesses = await prisma.userServerAccess.findMany({
+        where: { serverId },
+        select: { userId: true },
+      });
+      for (const acc of accesses) {
+        recipients.add(acc.userId);
+      }
+    }
+
+    for (const uid of recipients) {
+      await prisma.userNotification.create({
+        data: {
+          userId: uid,
+          eventLogId: log.id,
+        },
+      });
+    }
+
+    return log;
   };
 
-  const eventTypes: EventType[] = [
-    'USER_CREATED',
-    'USER_UPDATED',
-    'USER_DELETED',
-    'USER_DEACTIVATED',
-    'USER_REACTIVATED',
-    'USER_ASSIGNED_MENTOR',
-    'USER_GRANTED_SERVER_ACCESS',
-    'USER_REVOKED_SERVER_ACCESS',
-    'SERVER_CREATED',
-    'SERVER_UPDATED',
-    'SERVER_DELETED',
-    'SERVER_AVAILABLE',
-    'SERVER_UNAVAILABLE',
-    'RESERVATION_CREATED',
-    'RESERVATION_AVAILABLE',
-    'RESERVATION_EXTENDED',
-    'RESERVATION_COMPLETED',
-    'RESERVATION_CANCELLED',
-  ];
+  const eventTypes: EventType[] = Object.values(EventType);
 
   for (const type of eventTypes) {
-    await createEventLog({
+    await createEventLogWithNotifications({
       userId: admin.id,
       serverId: servers[0]?.id,
       reservationId: reservations[0]?.id,
@@ -237,7 +209,7 @@ async function main() {
       message: `Primer caso de ${type} registrado por Admin`,
     });
 
-    await createEventLog({
+    await createEventLogWithNotifications({
       userId: researcher1.id,
       serverId: servers[1]?.id,
       reservationId: reservations[1]?.id,
@@ -246,12 +218,12 @@ async function main() {
     });
   }
 
-  console.log('🌱 Seed completado con éxito.');
+  console.log('Seed completado con éxito.');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error en seed:', e);
+    console.error('Error en seed:', e);
     process.exit(1);
   })
   .finally(() => {
