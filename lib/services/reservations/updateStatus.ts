@@ -27,7 +27,7 @@ export async function updateGpuReservationStatuses() {
       where: { id: reservation.id },
       data: { status: "ACTIVE" },
     });
-    await db.eventLog.create({
+    const eventLog = await db.eventLog.create({
       data: {
         reservationId: reservation.id,
         eventType: "RESERVATION_AVAILABLE",
@@ -35,12 +35,14 @@ export async function updateGpuReservationStatuses() {
         userId: reservation.userId,
         serverId: reservation.serverId,
         createdAt: reservation.startDate,
-      },
+      }, select: {
+        id: true,
+      }
     });
     await db.userNotification.create({
       data: {
         userId: reservation.userId,
-        eventLogId: reservation.id,
+        eventLogId: eventLog.id,
         isRead: false,
       },
     });
@@ -72,7 +74,7 @@ export async function updateGpuReservationStatuses() {
       where: { id: reservation.id },
       data: { status: "COMPLETED" }
     });
-    await db.eventLog.create({
+    const eventLog = await db.eventLog.create({
       data: {
         reservationId: reservation.id,
         eventType: "RESERVATION_COMPLETED",
@@ -80,12 +82,14 @@ export async function updateGpuReservationStatuses() {
         userId: reservation.userId,
         serverId: reservation.serverId,
         createdAt: reservation.endDate,
-      },
+      }, select: {
+        id: true,
+      }
     });
     await db.userNotification.create({
       data: {
         userId: reservation.userId,
-        eventLogId: reservation.id,
+        eventLogId: eventLog.id,
         isRead: false,
       },
     });
