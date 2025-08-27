@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
-import { EventLog, GetLogsParams, LogsTableDataProps } from "./types";
+import { EventLog, GetLogsParams, LogsTableDataProps, UnreadNotification } from "./types";
 import { EventType, Prisma } from "@prisma/client";
 import { eventFormSchema } from "./schemas";
 import z from "zod";
@@ -8,15 +8,45 @@ import { buildOrderBy, buildOrFilters, formatLogs, getPaginationAndSort } from "
 
 export const createEventLog = async (data: z.infer<typeof eventFormSchema>): Promise<ApiResponse<EventLog | null>> => {
   try {
-    await db.eventLog.create({
+    const eventLog = await db.eventLog.create({
       data: {
         userId: data.userId ?? null,
         serverId: data.serverId ?? null,
         reservationId: data.reservationId ?? null,
         eventType: data.eventType,
         message: data.message,
+      }, select: {
+        id: true,
       }
     });
+
+    if (data.userId) {
+      await db.userNotification.create({
+        data: {
+          userId: data.userId,
+          eventLogId: eventLog.id,
+          isRead: false,
+        }
+      });
+    } else {
+      const accessibleUsers = await db.userServerAccess.findMany({
+        where: { serverId: data.serverId },
+        select: { userId: true },
+      });
+
+      await Promise.all(
+        accessibleUsers.map((user) =>
+          db.userNotification.create({
+            data: {
+              userId: user.userId,
+              eventLogId: eventLog.id,
+              isRead: false,
+            },
+          })
+        )
+      );
+    }
+
     return { success: true, data: null, error: null };
   } catch (err) {
     console.error("Error creating EventLog:", err);
@@ -161,5 +191,59 @@ export const getAccessibleLogs = async (
   } catch (error) {
     console.error("Error en getAccessibleLogs:", error);
     return { success: false, data: null, error: "Error al obtener logs accesibles" };
+  }
+};
+
+export const getAllUnreadNotifications = async (userId: string): Promise<ApiResponse<UnreadNotification[] | null>> => {
+  try {
+    const notifications = await db.userNotification.findMany({
+      where: { userId, isRead: false },
+      select: {
+        id: true,
+        createdAt: true,
+        eventLog: {
+          select: {
+            message: true,
+            eventType: true,
+          },
+        },
+        isRead: true,
+      },
+    });
+
+    const mappedNotifications = notifications.map(n => ({
+      id: n.id,
+      createdAt: n.createdAt,
+      eventType: n.eventLog.eventType,
+      message: n.eventLog.message,
+      isRead: n.isRead,
+    }));
+
+    return { success: true, data: mappedNotifications, error: null };
+  } catch (error) {
+    console.error("Error al obtener notificaciones no leídas:", error);
+    return { success: false, data: null, error: "Error al obtener notificaciones no leídas" };
+  }
+};
+
+export const markNotificationAsRead = async (userNotificationId: string, userId: string): Promise<ApiResponse<null>> => {
+  try {
+    console.log("Marcando notificación como leída:", { userNotificationId, userId });
+    if (userNotificationId === "all") {
+      await db.userNotification.updateMany({
+        where: { userId },
+        data: { isRead: true },
+      });
+      return { success: true, data: null, error: null };
+    } else {
+      await db.userNotification.update({
+        where: { id: userNotificationId, userId },
+        data: { isRead: true },
+      });
+    }
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    console.error("Error al marcar notificación como leída:", error);
+    return { success: false, data: null, error: "Error al marcar notificación como leída" };
   }
 };

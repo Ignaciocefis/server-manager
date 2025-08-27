@@ -9,22 +9,23 @@ datasource db {
 }
 
 model User {
-  id              String             @id @default(cuid())
-  name            String
-  firstSurname    String
-  secondSurname   String?
-  email           String             @unique
-  password        String
-  category        Category
-  isActive        Boolean            @default(true)
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  assignedToId    String?
-  EventLog        EventLog[]
-  gpuReservations GpuReservation[]
-  assignedTo      User?              @relation("MentorJuniors", fields: [assignedToId], references: [id])
-  juniors         User[]             @relation("MentorJuniors")
-  serverAccess    UserServerAccess[]
+  id               String             @id @default(cuid())
+  name             String
+  firstSurname     String
+  secondSurname    String?
+  email            String             @unique
+  password         String
+  category         Category
+  isActive         Boolean            @default(true)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  assignedToId     String?
+  EventLog         EventLog[]
+  gpuReservations  GpuReservation[]
+  assignedTo       User?              @relation("MentorJuniors", fields: [assignedToId], references: [id])
+  juniors          User[]             @relation("MentorJuniors")
+  UserNotification UserNotification[]
+  serverAccess     UserServerAccess[]
 }
 
 model Server {
@@ -91,21 +92,35 @@ model GpuReservation {
 }
 
 model EventLog {
-  id            String          @id @default(cuid())
-  createdAt     DateTime        @default(now())
+  id            String             @id @default(cuid())
+  createdAt     DateTime           @default(now())
   userId        String?
   serverId      String?
   reservationId String?
   eventType     EventType
   message       String
-  reservation   GpuReservation? @relation(fields: [reservationId], references: [id])
-  server        Server?         @relation(fields: [serverId], references: [id])
-  user          User?           @relation(fields: [userId], references: [id])
+  reservation   GpuReservation?    @relation(fields: [reservationId], references: [id])
+  server        Server?            @relation(fields: [serverId], references: [id])
+  user          User?              @relation(fields: [userId], references: [id])
+  notifications UserNotification[]
 
   @@index([createdAt])
   @@index([eventType])
   @@index([userId])
   @@index([serverId])
+}
+
+model UserNotification {
+  id         String   @id @default(cuid())
+  userId     String
+  eventLogId String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  eventLog   EventLog @relation(fields: [eventLogId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([eventLogId])
 }
 
 enum Category {

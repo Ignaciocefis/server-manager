@@ -92,6 +92,17 @@ CREATE TABLE "EventLog" (
     CONSTRAINT "EventLog_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "UserNotification" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "eventLogId" TEXT NOT NULL,
+    "isRead" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserNotification_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -125,6 +136,12 @@ CREATE INDEX "EventLog_userId_idx" ON "EventLog"("userId");
 -- CreateIndex
 CREATE INDEX "EventLog_serverId_idx" ON "EventLog"("serverId");
 
+-- CreateIndex
+CREATE INDEX "UserNotification_userId_idx" ON "UserNotification"("userId");
+
+-- CreateIndex
+CREATE INDEX "UserNotification_eventLogId_idx" ON "UserNotification"("eventLogId");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -154,3 +171,9 @@ ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_serverId_fkey" FOREIGN KEY ("ser
 
 -- AddForeignKey
 ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserNotification" ADD CONSTRAINT "UserNotification_eventLogId_fkey" FOREIGN KEY ("eventLogId") REFERENCES "EventLog"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserNotification" ADD CONSTRAINT "UserNotification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

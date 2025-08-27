@@ -40,3 +40,11 @@ export type EventLogWithRelations = Prisma.EventLogGetPayload<{
     reservation: { select: { gpu: { select: { name: true } } } };
   };
 }>;
+
+export interface UnreadNotification {
+  id: string;
+  eventType: EventType;
+  message: string;
+  createdAt: Date;
+  isRead: boolean;
+};

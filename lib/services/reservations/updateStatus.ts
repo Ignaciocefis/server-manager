@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { sendEmailReservationActive } from "../resend/reservationActive/reservationActive";
 
 export async function updateGpuReservationStatuses() {
   const now = new Date();
@@ -17,6 +18,7 @@ export async function updateGpuReservationStatuses() {
       actualEndDate: true,
       gpu: true,
       server: true,
+      user: { select: { email: true } },
     }
   });
 
@@ -25,7 +27,7 @@ export async function updateGpuReservationStatuses() {
       where: { id: reservation.id },
       data: { status: "ACTIVE" },
     });
-    await db.eventLog.create({
+    const eventLog = await db.eventLog.create({
       data: {
         reservationId: reservation.id,
         eventType: "RESERVATION_AVAILABLE",
@@ -33,8 +35,22 @@ export async function updateGpuReservationStatuses() {
         userId: reservation.userId,
         serverId: reservation.serverId,
         createdAt: reservation.startDate,
+      }, select: {
+        id: true,
+      }
+    });
+    await db.userNotification.create({
+      data: {
+        userId: reservation.userId,
+        eventLogId: eventLog.id,
+        isRead: false,
       },
     });
+    await sendEmailReservationActive(
+      reservation.user.email,
+      reservation.gpu.name,
+      reservation.server.name
+    );
   }
 
   const toComplete = await db.gpuReservation.findMany({
@@ -58,7 +74,7 @@ export async function updateGpuReservationStatuses() {
       where: { id: reservation.id },
       data: { status: "COMPLETED" }
     });
-    await db.eventLog.create({
+    const eventLog = await db.eventLog.create({
       data: {
         reservationId: reservation.id,
         eventType: "RESERVATION_COMPLETED",
@@ -66,12 +82,24 @@ export async function updateGpuReservationStatuses() {
         userId: reservation.userId,
         serverId: reservation.serverId,
         createdAt: reservation.endDate,
+      }, select: {
+        id: true,
+      }
+    });
+    await db.userNotification.create({
+      data: {
+        userId: reservation.userId,
+        eventLogId: eventLog.id,
+        isRead: false,
       },
     });
   }
 
   return {
-    activated: toActivate.length,
-    completed: toComplete.length,
+    success: true,
+    data: {
+      activated: toActivate.length,
+      completed: toComplete.length,
+    }
   };
 }

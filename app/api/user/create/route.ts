@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { generateRandomPassword } from "@/lib/auth/generatePassword";
-import { sendEmailCreateAccount } from "@/lib/auth/resend/resend";
 import { createUser, existsUserByEmail, getUserNameById } from "@/features/user/data";
 import { createUserSchema } from "@/features/user/schemas";
 import { createEventLog } from "@/features/eventLog/data";
 import { getFullName } from "@/features/user/utils";
+import { sendEmailCreateUser } from "@/lib/services/resend/CreateUser/createUser";
 
 export async function POST(request: Request) {
   try {
@@ -41,10 +41,7 @@ export async function POST(request: Request) {
 
     const password = generateRandomPassword();
 
-    const emailSent = await sendEmailCreateAccount({
-      to: data.email,
-      password,
-    });
+    const emailSent = await sendEmailCreateUser(data.email, password);
 
     if (!emailSent) {
       return NextResponse.json(
