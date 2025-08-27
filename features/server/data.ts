@@ -369,11 +369,6 @@ export const changeServerAvailability = async (
     });
 
     if (!availability.available) {
-      await db.gpuReservation.updateMany({
-        where: { serverId },
-        data: { status: "CANCELLED", cancelledAt: new Date(), actualEndDate: new Date() }
-      });
-
       const canceledReservations = await db.gpuReservation.updateManyAndReturn({
         where: { serverId, status: { in: ["ACTIVE", "PENDING", "EXTENDED"] } },
         data: { status: "CANCELLED", cancelledAt: new Date(), actualEndDate: new Date() },
