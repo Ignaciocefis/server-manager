@@ -47,11 +47,14 @@ export async function updateGpuReservationStatuses() {
         isRead: false,
       },
     });
-    await sendEmailReservationActive(
-      reservation.user.email,
-      reservation.gpu.name,
-      reservation.server.name
-    );
+
+    if (reservation.user.email) {
+      await sendEmailReservationActive(
+        reservation.user.email,
+        reservation.gpu.name,
+        reservation.server.name
+      );
+    }
   }
 
   const toComplete = await db.gpuReservation.findMany({
@@ -95,11 +98,14 @@ export async function updateGpuReservationStatuses() {
         isRead: false,
       },
     });
-    await sendEmailReservationCompleted(
-      reservation.user.email,
-      reservation.gpu.name,
-      reservation.server.name
-    );
+
+    if (reservation.user.email) {
+      await sendEmailReservationCompleted(
+        reservation.user.email,
+        reservation.gpu.name,
+        reservation.server.name
+      );
+    }
   }
 
   return {

@@ -11,5 +11,9 @@ export async function sendEmailReservationCompleted(to: string, gpuName: string,
     </div>
   `;
 
-  return sendEmail({ to, subject, html });
+  try {
+    await sendEmail({ to, subject, html });
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 }
