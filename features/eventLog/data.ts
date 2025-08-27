@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
-import { EventLog, GetLogsParams, LogsTableDataProps } from "./types";
+import { EventLog, GetLogsParams, LogsTableDataProps, UnreadNotification } from "./types";
 import { EventType, Prisma } from "@prisma/client";
 import { eventFormSchema } from "./schemas";
 import z from "zod";
@@ -161,5 +161,55 @@ export const getAccessibleLogs = async (
   } catch (error) {
     console.error("Error en getAccessibleLogs:", error);
     return { success: false, data: null, error: "Error al obtener logs accesibles" };
+  }
+};
+
+export const getAllUnreadNotifications = async (userId: string): Promise<ApiResponse<UnreadNotification[] | null>> => {
+  try {
+    const accesiblesServers = await db.userServerAccess.findMany({
+      where: { userId },
+      select: { serverId: true },
+    });
+
+    const notifications = await db.eventLog.findMany({
+      where: {
+        userId,
+        serverId: { in: accesiblesServers.map((s) => s.serverId) },
+        isRead: false,
+        eventType: { in: [EventType.USER_GRANTED_SERVER_ACCESS, EventType.USER_REVOKED_SERVER_ACCESS, EventType.SERVER_UPDATED, EventType.SERVER_AVAILABLE, EventType.SERVER_UNAVAILABLE, EventType.RESERVATION_AVAILABLE, EventType.RESERVATION_COMPLETED] },
+      },
+      select: {
+        id: true,
+        eventType: true,
+        message: true,
+        createdAt: true,
+        isRead: true,
+      },
+    });
+    return { success: true, data: notifications, error: null };
+  } catch (error) {
+    console.error("Error al obtener notificaciones no leídas:", error);
+    return { success: false, data: null, error: "Error al obtener notificaciones no leídas" };
+  }
+};
+
+export const markNotificationAsRead = async (eventLogId: string, userId: string): Promise<ApiResponse<null>> => {
+  try {
+    if (eventLogId === "all") {
+      await db.eventLog.updateMany({
+        where: { userId, isRead: false },
+        data: { isRead: true },
+      });
+      return { success: true, data: null, error: null };
+    } else {
+      await db.eventLog.update({
+        where: { id: eventLogId, userId },
+        data: { isRead: true },
+      });
+      return { success: true, data: null, error: null };
+    }
+  } catch (error) {
+    console.error("Error al marcar notificación como leída:", error);
+    return { success: false, data: null, error: "Error al marcar notificación como leída" };
   }
 };
