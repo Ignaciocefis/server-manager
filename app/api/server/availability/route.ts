@@ -76,7 +76,8 @@ export async function PUT(request: Request) {
     for (const user of usersWithAccess.data) {
       try {
         await sendEmailAvailabilityChange(
-          user,
+          user.email,
+          user.gpus,
           updatedServer.data?.name ?? "Servidor",
           updatedServer.data?.available ? "disponible" : "no disponible"
         );

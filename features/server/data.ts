@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
 import z from "zod";
-import { ServerName, ServerSummary, ServerSummaryWithReservations } from "@/features/server/types";
+import { AccessToServerWithEmailAndGpus, ServerName, ServerSummary, ServerSummaryWithReservations } from "@/features/server/types";
 import { createServerFormSchema, updateServerFormSchema } from "@/features/server/shemas";
 import { getGpuAvailabilityStats } from "@/features/server/utils";
 
@@ -368,6 +368,37 @@ export const changeServerAvailability = async (
       select: { available: true }
     });
 
+    if (!availability.available) {
+      await db.gpuReservation.updateMany({
+        where: { serverId },
+        data: { status: "CANCELLED", cancelledAt: new Date(), actualEndDate: new Date() }
+      });
+
+      const canceledReservations = await db.gpuReservation.updateManyAndReturn({
+        where: { serverId, status: { in: ["ACTIVE", "PENDING", "EXTENDED"] } },
+        data: { status: "CANCELLED", cancelledAt: new Date(), actualEndDate: new Date() },
+        include: { gpu: { select: { name: true } }, server: { select: { name: true } } }
+      });
+
+      for (const reservation of canceledReservations) {
+        const eventLog = await db.eventLog.create({
+          data: {
+            eventType: "RESERVATION_CANCELLED",
+            message: `La reserva de la tarjeta gráfica ${reservation.gpu.name} del servidor ${reservation.server.name} ha sido cancelada al cambiar la disponibilidad del servidor a no disponible.`,
+            reservationId: reservation.id,
+            serverId: serverId,
+          }, select: { id: true }
+        });
+
+        await db.userNotification.create({
+          data: {
+            userId: reservation.userId,
+            eventLogId: eventLog.id,
+          },
+        });
+      }
+    }
+
     return { success: true, data: availability.available, error: null };
   } catch (error) {
     console.error("Error changing server availability:", error);
@@ -398,24 +429,33 @@ export const getServersNameById = async (
   }
 };
 
-export const getAllUsersWithAccessToServer = async (serverId: string): Promise<ApiResponse<string[]>> => {
+export const getAllUsersWithAccessToServer = async (serverId: string): Promise<ApiResponse<AccessToServerWithEmailAndGpus[]>> => {
   if (!serverId) return { success: false, data: [], error: "No server ID provided" };
 
   try {
-    const usersId = await db.user.findMany({
+    const users = await db.user.findMany({
       where: {
         serverAccess: {
-          some: {
-            serverId
-          }
+          some: { serverId }
         }
       },
       select: {
         email: true,
+        gpuReservations: {
+          where: { serverId, status: { in: ["PENDING", "ACTIVE", "EXTENDED"] } },
+          select: {
+            gpu: { select: { name: true } },
+          }
+        }
       },
     });
 
-    return { success: true, data: usersId.map(user => user.email), error: null };
+    const usersWithGpus: AccessToServerWithEmailAndGpus[] = users.map(user => ({
+      email: user.email,
+      gpus: user.gpuReservations.map(reservation => reservation.gpu.name)
+    }));
+
+    return { success: true, data: usersWithGpus, error: null };
   } catch (error) {
     console.error("Error fetching users with access to server:", error);
     return { success: false, data: null, error };
