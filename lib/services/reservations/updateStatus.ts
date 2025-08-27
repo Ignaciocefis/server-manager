@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { sendEmailReservationActive } from "../resend/reservationActive/reservationActive";
+import { sendEmailReservationCompleted } from "../resend/reservationCompleted/reservationCompleted";
 
 export async function updateGpuReservationStatuses() {
   const now = new Date();
@@ -46,11 +47,14 @@ export async function updateGpuReservationStatuses() {
         isRead: false,
       },
     });
-    await sendEmailReservationActive(
-      reservation.user.email,
-      reservation.gpu.name,
-      reservation.server.name
-    );
+
+    if (reservation.user.email) {
+      await sendEmailReservationActive(
+        reservation.user.email,
+        reservation.gpu.name,
+        reservation.server.name
+      );
+    }
   }
 
   const toComplete = await db.gpuReservation.findMany({
@@ -66,6 +70,7 @@ export async function updateGpuReservationStatuses() {
       server: true,
       startDate: true,
       endDate: true,
+      user: { select: { email: true } },
     },
   });
 
@@ -93,6 +98,14 @@ export async function updateGpuReservationStatuses() {
         isRead: false,
       },
     });
+
+    if (reservation.user.email) {
+      await sendEmailReservationCompleted(
+        reservation.user.email,
+        reservation.gpu.name,
+        reservation.server.name
+      );
+    }
   }
 
   return {

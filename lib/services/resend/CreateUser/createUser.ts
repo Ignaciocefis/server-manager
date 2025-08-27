@@ -17,5 +17,9 @@ export async function sendEmailCreateUser(to: string, password: string) {
     </div>
   `;
 
-  return sendEmail({ to, subject, html });
+  try {
+    return await sendEmail({ to, subject, html });
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 }
