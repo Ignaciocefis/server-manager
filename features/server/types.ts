@@ -66,3 +66,8 @@ export interface ServerName {
   id: string;
   name: string;
 }
+
+export interface AccessToServerWithEmailAndGpus {
+  email: string;
+  gpus: string[];
+}
