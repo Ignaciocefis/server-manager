@@ -88,9 +88,19 @@ CREATE TABLE "EventLog" (
     "reservationId" TEXT,
     "eventType" "EventType" NOT NULL,
     "message" TEXT NOT NULL,
-    "isRead" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "EventLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserNotification" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "eventLogId" TEXT NOT NULL,
+    "isRead" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserNotification_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -126,6 +136,12 @@ CREATE INDEX "EventLog_userId_idx" ON "EventLog"("userId");
 -- CreateIndex
 CREATE INDEX "EventLog_serverId_idx" ON "EventLog"("serverId");
 
+-- CreateIndex
+CREATE INDEX "UserNotification_userId_idx" ON "UserNotification"("userId");
+
+-- CreateIndex
+CREATE INDEX "UserNotification_eventLogId_idx" ON "UserNotification"("eventLogId");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -148,10 +164,16 @@ ALTER TABLE "GpuReservation" ADD CONSTRAINT "GpuReservation_serverId_fkey" FOREI
 ALTER TABLE "GpuReservation" ADD CONSTRAINT "GpuReservation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_reservationId_fkey" FOREIGN KEY ("reservationId") REFERENCES "GpuReservation"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Server"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "EventLog" ADD CONSTRAINT "EventLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "UserNotification" ADD CONSTRAINT "UserNotification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserNotification" ADD CONSTRAINT "UserNotification_eventLogId_fkey" FOREIGN KEY ("eventLogId") REFERENCES "EventLog"("id") ON DELETE CASCADE ON UPDATE CASCADE;
