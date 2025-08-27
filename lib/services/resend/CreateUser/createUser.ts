@@ -18,7 +18,7 @@ export async function sendEmailCreateUser(to: string, password: string) {
   `;
 
   try {
-    await sendEmail({ to, subject, html });
+    return await sendEmail({ to, subject, html });
   } catch (error) {
     console.error("Error sending email:", error);
   }
