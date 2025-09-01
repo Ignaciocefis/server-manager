@@ -296,6 +296,16 @@ export const createUser = async (
         id: true,
       }
     });
+    if (category === "ADMIN") {
+      const servers = await db.server.findMany({ select: { id: true } });
+      const serverAccessData = servers.map(server => ({
+        userId: user.id,
+        serverId: server.id,
+      }));
+      if (serverAccessData.length > 0) {
+        await db.userServerAccess.createMany({ data: serverAccessData });
+      }
+    }
     return { success: true, data: user.id, error: null };
   } catch (error) {
     console.error("Error creating user:", error);
