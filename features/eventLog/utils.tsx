@@ -84,7 +84,8 @@ export const exportLogsToCSV = (logs: LogsTableDataProps[]) => {
   for (const log of logs) {
     const values = headers.map((header) => {
       const value = getNestedValue(log, header);
-      return `"${toDisplay(value)}"`;
+      const displayValue = toDisplay(value).replace(/"/g, '""');
+      return `"${displayValue}"`;
     });
     csvRows.push(values.join(","));
   }
