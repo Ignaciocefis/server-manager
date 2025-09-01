@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { UsersTableDataProps } from "@/features/user/components/UsersTable/UsersTable.data.type";
+import { UsersTableDataProps } from "../UsersTable/UserTable.type";
 
 export function useUserManagementContainer() {
-  const [users, setUsers] = useState<UsersTableDataProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
@@ -23,8 +20,6 @@ export function useUserManagementContainer() {
   }, []);
 
   return {
-    users,
-    isLoading,
     fetchUsers,
   };
 }
