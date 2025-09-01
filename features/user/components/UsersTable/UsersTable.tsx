@@ -243,15 +243,15 @@ export function UsersTable({
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                {((isAdmin &&
+                                {((isAdmin.hasCategory &&
                                   (user.category === "RESEARCHER" ||
                                     user.category === "JUNIOR")) ||
-                                  (isResearcher &&
+                                  (isResearcher.hasCategory &&
                                     user.category === "JUNIOR")) && (
                                   <DropdownMenuItem asChild>
                                     <AssignServersDialog
                                       userId={user.id}
-                                      editorId={user.id}
+                                      editorId={isAdmin.userId || ""}
                                       onAssigned={() =>
                                         handleRefreshUsers(
                                           fetchUsers,
@@ -265,7 +265,7 @@ export function UsersTable({
                                   </DropdownMenuItem>
                                 )}
 
-                                {isUserJunior && isAdmin && (
+                                {isUserJunior && isAdmin.hasCategory && (
                                   <DropdownMenuItem asChild>
                                     <AssignResearcherDialog
                                       userId={user.id}
@@ -313,7 +313,7 @@ export function UsersTable({
                                   </DropdownMenuItem>
                                 )}
 
-                                {isAdmin && (
+                                {isAdmin.hasCategory && (
                                   <>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
