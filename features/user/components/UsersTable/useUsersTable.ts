@@ -54,8 +54,6 @@ export function useUsersTable(limit?: number) {
 
         if (!data?.success) throw new Error(data?.error || "Error al cargar los usuarios");
 
-        console.log("Fetched users:", data);
-
         const rows: UsersTableDataProps[] = data.data?.rows ?? [];
         const total: number = data.data?.total ?? 0;
         const totalPages = Math.max(1, Math.ceil(total / limit));
