@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 import { TYPE_TRANSLATIONS, TYPE_VARIANTS } from "./helpers";
 import { Badge } from "@/components/ui/badge";
+import { LogsTableDataProps } from "./types";
 
 export function getNestedValue(obj: unknown, path: string): unknown {
   if (obj == null || typeof obj !== "object" || !path) return undefined;
@@ -71,4 +72,30 @@ export const getTypeBadge = (type: string) => {
       <span>{label}</span>
     </Badge>
   );
+};
+
+export const exportLogsToCSV = (logs: LogsTableDataProps[]) => {
+  if (!logs || logs.length === 0) return;
+
+  const csvRows: string[] = [];
+  const headers = Object.keys(logs[0]);
+  csvRows.push(headers.join(","));
+
+  for (const log of logs) {
+    const values = headers.map((header) => {
+      const value = getNestedValue(log, header);
+      return `"${toDisplay(value)}"`;
+    });
+    csvRows.push(values.join(","));
+  }
+
+  const csvString = csvRows.join("\n");
+  const blob = new Blob([csvString], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "logs.csv";
+  a.click();
+  URL.revokeObjectURL(url);
 };
