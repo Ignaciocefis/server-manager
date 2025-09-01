@@ -59,6 +59,7 @@ import { AssignResearcherDialog, AssignServersDialog } from "..";
 import { handleDeleteUser, handleToggleActive } from "./UsersTable.handlers";
 import { getNestedValue, toDisplay } from "@/features/eventLog/utils";
 import { UsersTableProps } from "./UserTable.type";
+import { toast } from "sonner";
 
 export function UsersTable({
   users,
@@ -316,15 +317,25 @@ export function UsersTable({
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                       className="text-red-600 focus:bg-red-100"
-                                      onClick={() => {
-                                        handleDeleteUser(user.id);
-                                        handleRefreshUsers(
-                                          fetchUsers,
-                                          pagination,
-                                          searchTerm,
-                                          sortField,
-                                          sortOrder as "desc" | "asc"
-                                        );
+                                      onClick={async () => {
+                                        try {
+                                          await handleDeleteUser(user.id);
+                                          handleRefreshUsers(
+                                            fetchUsers,
+                                            pagination,
+                                            searchTerm,
+                                            sortField,
+                                            sortOrder as "desc" | "asc"
+                                          );
+                                        } catch (error) {
+                                          console.error(
+                                            "Error deleting user:",
+                                            error
+                                          );
+                                          toast.error(
+                                            "Error al eliminar usuario"
+                                          );
+                                        }
                                       }}
                                     >
                                       <Trash2 className="w-4 h-4 mr-2" />
