@@ -297,6 +297,7 @@ export function UsersTable({
                                         sortOrder as "desc" | "asc"
                                       );
                                     }}
+                                    className="text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground focus:bg-green-100"
                                   >
                                     {user.isActive ? (
                                       <>
