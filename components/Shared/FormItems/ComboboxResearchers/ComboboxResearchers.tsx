@@ -44,7 +44,7 @@ export function ComboboxResearchers({
       </PopoverTrigger>
 
       <PopoverContent className="w-full p-0">
-        <Command>
+        <Command className="md:min-w-[350px]">
           <CommandInput placeholder="Buscar investigador..." />
           <CommandEmpty>No hay investigadores</CommandEmpty>
           <CommandGroup>
