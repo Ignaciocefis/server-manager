@@ -212,16 +212,6 @@ export const getAssignedUsers = async (
 
     const orderBy = buildOrderByUsers(sortField, sortOrder);
 
-    console.log("###################");
-    console.log("###################")
-    console.log("###################")
-    console.log(sortField, sortOrder);
-    console.log("###################")
-    console.log(orderBy);
-    console.log("###################")
-    console.log("###################")
-    console.log("###################")
-
     const [users, total] = await Promise.all([
       db.user.findMany({
         where: whereClause,
