@@ -6,8 +6,10 @@ import { useServerList } from "./useServerList";
 
 export function ServerList({
   onReservationSuccess,
+  searchTerm,
 }: {
   onReservationSuccess: () => void;
+  searchTerm: string;
 }): JSX.Element {
   const { servers, loading, error } = useServerList();
 
@@ -23,9 +25,17 @@ export function ServerList({
     return <p className="p-4">No tienes servidores asignados.</p>;
   }
 
+  const filteredServers = servers.filter((server) =>
+    server.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (filteredServers.length === 0) {
+    return <p className="p-4">No se encontraron servidores.</p>;
+  }
+
   return (
     <div className="w-11/12 m-4 grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
-      {servers.map((server) => (
+      {filteredServers.map((server) => (
         <ServerCard
           key={server.id}
           server={server}

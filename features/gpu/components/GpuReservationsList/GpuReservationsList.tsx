@@ -7,12 +7,20 @@ import { JSX } from "react";
 
 export function GpuReservationsList({
   refresh,
+  gpuSearchTerm,
 }: {
   refresh: () => void;
+  gpuSearchTerm: string;
 }): JSX.Element {
   const { reservations, loading, error } = useReservations();
 
   const sortedReservations = sortReservations(reservations);
+
+  const filteredReservations = sortedReservations.filter(
+    (r) =>
+      r.gpu.name.toLowerCase().includes(gpuSearchTerm.toLowerCase()) ||
+      r.server.name.toLowerCase().includes(gpuSearchTerm.toLowerCase())
+  );
 
   if (loading) return <p className="p-4">Cargando reservas...</p>;
   if (error) return <p className="p-4 text-red-500">{error}</p>;
@@ -22,7 +30,7 @@ export function GpuReservationsList({
       {sortedReservations.length === 0 ? (
         <p className="col-span-full text-center">No tienes GPUs reservadas.</p>
       ) : (
-        sortedReservations.map((r) => (
+        filteredReservations.map((r) => (
           <GpuReservationCard
             key={r.id}
             reservationId={r.id}
