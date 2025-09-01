@@ -38,12 +38,10 @@ export function AssignResearcherDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <DialogTrigger asChild>
-          <div className="flex items-center gap-4 px-2 py-1.5 text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground hover:bg-green-100">
-            <Paperclip className="w-4 h-4" />
-            Asignar investigador
-          </div>
-        </DialogTrigger>
+        <div className="flex items-center gap-4 px-2 py-1.5 text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground hover:bg-green-100">
+          <Paperclip className="w-4 h-4" />
+          Asignar investigador
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
