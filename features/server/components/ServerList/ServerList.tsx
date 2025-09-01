@@ -34,7 +34,7 @@ export function ServerList({
   }
 
   return (
-    <div className="w-11/12 m-4 grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
+    <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
       {filteredServers.map((server) => (
         <ServerCard
           key={server.id}

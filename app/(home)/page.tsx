@@ -19,12 +19,13 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div className="flex flex-col w-11/12 mx-auto">
-        <PageTitle title="Listado de servidores">
-          <CreateServerDialog />
-        </PageTitle>
-        <div className="mt-8 flex w-full items-center justify-between text-2xl font-semibold text-gray-app-600">
+    <div className="flex flex-col w-11/12 mx-auto space-y-8">
+      <PageTitle title="Listado de servidores">
+        <CreateServerDialog />
+      </PageTitle>
+
+      <section className="w-full space-y-4 items-center justify-center mx-auto">
+        <div className="flex w-full items-center justify-between text-2xl font-semibold text-gray-app-600">
           <h2>Mis reservas de GPU</h2>
           <div className="relative w-full max-w-md sm:max-w-lg">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
@@ -40,10 +41,12 @@ export default function Home() {
           key={refreshKey}
           gpuSearchTerm={gpuSearchTerm}
         />
+      </section>
 
-        <hr className="w-11/12 mx-auto border-t-2 border-gray-app-600" />
+      <hr className="w-11/12 border-t-2 border-gray-app-600 mx-auto" />
 
-        <div className="mt-8 flex w-full items-center justify-between text-2xl font-semibold text-gray-app-600">
+      <section className="w-full space-y-4">
+        <div className="flex w-full items-center justify-between text-2xl font-semibold text-gray-app-600">
           <h2>Servidores</h2>
           <div className="relative w-full max-w-md sm:max-w-lg">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
@@ -54,12 +57,12 @@ export default function Home() {
             />
           </div>
         </div>
-      </div>
-      <ServerList
-        onReservationSuccess={handleRefresh}
-        key={refreshKeyServer}
-        searchTerm={serverSearchTerm}
-      />
-    </>
+        <ServerList
+          onReservationSuccess={handleRefresh}
+          key={refreshKeyServer}
+          searchTerm={serverSearchTerm}
+        />
+      </section>
+    </div>
   );
 }
