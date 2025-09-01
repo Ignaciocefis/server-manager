@@ -3,7 +3,6 @@ import { toast } from "sonner";
 
 export async function handleDeleteUser(
   userId: string,
-  refetch: () => void
 ) {
   await axios.delete("/api/user/delete", {
     data: { userId },
@@ -13,7 +12,6 @@ export async function handleDeleteUser(
     }
 
     toast.success("Usuario eliminado correctamente.");
-    refetch();
   }).catch((error) => {
     console.error("Error al eliminar usuario:", error);
     toast.error("No se pudo eliminar el usuario.");
@@ -22,7 +20,6 @@ export async function handleDeleteUser(
 
 export async function handleToggleActive(
   userId: string,
-  refetch: () => void
 ) {
   await axios.patch("/api/user/toggleActive", {
     userId,
@@ -33,7 +30,6 @@ export async function handleToggleActive(
     }
 
     toast.success(`Usuario ${res.data.data ? "activado" : "desactivado"}`);
-    refetch();
   }).catch((error) => {
     console.error("Error al cambiar estado del usuario:", error)
     toast.error(error.response?.data?.error || "No se pudo cambiar el estado del usuario.");

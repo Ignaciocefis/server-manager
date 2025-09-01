@@ -1,9 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { UsersTableDataProps } from "./UsersTable.data.type";
 import { Category } from "@prisma/client";
 import { CheckCheck, Pause, Trash2 } from "lucide-react";
-import { AssignResearcherPopover, AssignServersPopover } from "..";
+import { UsersTableDataProps } from "./UserTable.type";
+import { AssignServersDialog } from "../AssignServerDialog/AssignServerDialog";
+import { AssignResearcherDialog } from "../AssignResearcherDialog/AssignResearcherDialog";
 
 export function getUserColumns(
   userId: string,
@@ -21,7 +22,7 @@ export function getUserColumns(
       header: "Usuario",
       cell: ({ row }) => {
         const u = row.original;
-        return `${u.name} ${u.firstSurname} ${u.secondSurname || ""}`;
+        return u.userFullName;
       },
     },
     { accessorKey: "email", header: "Correo" },
@@ -29,9 +30,7 @@ export function getUserColumns(
       accessorKey: "assignedTo",
       header: "Asignado a",
       cell: ({ row }) =>
-        row.original.assignedTo
-          ? `${row.original.assignedTo.name} ${row.original.assignedTo.firstSurname}`
-          : "-",
+        row.original.assignedToId ? row.original.assignedToFullName : "-",
     },
     {
       accessorKey: "category",
@@ -60,18 +59,18 @@ export function getUserColumns(
             {((isAdmin &&
               (u.category === "RESEARCHER" || u.category === "JUNIOR")) ||
               (isResearcher && u.category === "JUNIOR")) && (
-              <AssignServersPopover
+              <AssignServersDialog
                 userId={u.id}
                 editorId={userId}
                 onAssigned={handleRefresh}
               />
             )}
             {isUserJunior && isAdmin && (
-              <AssignResearcherPopover
+              <AssignResearcherDialog
                 userId={u.id}
                 onAssigned={handleRefresh}
                 researcherId={
-                  u.assignedTo ? (u.assignedToId ?? undefined) : undefined
+                  u.assignedToId ? (u.assignedToId ?? undefined) : undefined
                 }
               />
             )}

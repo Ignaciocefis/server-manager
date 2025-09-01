@@ -22,10 +22,18 @@ export interface UserWithPassword extends UserSummary {
 export interface UserWithOnlyPassword {
   id: string;
   password: string;
-} 
+}
 
 export interface UserName {
   name: string;
   firstSurname: string;
   secondSurname: string | null;
+}
+
+export interface GetUsersParams {
+  page?: number;
+  limit?: number;
+  sortField?: string;
+  sortOrder?: "asc" | "desc";
+  filterTitle?: string;
 }

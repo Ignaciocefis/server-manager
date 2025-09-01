@@ -1,9 +1,12 @@
-import { UserName, UserSummary, UserSummaryWithAssignedTo, UserWithOnlyPassword, UserWithPassword } from "@/features/user/types";
+import { GetUsersParams, UserName, UserSummary, UserWithOnlyPassword, UserWithPassword } from "@/features/user/types";
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
 import { createUserSchema } from "./schemas";
 import z from "zod";
 import bcrypt from "bcryptjs";
+import { buildOrderByUsers, formatUsers, getPaginationAndSortUsers } from "./helpers";
+import { Prisma } from "@prisma/client";
+import { UsersTableDataProps } from "./components/UsersTable/UserTable.type";
 
 export const getUserById = async (id: string): Promise<ApiResponse<UserSummary | null>> => {
   if (!id) {
@@ -155,39 +158,6 @@ export const getAllResearchers = async (): Promise<ApiResponse<UserSummary[] | n
   }
 };
 
-export const getAllUsers = async (): Promise<ApiResponse<UserSummaryWithAssignedTo[] | null>> => {
-  try {
-    const users = await db.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        firstSurname: true,
-        secondSurname: true,
-        email: true,
-        category: true,
-        assignedToId: true,
-        isActive: true,
-        assignedTo: {
-          select: {
-            id: true,
-            name: true,
-            firstSurname: true,
-            secondSurname: true,
-            email: true,
-            category: true,
-            assignedToId: true,
-          },
-        },
-      },
-      orderBy: { name: "asc" },
-    });
-    return { success: true, data: users, error: null };
-  } catch (error) {
-    console.error("Error fetching all users:", error);
-    return { success: false, data: null, error };
-  }
-};
-
 export const assignJuniorToResearcher = async (
   userId: string,
   researcherId: string
@@ -208,41 +178,94 @@ export const assignJuniorToResearcher = async (
   }
 };
 
-export const getAssignedUsers = async (investigatorId: string): Promise<ApiResponse<UserSummaryWithAssignedTo[]>> => {
-  if (!investigatorId) {
-    return { success: false, data: null, error: "No investigatorId provided" };
-  }
-
+export const getAssignedUsers = async (
+  investigatorId: string,
+  params?: GetUsersParams,
+): Promise<
+  ApiResponse<{
+    rows: UsersTableDataProps[];
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  }>
+> => {
   try {
-    const users = await db.user.findMany({
-      where: { assignedToId: investigatorId },
-      select: {
-        id: true,
-        name: true,
-        firstSurname: true,
-        secondSurname: true,
-        email: true,
-        category: true,
-        isActive: true,
-        assignedToId: true,
-        assignedTo: {
-          select: {
-            id: true,
-            name: true,
-            firstSurname: true,
-            secondSurname: true,
-            email: true,
-            category: true,
-            assignedToId: true,
+    if (!investigatorId) {
+      return { success: false, data: null, error: "No investigatorId provided" };
+    }
+
+    const { page, limit, skip, sortField, sortOrder, filterTitle } =
+      getPaginationAndSortUsers(params);
+
+    const whereClause: Prisma.UserWhereInput =
+      investigatorId === "all" ? {} : { assignedToId: investigatorId };
+
+    if (filterTitle) {
+      whereClause.OR = [
+        { name: { contains: filterTitle, mode: "insensitive" } },
+        { firstSurname: { contains: filterTitle, mode: "insensitive" } },
+        { secondSurname: { contains: filterTitle, mode: "insensitive" } },
+        { email: { contains: filterTitle, mode: "insensitive" } },
+      ];
+    }
+
+    const orderBy = buildOrderByUsers(sortField, sortOrder);
+
+    const [users, total] = await Promise.all([
+      db.user.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          name: true,
+          firstSurname: true,
+          secondSurname: true,
+          email: true,
+          category: true,
+          isActive: true,
+          assignedToId: true,
+          assignedTo: {
+            select: {
+              id: true,
+              name: true,
+              firstSurname: true,
+              email: true,
+              category: true,
+            },
           },
+          serverAccess: {
+            select: {
+              server: {
+                select: {
+                  name: true,
+                }
+              }
+            }
+          }
         },
+        skip,
+        take: limit,
+        orderBy
+      }),
+      db.user.count({ where: whereClause }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      success: true,
+      data: {
+        rows: formatUsers(users),
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
       },
-      orderBy: { createdAt: "desc" },
-    });
-    return { success: true, data: users, error: null };
+      error: null,
+    };
   } catch (error) {
     console.error("Error fetching assigned users:", error);
-    return { success: false, data: null, error };
+    return { success: false, data: null, error: "Error al obtener usuarios asignados" };
   }
 };
 
@@ -273,6 +296,16 @@ export const createUser = async (
         id: true,
       }
     });
+    if (category === "ADMIN") {
+      const servers = await db.server.findMany({ select: { id: true } });
+      const serverAccessData = servers.map(server => ({
+        userId: user.id,
+        serverId: server.id,
+      }));
+      if (serverAccessData.length > 0) {
+        await db.userServerAccess.createMany({ data: serverAccessData });
+      }
+    }
     return { success: true, data: user.id, error: null };
   } catch (error) {
     console.error("Error creating user:", error);

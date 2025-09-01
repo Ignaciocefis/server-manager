@@ -1,24 +1,27 @@
 "use client";
 
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ServerIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { assignServers } from "./handlers/assignServers";
 import { useState } from "react";
-import { AssignServersPopoverProps } from "./AssignServerPopover.types";
-import { useServerAssignment } from "./useAssignServerPopover";
+import { AssignServersDialogProps } from "./AssignServerDialog.types";
+import { useServerAssignment } from "./useAssignServerDialog";
 
-export function AssignServersPopover({
+export function AssignServersDialog({
   userId,
   editorId,
   onAssigned,
-}: AssignServersPopoverProps) {
+}: AssignServersDialogProps) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -42,19 +45,19 @@ export function AssignServersPopover({
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="bg-gray-app-200 hover:bg-gray-app-300"
-        >
-          <ServerIcon className="w-4 h-4 mr-1" />
-          Servidores
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-4">
-        <h3 className="mb-2 font-semibold text-lg">Asignar servidores</h3>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <div className="flex items-center gap-4 px-2 py-1.5 text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground hover:bg-green-100">
+          <ServerIcon className="w-4 h-4" />
+          Asignar servidores
+        </div>
+      </DialogTrigger>
+
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Asignar servidores</DialogTitle>
+        </DialogHeader>
+
         <input
           type="text"
           placeholder="Buscar servidores..."
@@ -62,6 +65,7 @@ export function AssignServersPopover({
           onChange={(e) => setSearch(e.target.value)}
           className="mb-3 w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none"
         />
+
         <ScrollArea className="h-64">
           {loading ? (
             <div className="p-4 text-center text-gray-500">Cargando...</div>
@@ -82,14 +86,17 @@ export function AssignServersPopover({
             ))
           )}
         </ScrollArea>
-        <Button
-          onClick={handleSave}
-          size="sm"
-          className="mt-3 w-full bg-green-600 hover:bg-green-700"
-        >
-          Guardar
-        </Button>
-      </PopoverContent>
-    </Popover>
+
+        <DialogFooter>
+          <Button
+            onClick={handleSave}
+            size="sm"
+            className="w-full bg-green-600 hover:bg-green-700"
+          >
+            Guardar
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

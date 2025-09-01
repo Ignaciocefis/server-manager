@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getAllUsers, getAssignedUsers, getUserById } from "@/features/user/data";
+import { getAssignedUsers, getUserById } from "@/features/user/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const { userId, isCategory } = await hasCategory(["ADMIN", "RESEARCHER"]);
 
@@ -20,33 +20,45 @@ export async function GET() {
       );
     }
 
+    const url = new URL(request.url)
+    const page = Number(url.searchParams.get("page") ?? 1)
+    const limit = Number(url.searchParams.get("limit") ?? 20)
+    const sortField = url.searchParams.get("sortField") ?? "createdAt"
+    const sortOrder = (url.searchParams.get("sortOrder") as "asc" | "desc") ?? "desc"
+    const filterTitle = url.searchParams.get("filterTitle") ?? ""
+
     const user = await getUserById(userId);
 
-    if (!user.success) {
+    if (!user.success || !user.data) {
       return NextResponse.json(
         { success: false, data: null, error: user.error || "Error al obtener usuario" },
         { status: 500 }
       );
     }
 
-    if (!user.data) {
-      return NextResponse.json(
-        { success: false, data: null, error: "Usuario no encontrado" },
-        { status: 404 }
-      );
+    let usersResult;
+    if (user.data.category === "ADMIN") {
+      usersResult = await getAssignedUsers("all", {
+        page,
+        limit,
+        sortField,
+        sortOrder,
+        filterTitle,
+      });
+    } else if (user.data.category === "RESEARCHER") {
+      usersResult = await getAssignedUsers(user.data.id, {
+        page,
+        limit,
+        sortField,
+        sortOrder,
+        filterTitle,
+      });
     }
 
-    if (user.data.category === "ADMIN") {
-      const users = await getAllUsers();
+    if (usersResult) {
       return NextResponse.json(
-        { success: users.success, data: users.data, error: users.error },
-        { status: users.success ? 200 : 500 }
-      );
-    } else if (user.data.category === "RESEARCHER") {
-      const users = await getAssignedUsers(user.data.id);
-      return NextResponse.json(
-        { success: users.success, data: users.data, error: users.error },
-        { status: users.success ? 200 : 500 }
+        { success: usersResult.success, data: usersResult.data, error: usersResult.error },
+        { status: usersResult.success ? 200 : 500 }
       );
     } else {
       return NextResponse.json(
