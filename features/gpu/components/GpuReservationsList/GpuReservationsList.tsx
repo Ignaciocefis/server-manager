@@ -29,6 +29,10 @@ export function GpuReservationsList({
     <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
       {sortedReservations.length === 0 ? (
         <p className="col-span-full text-center">No tienes GPUs reservadas.</p>
+      ) : filteredReservations.length === 0 ? (
+        <p className="col-span-full text-center">
+          No se encontraron resultados para la búsqueda.
+        </p>
       ) : (
         filteredReservations.map((r) => (
           <GpuReservationCard

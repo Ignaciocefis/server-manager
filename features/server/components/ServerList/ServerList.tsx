@@ -14,15 +14,19 @@ export function ServerList({
   const { servers, loading, error } = useServerList();
 
   if (loading) {
-    return <p className="p-4">Cargando servidores...</p>;
+    return <p className="col-span-full text-center">Cargando servidores...</p>;
   }
 
   if (error) {
-    return <p className="p-4 text-red-500">{error}</p>;
+    return <p className="col-span-full text-center text-red-500">{error}</p>;
   }
 
   if (servers.length === 0) {
-    return <p className="p-4">No tienes servidores asignados.</p>;
+    return (
+      <p className="col-span-full text-center">
+        No tienes servidores asignados.
+      </p>
+    );
   }
 
   const filteredServers = servers.filter((server) =>
@@ -30,7 +34,11 @@ export function ServerList({
   );
 
   if (filteredServers.length === 0) {
-    return <p className="p-4">No se encontraron servidores.</p>;
+    return (
+      <p className="col-span-full text-center">
+        No se encontraron resultados para la búsqueda.
+      </p>
+    );
   }
 
   return (
