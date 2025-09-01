@@ -39,7 +39,12 @@ import {
 } from "@/components/ui/select";
 
 import { TYPE_TRANSLATIONS, TYPE_VARIANTS } from "../../helpers";
-import { getNestedValue, getTypeBadge, toDisplay } from "../../utils";
+import {
+  exportLogsToCSV,
+  getNestedValue,
+  getTypeBadge,
+  toDisplay,
+} from "../../utils";
 import { useLogsTable } from "./useLogsTable";
 import {
   handleSort,
@@ -48,14 +53,16 @@ import {
   handlePageChange,
   handleLimitChange,
 } from "./LogsTable.helpers";
+import { useImperativeHandle, forwardRef } from "react";
 
-export function LogsTable({
-  serverId,
-  limit,
-}: {
-  serverId?: string;
-  limit?: number;
-}) {
+export type LogsTableHandle = {
+  exportFilteredLogs: () => void;
+};
+
+export const LogsTable = forwardRef<
+  LogsTableHandle,
+  { serverId?: string; limit?: number }
+>(({ serverId, limit }, ref) => {
   const {
     logs,
     loading,
@@ -74,8 +81,14 @@ export function LogsTable({
     fetchLogs,
   } = useLogsTable(serverId, limit);
 
+  useImperativeHandle(ref, () => ({
+    exportFilteredLogs: () => {
+      exportLogsToCSV(logs);
+    },
+  }));
+
   return (
-    <div className="space-y-4 w-11/12 mx-auto mb-4">
+    <div className="space-y-4 w-full mx-auto mb-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 flex-1">
           <div className="relative max-w-sm">
@@ -388,4 +401,6 @@ export function LogsTable({
       </div>
     </div>
   );
-}
+});
+
+LogsTable.displayName = "LogsTable";
