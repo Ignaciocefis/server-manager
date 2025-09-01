@@ -9,7 +9,9 @@ export default function AppLayout({
       <AppSidebar />
       <div className="w-full flex flex-col min-h-screen">
         <Navbar />
-        <main>{children}</main>
+        <main className="flex flex-col w-full mx-auto px-4 py-8">
+          {children}
+        </main>
       </div>
     </SidebarProvider>
   );
