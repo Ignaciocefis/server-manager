@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
-import { AssignResearcherPopoverHandlers } from "./AssignResearcherPopover.types";
+import { AssignResearcherPopoverHandlers } from "./AssignResearcherDialog.types";
 
 export async function assignResearcher({
   userId,
