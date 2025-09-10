@@ -58,3 +58,17 @@ export function sortReservations(reservations: GpuReservationListProps[]) {
     return getFinalEnd(a).getTime() - getFinalEnd(b).getTime();
   });
 }
+
+export function formatReservationsForCalendar(reservations: GpuReservationListProps[]) {
+  return reservations.map((res) => {
+    return {
+      id: res.id,
+      userName: `${res.user.name} ${res.user.firstSurname}`,
+      gpuName: res.gpu.name,
+      serverName: res.server.name,
+      status: res.status,
+      startDate: res.startDate ? new Date(res.startDate) : new Date(0),
+      endDate: res.actualEndDate ? new Date(res.actualEndDate) : new Date(0),
+    };
+  });
+}

@@ -5,3 +5,5 @@ export * from "./GpuReservation/GpuReservationDialog/GpuReservationDialog";
 export * from "./GpuReservation/GpuReservationForm/GpuReservationForm";
 export * from "./GpuReservationCard/GpuReservationCard";
 export * from "./GpuReservationsList/GpuReservationsList";
+export * from "./ReservationCalendar/ReservationCalendar";
+export * from "./ReservationCalendarDialog/ReservationCalendarDialog";

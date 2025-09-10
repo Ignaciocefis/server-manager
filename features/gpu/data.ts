@@ -1,6 +1,7 @@
-import { gpuName, reservationSummary, reservationSummaryWithExtendedUntil, reservationSummaryWithServerAndGpu } from "@/features/gpu/types";
+import { gpuName, reservationForCalendar, reservationSummary, reservationSummaryWithExtendedUntil, reservationSummaryWithServerAndGpu } from "@/features/gpu/types";
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
+import { formatReservationsForCalendar } from "./utils";
 
 export const existGpusByIdsAndServer = async (
   selectedGpuIds: string[],
@@ -210,5 +211,57 @@ export const getGpuNameById = async (
   } catch (error) {
     console.error("Error fetching GPU name by ID:", error);
     return { success: false, data: null, error };
+  }
+};
+
+export const getAccessibleReservationsByUser = async (
+  userId: string
+): Promise<ApiResponse<reservationForCalendar[] | null>> => {
+  try {
+    const whereClause: Record<string, unknown> = {};
+
+    if (userId !== "admin") {
+      whereClause.OR = [
+        { userId },
+        { assignedTo: userId }
+      ];
+    }
+
+    const reservations = await db.gpuReservation.findMany({
+      where: whereClause,
+      include: {
+        server: {
+          select: {
+            name: true,
+          },
+        },
+        gpu: {
+          select: {
+            name: true,
+          },
+        },
+        user: {
+          select: {
+            name: true,
+            firstSurname: true,
+          },
+        },
+      },
+    });
+
+    const formattedReservations = formatReservationsForCalendar(reservations);
+
+    return {
+      success: true,
+      data: formattedReservations,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Error fetching user reservations:", error);
+    return {
+      success: false,
+      data: null,
+      error,
+    };
   }
 };

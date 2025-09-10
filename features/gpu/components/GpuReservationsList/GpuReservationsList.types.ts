@@ -1,22 +1,22 @@
 export interface GpuReservationListProps {
   id: string;
-  createdAt: string;
+  createdAt: Date | null;
   gpuId: string;
   serverId: string;
-  status: "PENDING" | "ACTIVE" | "EXTENDED";
-  startDate: string | null;
-  endDate: string | null;
-  actualendDate: string | null;
-  extendedAt: string | null;
-  extendedUntil: string | null;
+  status: "PENDING" | "ACTIVE" | "EXTENDED" | "COMPLETED" | "CANCELLED";
+  startDate: Date | null;
+  endDate: Date | null;
+  actualEndDate: Date | null;
+  extendedAt: Date | null;
+  extendedUntil: Date | null;
   gpu: {
     name: string;
-    type: string;
-    ramGB: number;
   };
   server: {
     name: string;
-    ramGB: number;
-    diskCount: number;
+  };
+  user: {
+    name: string;
+    firstSurname: string;
   };
 };
