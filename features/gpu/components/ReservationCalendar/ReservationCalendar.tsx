@@ -62,7 +62,7 @@ export default function ReservationCalendar() {
           date={date}
           onNavigate={setDate}
           views={["month", "week", "day", "agenda"]}
-          defaultView="week"
+          defaultView="month"
           style={{ height: "100%", borderRadius: "24px" }}
           messages={CALENDAR_ES}
           formats={formats}

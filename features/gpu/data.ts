@@ -229,7 +229,12 @@ export const getAccessibleReservationsByUser = async (
 
     const reservations = await db.gpuReservation.findMany({
       where: whereClause,
-      include: {
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+        actualEndDate: true,
+        status: true,
         server: {
           select: {
             name: true,
@@ -248,6 +253,8 @@ export const getAccessibleReservationsByUser = async (
         },
       },
     });
+
+    console.log("Fetched reservations:", reservations);
 
     const formattedReservations = formatReservationsForCalendar(reservations);
 
