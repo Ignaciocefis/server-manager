@@ -58,3 +58,31 @@ export interface gpuName {
   id: string;
   name: string;
 }
+
+export interface reservationForCalendarWithoutFormat {
+  id: string;
+  user: {
+    name: string;
+    firstSurname: string;
+  };
+  gpu: {
+    name: string;
+  };
+  server: {
+    name: string;
+  };
+  startDate: Date;
+  endDate: Date;
+  actualEndDate: Date | null;
+  status: "PENDING" | "ACTIVE" | "EXTENDED" | "COMPLETED" | "CANCELLED";
+}
+
+export interface reservationForCalendar {
+  id: string;
+  userName: string;
+  gpuName: string;
+  serverName: string;
+  startDate: Date;
+  endDate: Date;
+  status: "PENDING" | "ACTIVE" | "EXTENDED" | "COMPLETED" | "CANCELLED";
+}

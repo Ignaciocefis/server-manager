@@ -86,9 +86,9 @@
   --color-orange-app: #FF7A00;
   --color-orange-app-transparent: rgba(255, 122, 0, 0.5);
 
-  /* Cian */
-  --color-cyan-app: #00CFFF;
-  --color-cyan-app-transparent: rgba(0, 207, 255, 0.5);
+  /* Morado */
+  --color-purple-app: #9B59B6;
+  --color-purple-app-transparent: rgba(155, 89, 182, 0.5);
 }
 
 :root {

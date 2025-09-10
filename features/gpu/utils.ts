@@ -1,4 +1,5 @@
 import { GpuReservationListProps } from "./components/GpuReservationsList/GpuReservationsList.types";
+import { reservationForCalendarWithoutFormat } from "./types";
 
 export function formatCountdown(seconds: number) {
   const h = Math.floor(seconds / 3600);
@@ -56,5 +57,24 @@ export function sortReservations(reservations: GpuReservationListProps[]) {
     if (priorityDiff !== 0) return priorityDiff;
 
     return getFinalEnd(a).getTime() - getFinalEnd(b).getTime();
+  });
+}
+
+export function formatReservationsForCalendar(reservations: reservationForCalendarWithoutFormat[]) {
+  return reservations.map((res) => {
+    return {
+      id: res.id,
+      userName: `${res.user.name} ${res.user.firstSurname}`,
+      gpuName: res.gpu.name,
+      serverName: res.server.name,
+      status: res.status,
+      startDate: res.startDate ? new Date(res.startDate) : new Date(0),
+      endDate: res.actualEndDate
+        ? new Date(res.actualEndDate)
+        : res.endDate
+          ? new Date(res.endDate)
+          : new Date(0),
+
+    };
   });
 }
