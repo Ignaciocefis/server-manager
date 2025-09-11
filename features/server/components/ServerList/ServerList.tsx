@@ -3,6 +3,7 @@
 import React, { JSX } from "react";
 import ServerCard from "../ServerCard/ServerCard";
 import { useServerList } from "./useServerList";
+import { ServerListSkeleton } from "./ServerList.skeleton";
 
 export function ServerList({
   onReservationSuccess,
@@ -14,7 +15,7 @@ export function ServerList({
   const { servers, loading, error } = useServerList();
 
   if (loading) {
-    return <p className="col-span-full text-center">Cargando servidores...</p>;
+    return <ServerListSkeleton />;
   }
 
   if (error) {

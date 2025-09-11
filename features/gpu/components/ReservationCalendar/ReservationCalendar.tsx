@@ -4,7 +4,6 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { es } from "date-fns/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Loader2 } from "lucide-react";
 import { CalendarEvent } from "./ReservationCalendar.types";
 import {
   CALENDAR_ES,
@@ -15,6 +14,7 @@ import {
 } from "./ReservationCalendar.utils";
 import { useReservationCalendar } from "./useReservationCalendar";
 import { ReservationDialog } from "..";
+import { ReservationCalendarSkeleton } from "./ReservationCalendar.skeleton";
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -38,12 +38,7 @@ export default function ReservationCalendar() {
     setDate,
   } = useReservationCalendar();
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center h-[700px]">
-        <Loader2 className="animate-spin h-8 w-8 text-gray-500" />
-      </div>
-    );
+  if (loading) return <ReservationCalendarSkeleton />;
 
   if (error)
     return <div className="p-4 text-red-600 font-semibold">Error: {error}</div>;

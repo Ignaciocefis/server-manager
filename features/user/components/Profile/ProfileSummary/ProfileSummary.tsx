@@ -8,12 +8,22 @@ import { ProfileSheet } from "../ProfileSheet/ProfileSheet";
 import { getCategory, getFullName } from "@/features/user/utils";
 import { useCurrentUser } from "./useProfileSummary";
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProfileSummary() {
   const [open, setOpen] = useState(false);
   const { user, loading } = useCurrentUser(open);
 
-  if (loading || !user) return <span>Cargando perfil...</span>;
+  if (loading || !user)
+    return (
+      <div className="flex items-center justify-end gap-3 ml-6">
+        <div className="hidden md:flex flex-col items-end leading-tight">
+          <Skeleton className="h-4 w-32 mb-1 rounded" />
+          <Skeleton className="h-3 w-24 rounded" />
+        </div>
+        <Skeleton className="h-6 w-6 rounded-full" />
+      </div>
+    );
 
   const { name, category, firstSurname, secondSurname } = user;
   const fullName = getFullName(
@@ -32,7 +42,7 @@ export function ProfileSummary() {
         >
           <div className="flex flex-col text-right leading-tight">
             <span className="font-medium text-sm">{fullName}</span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground ">
               {userCategory}
             </span>
           </div>

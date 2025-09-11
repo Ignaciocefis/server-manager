@@ -4,6 +4,7 @@ import GpuReservationCard from "@/features/gpu/components/GpuReservationCard/Gpu
 import { useReservations } from "./useGpuReservationList";
 import { sortReservations } from "../../utils";
 import { JSX } from "react";
+import { GpuReservationListSkeleton } from "./GpuReservationsList.skeleton";
 
 export function GpuReservationsList({
   refresh,
@@ -22,7 +23,7 @@ export function GpuReservationsList({
       r.server.name.toLowerCase().includes(gpuSearchTerm.toLowerCase())
   );
 
-  if (loading) return <p className="p-4">Cargando reservas...</p>;
+  if (loading) return <GpuReservationListSkeleton />;
   if (error) return <p className="p-4 text-red-500">{error}</p>;
 
   return (
