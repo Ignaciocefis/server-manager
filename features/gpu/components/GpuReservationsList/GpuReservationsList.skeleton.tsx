@@ -7,7 +7,7 @@ export function GpuReservationListSkeleton() {
         <div
           key={i}
           className={`bg-gray-app-500 text-gray-app-100 rounded-xl p-4 w-[250px] 
-          ${i > 0 ? "hidden sm:block h-min-[300px]" : "h-min-[250px]"}`}
+                    ${i > 0 ? "hidden sm:block" : ""}`}
         >
           <div className="flex w-full items-center mb-4">
             <Skeleton className="h-6 w-32 rounded" />
