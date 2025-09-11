@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { getTypeBadge } from "@/features/eventLog/utils";
 import { UnreadNotification } from "@/features/eventLog/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function NotificationButton() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -73,9 +74,7 @@ export function NotificationButton() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center w-8 h-8 rounded-md mr-4 bg-gray-app-100 animate-pulse" />
-    );
+    return <Skeleton className="h-6 w-6 rounded-full pl-4" />;
   }
 
   return (

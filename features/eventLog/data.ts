@@ -228,7 +228,6 @@ export const getAllUnreadNotifications = async (userId: string): Promise<ApiResp
 
 export const markNotificationAsRead = async (userNotificationId: string, userId: string): Promise<ApiResponse<null>> => {
   try {
-    console.log("Marcando notificación como leída:", { userNotificationId, userId });
     if (userNotificationId === "all") {
       await db.userNotification.updateMany({
         where: { userId },

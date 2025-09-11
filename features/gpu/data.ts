@@ -254,8 +254,6 @@ export const getAccessibleReservationsByUser = async (
       },
     });
 
-    console.log("Fetched reservations:", reservations);
-
     const formattedReservations = formatReservationsForCalendar(reservations);
 
     return {
