@@ -3,7 +3,6 @@
 import axios from "axios";
 import { Bell, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -17,6 +16,7 @@ import {
 import { getTypeBadge } from "@/features/eventLog/utils";
 import { UnreadNotification } from "@/features/eventLog/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function NotificationButton() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -30,16 +30,11 @@ export function NotificationButton() {
     await axios
       .get("/api/eventLogs/notificationList")
       .then((response) => {
-        if (!response.data.success) {
-          toast.error("Error al obtener notificaciones");
-          return;
-        }
         setNotificationList(response.data.data);
         setUnreadCount(response.data.data.length);
       })
       .catch((error) => {
-        console.error("Error fetching notifications:", error.message);
-        toast.error("Error al obtener notificaciones");
+        handleApiError(error, true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -52,12 +47,7 @@ export function NotificationButton() {
   const markAsRead = async (id: string) => {
     await axios
       .patch(`/api/eventLogs/notificationRead`, { id })
-      .then((response) => {
-        if (!response.data.success) {
-          toast.error("Error al marcar notificación como leída");
-          return;
-        }
-
+      .then(() => {
         if (id === "all") {
           setNotificationList([]);
           setUnreadCount(0);
@@ -68,8 +58,7 @@ export function NotificationButton() {
         setUnreadCount((prev) => prev - 1);
       })
       .catch((error) => {
-        console.error("Error marking notification as read:", error);
-        toast.error("No se pudo marcar como leída");
+        handleApiError(error, true);
       });
   };
 
