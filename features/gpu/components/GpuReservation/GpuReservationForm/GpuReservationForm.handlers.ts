@@ -3,6 +3,7 @@ import { UseFormReturn } from "react-hook-form";
 import { getDateWithTime, truncateToMinutes } from "@/features/gpu/utils";
 import { toast } from "sonner";
 import axios from "axios";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export async function GpuReservationFormHandler(
   data: RawGpuReservationFormData,
@@ -72,18 +73,11 @@ export async function GpuReservationFormHandler(
   await axios.post("/api/gpu/reservation", {
     ...data,
     range: { from, to },
-  }).then((res) => {
-    if (!res.data.success) {
-      toast.error(res.data.error || "Error al crear la reserva");
-      console.error("Error creating reservation:", res.data.error);
-      return;
-    }
-
+  }).then(() => {
     toast.success("Reserva creada correctamente");
     closeDialog();
     onSuccess();
   }).catch((error) => {
-    console.error("Error creating reservation:", error)
-    toast.error(error.response?.data?.message || "Error al crear la reserva");
+    handleApiError(error, true);
   });
 }

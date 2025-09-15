@@ -5,6 +5,7 @@ import axios from "axios";
 import { LogsTableDataProps } from "../../types";
 import { LogsTableColumn } from "./LogsTable.types";
 import { INITIAL_COLUMNS } from "./LogsTable.data";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useLogsTable(serverId?: string, limit?: number) {
   const [logs, setLogs] = useState<LogsTableDataProps[]>([]);
@@ -62,7 +63,8 @@ export function useLogsTable(serverId?: string, limit?: number) {
           hasPrev: page > 1,
         });
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
+        const msg = handleApiError(err, false);
+        setError(msg);
         setLogs([]);
         setPagination((p) => ({ ...p, total: 0, totalPages: 1, hasNext: false, hasPrev: false }));
       } finally {

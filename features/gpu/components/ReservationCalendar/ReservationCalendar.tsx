@@ -15,6 +15,7 @@ import {
 import { useReservationCalendar } from "./useReservationCalendar";
 import { ReservationDialog } from "..";
 import { ReservationCalendarSkeleton } from "./ReservationCalendar.skeleton";
+import { TriangleAlert } from "lucide-react";
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -41,7 +42,20 @@ export default function ReservationCalendar() {
   if (loading) return <ReservationCalendarSkeleton />;
 
   if (error)
-    return <div className="p-4 text-red-600 font-semibold">Error: {error}</div>;
+    return (
+      <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
+        <div className="flex-shrink-0 flex items-center">
+          <TriangleAlert className="w-10 h-full text-red-700" />
+        </div>
+
+        <div className="flex flex-col justify-center">
+          <h3 className="text-lg md:text-2xl font-bold text-red-700">
+            Ha ocurrido un error
+          </h3>
+          <p className="text-sm md:text-base text-red-app">{error}</p>
+        </div>
+      </div>
+    );  
 
   return (
     <div className="space-y-4-center">

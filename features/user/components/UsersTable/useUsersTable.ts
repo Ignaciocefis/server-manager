@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { handleApiError } from "@/lib/services/errors/errors";
 import { UsersTableColumn, UsersTableDataProps } from "./UserTable.type";
 
 export const INITIAL_COLUMNS: UsersTableColumn[] = [
@@ -29,7 +30,7 @@ export function useUsersTable(limit?: number) {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<UsersTableColumn[]>(INITIAL_COLUMNS);
-  const [sortField, setSortField] = useState("name");
+  const [sortField, setSortField] = useState("userFullName");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
@@ -43,16 +44,19 @@ export function useUsersTable(limit?: number) {
       limit = 25,
       search = "",
       sortField = "userFullName",
-      sortOrder = "desc",
+      sortOrder: "asc" | "desc" = "asc"
     ) => {
       setLoading(true);
       setError(null);
+
       try {
-        const { data } = await axios.get(`/api/user/list`, {
+        const { data } = await axios.get("/api/user/list", {
           params: { page, limit, filterTitle: search, sortField, sortOrder },
         });
 
-        if (!data?.success) throw new Error(data?.error || "Error al cargar los usuarios");
+        if (!data?.success) {
+          throw new Error(data?.error || "Error al cargar los usuarios");
+        }
 
         const rows: UsersTableDataProps[] = data.data?.rows ?? [];
         const total: number = data.data?.total ?? 0;
@@ -68,9 +72,17 @@ export function useUsersTable(limit?: number) {
           hasPrev: page > 1,
         });
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
+        const msg = handleApiError(err, true);
+        setError(msg);
+
         setUsers([]);
-        setPagination((p) => ({ ...p, total: 0, totalPages: 1, hasNext: false, hasPrev: false }));
+        setPagination((p) => ({
+          ...p,
+          total: 0,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        }));
       } finally {
         setLoading(false);
       }

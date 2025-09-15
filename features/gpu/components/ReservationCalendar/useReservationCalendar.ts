@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { reservationForCalendar } from "@/features/gpu/types";
 import { CalendarEvent } from "./ReservationCalendar.types";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useReservationCalendar() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -34,9 +35,9 @@ export function useReservationCalendar() {
         );
 
         setEvents(mappedEvents);
-      } catch (err: unknown) {
-        if (err instanceof Error) setError(err.message);
-        else setError("Error desconocido");
+      } catch (err) {
+        const msg = handleApiError(err, false);
+        setError(msg);
       } finally {
         setLoading(false);
       }

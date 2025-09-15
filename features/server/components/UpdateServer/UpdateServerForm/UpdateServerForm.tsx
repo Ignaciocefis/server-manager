@@ -23,21 +23,15 @@ export function UpdateServerForm({
   onUpdate,
 }: UpdateServerFormProps) {
   const form = useUpdateServerFormSchema(serverToEdit);
-  const { onSubmit } = useUpdateServerForm({
-    form,
-    closeDialog,
-    onUpdate,
-  });
+  const { update } = useUpdateServerForm({ onUpdate, closeDialog });
 
-  if (!serverToEdit) {
-    return null;
-  }
+  if (!serverToEdit) return null;
 
   return (
     <Form {...form}>
       <form
         key={serverToEdit.id}
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit((data) => update(data))}
         className="space-y-8"
       >
         <input type="hidden" {...form.register("serverId")} />

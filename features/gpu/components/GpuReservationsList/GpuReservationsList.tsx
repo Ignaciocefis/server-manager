@@ -5,6 +5,7 @@ import { useReservations } from "./useGpuReservationList";
 import { sortReservations } from "../../utils";
 import { JSX } from "react";
 import { GpuReservationListSkeleton } from "./GpuReservationsList.skeleton";
+import { TriangleAlert } from "lucide-react";
 
 export function GpuReservationsList({
   refresh,
@@ -24,7 +25,21 @@ export function GpuReservationsList({
   );
 
   if (loading) return <GpuReservationListSkeleton />;
-  if (error) return <p className="p-4 text-red-500">{error}</p>;
+  if (error)
+    return (
+      <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
+        <div className="flex-shrink-0 flex items-center">
+          <TriangleAlert className="w-10 h-full text-red-700" />
+        </div>
+
+        <div className="flex flex-col justify-center">
+          <h3 className="text-lg md:text-2xl font-bold text-red-700">
+            Ha ocurrido un error
+          </h3>
+          <p className="text-sm md:text-base text-red-app">{error}</p>
+        </div>
+      </div>
+    );
 
   return (
     <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">

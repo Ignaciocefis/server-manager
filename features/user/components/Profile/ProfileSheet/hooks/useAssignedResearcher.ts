@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "sonner";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useAssignedResearcher(category: string, assignedToId: string | null) {
   const [researcherName, setResearcherName] = useState<string | null>(null);
@@ -10,16 +10,10 @@ export function useAssignedResearcher(category: string, assignedToId: string | n
       if (category === "JUNIOR" && assignedToId) {
         axios.get(`/api/researcher/findResearcher?id=${assignedToId}`)
           .then((res) => {
-            if (!res.data.success) {
-              toast.error(res.data.error || "Error al actualizar el perfil");
-              return;
-            }
-
             const researcher = res.data.data;
             setResearcherName(researcher)
           }).catch((error) => {
-            console.error("Error al obtener el investigador:", error);
-            toast.error("Error al obtener el investigador");
+            handleApiError(error, true);
           });
       } else {
         setResearcherName(null);
