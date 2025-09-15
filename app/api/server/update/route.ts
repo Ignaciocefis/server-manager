@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
 
     if (existingServer.data.name !== serverData.name) {
       const nameExists = await existsServerByName(serverData.name);
-      if (nameExists) {
+      if (!nameExists || nameExists.data) {
         return NextResponse.json(
           { success: false, data: null, error: "Ya existe un servidor con ese nombre" },
           { status: 409 }
