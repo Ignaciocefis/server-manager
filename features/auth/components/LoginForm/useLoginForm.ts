@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { loginFormSchema } from "../../schemas";
 import { z } from "zod";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useLoginForm() {
   const router = useRouter();
@@ -31,33 +32,28 @@ export function useLoginForm() {
 
     const { email, password } = result.data;
 
-    try {
-      const result = await axios.get("/api/auth/isActive", {
-        params: { email },
-      });
-
+    await axios.get("/api/auth/isActive", {
+      params: { email },
+    }).then(async (result) => {
       if (!result?.data?.data?.isActive) {
         toast.error("Usuario inactivo, habla con un administrador para solicitar el alta de tu cuenta");
         return;
       }
-
       const res = await signIn("credentials", {
         email,
         password,
         redirect: false,
         callbackUrl,
       });
-
       if (res?.error) {
         toast.error("Email o contraseña incorrectos");
       } else {
         toast.success("Inicio de sesión exitoso");
         router.push(res.url || "/");
       }
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      toast.error("Ha ocurrido un error inesperado");
-    }
+    }).catch((error) => {
+      handleApiError(error);
+    });
   };
 
   return {
