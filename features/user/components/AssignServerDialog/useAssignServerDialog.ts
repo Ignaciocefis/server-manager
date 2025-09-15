@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { fetchServers } from "./handlers/fetchServers";
 import { ServerSummary } from "@/features/server/types";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useServerAssignment(open: boolean, editorId: string, userId: string) {
   const [servers, setServers] = useState<ServerSummary[]>([]);
@@ -19,8 +19,7 @@ export function useServerAssignment(open: boolean, editorId: string, userId: str
         setServers(servers);
         setSelected(selectedIds);
       } catch (error) {
-        console.error("Error fetching servers:", error);
-        toast.error("No se pudo cargar la lista de servidores");
+        handleApiError(error, true);
       } finally {
         setLoading(false);
       }

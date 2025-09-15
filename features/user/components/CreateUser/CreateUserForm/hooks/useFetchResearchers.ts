@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import type { UseFetchResearchersResult } from "../CreateUserForm.types";
 import { Researcher } from "@/lib/types/user";
-import { toast } from "sonner";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useFetchResearchers(category: string): UseFetchResearchersResult {
   const [researchers, setResearchers] = useState<Researcher[]>([]);
@@ -18,14 +18,12 @@ export function useFetchResearchers(category: string): UseFetchResearchersResult
     axios
       .get("/api/user/researcher/allResearchers")
       .then((res) => {
-        if (!res.data.success) {
-          setError(res.data.error || "Error al cargar investigadores");
-          toast.error(res.data.error || "Error al cargar investigadores");
-          return;
-        }
         setResearchers(res.data.data || []);
       })
-      .catch(() => setError("No se pudieron cargar los investigadores"))
+      .catch((error) => {
+        const msg = handleApiError(error, true);
+        setError(msg);
+      })
       .finally(() => setLoading(false));
   }, [category]);
 

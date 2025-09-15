@@ -1,3 +1,4 @@
+import { handleApiError } from "@/lib/services/errors/errors";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -6,15 +7,10 @@ export async function handleDeleteUser(
 ) {
   await axios.delete("/api/user/delete", {
     data: { userId },
-  }).then((res) => {
-    if (!res.data.success) {
-      throw new Error(res.data.message || "Error al eliminar el usuario");
-    }
-
+  }).then(() => {
     toast.success("Usuario eliminado correctamente.");
   }).catch((error) => {
-    console.error("Error al eliminar usuario:", error);
-    toast.error("No se pudo eliminar el usuario.");
+    handleApiError(error, true);
   });
 }
 
