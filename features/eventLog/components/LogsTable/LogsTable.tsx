@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsRight,
+  TriangleAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -166,8 +167,17 @@ export const LogsTable = forwardRef<
       </div>
 
       {error && (
-        <div className="p-4 border border-destructive/20 bg-destructive/10 text-destructive rounded-lg">
-          Error: {error}
+        <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
+          <div className="flex-shrink-0 flex items-center">
+            <TriangleAlert className="w-10 h-full text-red-700" />
+          </div>
+
+          <div className="flex flex-col justify-center">
+            <h3 className="text-lg md:text-2xl font-bold text-red-700">
+              Ha ocurrido un error
+            </h3>
+            <p className="text-sm md:text-base text-red-app">{error}</p>
+          </div>
         </div>
       )}
 
