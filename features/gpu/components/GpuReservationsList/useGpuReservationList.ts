@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { GpuReservationListProps } from "./GpuReservationsList.types";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useReservations() {
   const [reservations, setReservations] = useState<GpuReservationListProps[]>([]);
@@ -13,16 +14,11 @@ export function useReservations() {
 
     await axios.get("/api/gpu/list")
       .then(res => {
-        if (!res.data.success) {
-          console.error("Error al cargar reservas:", res.data.error);
-          setError("No se pudieron cargar las reservas.");
-          return;
-        }
         setReservations(res.data.data.data);
       })
       .catch(error => {
-        console.error("Error al cargar reservas:", error);
-        setError("No se pudieron cargar las reservas.");
+        const msg = handleApiError(error, false);
+        setError(msg);
       })
       .finally(() => {
         setLoading(false);

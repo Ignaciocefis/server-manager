@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Gpu } from "@/features/gpu/types";
-import { toast } from "sonner";
+import { handleApiError } from "@/lib/services/errors/errors";
 
 export function useAvailableGpus(open: boolean, serverId: string) {
   const [gpus, setGpus] = useState<Gpu[]>([]);
@@ -14,15 +14,10 @@ export function useAvailableGpus(open: boolean, serverId: string) {
       setLoading(true);
       await axios.get(`/api/server/details?serverId=${serverId}`)
         .then(res => {
-          if (!res.data.success) {
-            console.error("Error fetching GPUs:", res.data.error);
-            toast.error(res.data.error || "Error al obtener las GPUs disponibles");
-          }
           setGpus(res.data.data.data.gpus ?? []);
         })
         .catch(error => {
-          console.error("Error fetching GPUs:", error);
-          toast.error("Error al obtener las GPUs disponibles");
+          handleApiError(error, true);
           setGpus([]);
         })
         .finally(() => setLoading(false));

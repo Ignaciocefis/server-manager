@@ -1,3 +1,4 @@
+import { handleApiError } from "@/lib/services/errors/errors";
 import axios from "axios";
 import { addHours } from "date-fns";
 import { toast } from "sonner";
@@ -24,19 +25,13 @@ export async function handleExtendReservation(
   await axios.put("/api/gpu/extend", {
     reservationId,
     extendedUntil: extendedUntil.toISOString(),
-  }).then((res) => {
-    if (!res.data.success) {
-      toast.error(res.data.error || "Error al extender la reserva");
-      return;
-    }
-
+  }).then(() => {
     toast.success(`Reserva extendida ${hoursToExtend} hora(s) correctamente`);
     setShowPopover(false);
     onSuccess();
   }).catch((error) => {
-    console.error("Error al extender reserva:", error);
-    setError(error || "No se pudo extender la reserva");
-    toast.error(error?.response?.data?.error || "No se pudo extender la reserva");
+    const msg = handleApiError(error, false);
+    setError(msg);
   }).finally(() => {
     setLoading(false);
   });
