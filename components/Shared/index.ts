@@ -1,5 +1,6 @@
 export * from "./AppImage/AppImage";
 export * from "./AppSidebar/AppSidebar";
+export * from "./ErrorPage/ErrorPage";
 export * from "./FormItems/ComboboxResearchers/ComboboxResearchers";
 export * from "./FormItems/DateRangePicker/DateRangePicker";
 export * from "./FormItems/GpuSelector/GpuSelector";
