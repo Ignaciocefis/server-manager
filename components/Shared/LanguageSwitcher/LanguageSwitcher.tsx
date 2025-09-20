@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { useLanguage } from "@/hooks/useLanguaje";
+import { useLanguage } from "@/hooks/useLanguage";
 import Image from "next/image";
 
 export function LanguageSwitcher() {

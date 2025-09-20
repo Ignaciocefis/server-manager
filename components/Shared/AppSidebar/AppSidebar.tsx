@@ -17,7 +17,7 @@ import { adminLinks, userLinks } from "./AppSidebar.data";
 import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { LanguageSwitcher } from "..";
-import { useLanguage } from "@/hooks/useLanguaje";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function AppSidebar() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
