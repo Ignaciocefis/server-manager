@@ -11,17 +11,19 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { adminLinks, userLinks } from "./AppSidebar.data";
 import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { LanguageSwitcher } from "..";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function AppSidebar() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { state } = useSidebar();
   const pathName = usePathname();
+  const { t } = useLanguage();
 
   return (
     <Sidebar collapsible="icon">
@@ -93,24 +95,13 @@ export function AppSidebar() {
           <hr className="bg-gray-app-600 w-4/5 mx-auto" />
           <SidebarGroup>
             <SidebarMenu className="pl-4 gap-2 w-60 -ml-2">
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Image
-                    src="/languages/es.png"
-                    alt="Español"
-                    width={18}
-                    height={18}
-                    className="mr-2"
-                  />
-                  <Link href="/language">Español</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <LanguageSwitcher />
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => signOut({ callbackUrl: "/login" })}
                 >
                   <LogOut className="mr-2 w-6 h-6" />
-                  <span>Cerrar sesión</span>
+                  <span>{t.Shared.AppSidebar.logout}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
