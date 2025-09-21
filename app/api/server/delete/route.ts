@@ -51,19 +51,6 @@ export async function DELETE(req: Request) {
       );
     }
 
-    const deleted = await deleteServer(serverId);
-
-    if (!deleted || !deleted.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          data: null,
-          error: deleted?.error || "No se pudo eliminar el servidor",
-        },
-        { status: 500 }
-      );
-    }
-
     const log = await createEventLog({
       eventType: "SERVER_DELETED",
       message: `El servidor ${serverName.data[0].name} ha sido eliminado.`,
@@ -73,6 +60,19 @@ export async function DELETE(req: Request) {
     if (!log || log.error) {
       return NextResponse.json(
         { success: false, data: null, error: "Error al crear el registro de evento" },
+        { status: 500 }
+      );
+    }
+
+    const deleted = await deleteServer(serverId);
+
+    if (!deleted || !deleted.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          data: null,
+          error: deleted?.error || "No se pudo eliminar el servidor",
+        },
         { status: 500 }
       );
     }
