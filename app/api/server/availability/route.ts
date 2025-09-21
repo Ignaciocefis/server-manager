@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { changeServerAvailability, getServerByIdWithReservations, getAllUsersWithAccessToServer } from "@/features/server/data";
+import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
 import { createEventLog } from "@/features/eventLog/data";
-import { sendEmailAvailabilityChange } from "@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange";
+// import { sendEmailAvailabilityChange } from "@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange";
 
 export async function PUT(request: Request) {
   try {
@@ -31,7 +31,8 @@ export async function PUT(request: Request) {
 
     const updated = await changeServerAvailability(serverId);
 
-    if (!updated.success || !updated.data) {
+    if (!updated.success || updated.error) {
+      console.error("Error al cambiar la disponibilidad del servidor:", updated?.error);
       return NextResponse.json(
         {
           success: false,
@@ -44,7 +45,7 @@ export async function PUT(request: Request) {
 
     const updatedServer = await getServerByIdWithReservations(serverId);
 
-    if (!updatedServer || !updatedServer.data || !updatedServer.data.name) {
+    if (!updatedServer || updatedServer.error || !updatedServer.data) {
       return NextResponse.json(
         { success: false, data: null, error: "Servidor no encontrado" },
         { status: 404 }
@@ -58,21 +59,24 @@ export async function PUT(request: Request) {
     });
 
     if (!log || log.error) {
+      console.error("Error al crear el registro de evento:", log?.error);
       return NextResponse.json(
         { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
       );
     }
 
+    /**
+
     const usersWithAccess = await getAllUsersWithAccessToServer(serverId);
 
-    if (!usersWithAccess || usersWithAccess.error || !usersWithAccess.data) {
+    if (!usersWithAccess || usersWithAccess.error) {
       return NextResponse.json(
         { success: false, data: null, error: "Error al obtener usuarios con acceso al servidor" },
         { status: 500 }
       );
     }
-
+    
     for (const user of usersWithAccess.data) {
       try {
         await sendEmailAvailabilityChange(
@@ -85,6 +89,8 @@ export async function PUT(request: Request) {
         console.error("Error al enviar correo de cambio de disponibilidad:", error);
       }
     }
+
+    */
 
     return NextResponse.json(
       {
