@@ -32,7 +32,6 @@ export async function PUT(request: Request) {
     const updated = await changeServerAvailability(serverId);
 
     if (!updated.success || updated.error) {
-      console.error("Error al cambiar la disponibilidad del servidor:", updated?.error);
       return NextResponse.json(
         {
           success: false,
@@ -59,7 +58,6 @@ export async function PUT(request: Request) {
     });
 
     if (!log || log.error) {
-      console.error("Error al crear el registro de evento:", log?.error);
       return NextResponse.json(
         { success: false, data: null, error: "Error al crear el registro de evento" },
         { status: 500 }
