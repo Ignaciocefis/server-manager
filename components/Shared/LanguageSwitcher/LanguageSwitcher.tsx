@@ -16,7 +16,10 @@ export function LanguageSwitcher() {
   return (
     <div className="flex flex-col gap-2">
       <SidebarMenuItem>
-        <SidebarMenuButton onClick={() => changeLanguage(nextLanguage)}>
+        <SidebarMenuButton
+          onClick={() => changeLanguage(nextLanguage)}
+          className="flex items-center gap-3 text-base font-medium rounded-md transition-colors hover:bg-gray-app-200-transparent"
+        >
           <Image
             src={flagSrc}
             alt={altText}
