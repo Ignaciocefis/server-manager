@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GpuDonutChart, ServerDetailsInfo } from "../..";
 import { useServerDetails } from "./useServerDetailsContainer";
@@ -8,12 +9,29 @@ import { handleDeleteServer } from "./handlers/deleteServerHandler";
 import { GpuInUseTable } from "@/features/gpu/components";
 import { LogsTable } from "@/features/eventLog/components";
 import { TriangleAlert } from "lucide-react";
+import { ConfirmDialog } from "@/components/Shared/ConfirmDialog/ConfirmDialog";
+import {
+  ConfirmMessageKey,
+  ConfirmMessageParams,
+} from "@/components/Shared/ConfirmDialog/ConfirmDialog.types";
 
 export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   const router = useRouter();
-
   const { server, loading, error, isAdmin, triggerRefresh, setServer } =
     useServerDetails(serverId);
+
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<() => void>(
+    () => () => {}
+  );
+  interface ConfirmParams {
+    messageKey: ConfirmMessageKey;
+    params: ConfirmMessageParams[ConfirmMessageKey];
+  }
+  const [confirmParams, setConfirmParams] = useState<ConfirmParams>({
+    messageKey: "server_availability",
+    params: {} as ConfirmMessageParams[ConfirmMessageKey],
+  });
 
   if (loading)
     return (
@@ -45,16 +63,54 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
       </div>
     );
 
+  const openConfirmDialog = (action: () => void, params: ConfirmParams) => {
+    setConfirmAction(() => action);
+    setConfirmParams(params);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleToggleAvailability = async () => {
+    openConfirmDialog(
+      async () => {
+        setConfirmDialogOpen(false);
+        try {
+          await toggleAvailability(server.id, setServer, triggerRefresh);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      {
+        messageKey: "server_availability",
+        params: { name: server.name, available: !server.available },
+      }
+    );
+  };
+
+  const handleDelete = async () => {
+    openConfirmDialog(
+      async () => {
+        setConfirmDialogOpen(false);
+        try {
+          await handleDeleteServer(server.id, router, triggerRefresh);
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      {
+        messageKey: "delete_server",
+        params: { name: server.name },
+      }
+    );
+  };
+
   return (
     <>
       <ServerDetailsInfo
         server={server}
         isAdmin={isAdmin}
         onUpdate={triggerRefresh}
-        onToggleAvailability={() =>
-          toggleAvailability(server.id, setServer, () => {})
-        }
-        onDelete={() => handleDeleteServer(server.id, router, () => {})}
+        onToggleAvailability={handleToggleAvailability}
+        onDelete={handleDelete}
         onReservationSuccess={triggerRefresh}
       />
 
@@ -73,6 +129,14 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
       <div>
         <LogsTable serverId={server.id} limit={10} />
       </div>
+
+      <ConfirmDialog
+        open={confirmDialogOpen}
+        onClose={() => setConfirmDialogOpen(false)}
+        onConfirm={confirmAction}
+        messageKey={confirmParams.messageKey}
+        params={confirmParams.params}
+      />
     </>
   );
 };

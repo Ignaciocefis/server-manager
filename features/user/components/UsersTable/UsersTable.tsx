@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Search,
   RefreshCw,
@@ -61,6 +62,11 @@ import { handleDeleteUser, handleToggleActive } from "./UsersTable.handlers";
 import { getNestedValue, toDisplay } from "@/features/eventLog/utils";
 import { UsersTableProps } from "./UserTable.type";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/Shared/ConfirmDialog/ConfirmDialog";
+import {
+  ConfirmMessageKey,
+  ConfirmMessageParams,
+} from "@/components/Shared/ConfirmDialog/ConfirmDialog.types";
 
 export function UsersTable({
   users,
@@ -79,6 +85,25 @@ export function UsersTable({
 }: UsersTableProps) {
   const isAdmin = useHasCategory("ADMIN");
   const isResearcher = useHasCategory("RESEARCHER");
+
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<() => void>(
+    () => () => {}
+  );
+  const [confirmParams, setConfirmParams] = useState<{
+    messageKey: ConfirmMessageKey;
+    params: ConfirmMessageParams[ConfirmMessageKey];
+  } | null>(null);
+
+  const openConfirmDialog = <K extends ConfirmMessageKey>(
+    action: () => void,
+    messageKey: K,
+    params: ConfirmMessageParams[K]
+  ) => {
+    setConfirmAction(() => action);
+    setConfirmParams({ messageKey, params });
+    setConfirmDialogOpen(true);
+  };
 
   return (
     <div className="space-y-4 w-11/12 mx-auto mb-4">
@@ -297,16 +322,25 @@ export function UsersTable({
 
                                 {user.category !== "ADMIN" && (
                                   <DropdownMenuItem
-                                    onClick={() => {
-                                      handleToggleActive(user.id);
-                                      handleRefreshUsers(
-                                        fetchUsers,
-                                        pagination,
-                                        searchTerm,
-                                        sortField,
-                                        sortOrder as "desc" | "asc"
-                                      );
-                                    }}
+                                    onClick={() =>
+                                      openConfirmDialog(
+                                        () =>
+                                          handleToggleActive(user.id).then(() =>
+                                            handleRefreshUsers(
+                                              fetchUsers,
+                                              pagination,
+                                              searchTerm,
+                                              sortField,
+                                              sortOrder as "desc" | "asc"
+                                            )
+                                          ),
+                                        "activate_user",
+                                        {
+                                          userName: user.userFullName,
+                                          active: !user.isActive,
+                                        }
+                                      )
+                                    }
                                     className="text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground focus:bg-green-100"
                                   >
                                     {user.isActive ? (
@@ -328,26 +362,34 @@ export function UsersTable({
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                       className="text-red-600 focus:bg-red-100"
-                                      onClick={async () => {
-                                        try {
-                                          await handleDeleteUser(user.id);
-                                          handleRefreshUsers(
-                                            fetchUsers,
-                                            pagination,
-                                            searchTerm,
-                                            sortField,
-                                            sortOrder as "desc" | "asc"
-                                          );
-                                        } catch (error) {
-                                          console.error(
-                                            "Error deleting user:",
-                                            error
-                                          );
-                                          toast.error(
-                                            "Error al eliminar usuario"
-                                          );
-                                        }
-                                      }}
+                                      onClick={() =>
+                                        openConfirmDialog(
+                                          async () => {
+                                            try {
+                                              await handleDeleteUser(user.id);
+                                              handleRefreshUsers(
+                                                fetchUsers,
+                                                pagination,
+                                                searchTerm,
+                                                sortField,
+                                                sortOrder as "desc" | "asc"
+                                              );
+                                            } catch (error) {
+                                              console.error(
+                                                "Error deleting user:",
+                                                error
+                                              );
+                                              toast.error(
+                                                "Error al eliminar usuario"
+                                              );
+                                            }
+                                          },
+                                          "delete_user",
+                                          {
+                                            userName: user.userFullName,
+                                          }
+                                        )
+                                      }
                                     >
                                       <Trash2 className="w-4 h-4 mr-2" />
                                       Borrar
@@ -493,6 +535,19 @@ export function UsersTable({
           </div>
         </div>
       </div>
+
+      {confirmParams && (
+        <ConfirmDialog
+          onClose={() => setConfirmDialogOpen(false)}
+          open={confirmDialogOpen}
+          onConfirm={() => {
+            setConfirmDialogOpen(false);
+            confirmAction();
+          }}
+          messageKey={confirmParams.messageKey}
+          params={confirmParams.params}
+        />
+      )}
     </div>
   );
 }

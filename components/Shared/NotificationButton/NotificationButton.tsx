@@ -17,6 +17,7 @@ import { getTypeBadge } from "@/features/eventLog/utils";
 import { UnreadNotification } from "@/features/eventLog/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { handleApiError } from "@/lib/services/errors/errors";
+import { usePathname } from "next/navigation";
 
 export function NotificationButton() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -25,6 +26,8 @@ export function NotificationButton() {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const pathname = usePathname();
 
   const fetchNotifications = async () => {
     await axios
@@ -40,9 +43,10 @@ export function NotificationButton() {
         setIsLoading(false);
       });
   };
+
   useEffect(() => {
     fetchNotifications();
-  }, []);
+  }, [pathname]);
 
   const markAsRead = async (id: string) => {
     await axios
