@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,6 +17,7 @@ import { useUpdateServerFormSchema } from "./hooks/useUpdateServerFormSchema";
 import { useUpdateServerForm } from "./hooks/useUpdateServerForm";
 import { UpdateServerFormProps } from "./UpdateServerForm.types";
 import { GpuForm } from "@/features/gpu/components";
+import { ConfirmDialog } from "@/components/Shared/ConfirmDialog/ConfirmDialog";
 
 export function UpdateServerForm({
   serverToEdit,
@@ -25,82 +27,138 @@ export function UpdateServerForm({
   const form = useUpdateServerFormSchema(serverToEdit);
   const { update } = useUpdateServerForm({ onUpdate, closeDialog });
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingData, setPendingData] = useState<{
+    serverId: string;
+    name: string;
+    ramGB: number;
+    diskCount: number;
+    available: boolean;
+    gpus: {
+      name: string;
+      ramGB: number;
+      type: string;
+      status?: "PENDING" | "ACTIVE" | "EXTENDED" | "COMPLETED" | "CANCELLED";
+      id?: string;
+      userId?: string;
+    }[];
+  } | null>(null);
+
   if (!serverToEdit) return null;
 
+  const handleSubmit = (data: {
+    serverId: string;
+    name: string;
+    ramGB: number;
+    diskCount: number;
+    available: boolean;
+    gpus: {
+      name: string;
+      ramGB: number;
+      type: string;
+      status?: "PENDING" | "ACTIVE" | "EXTENDED" | "COMPLETED" | "CANCELLED";
+      id?: string;
+      userId?: string;
+    }[];
+  }) => {
+    setPendingData(data);
+    setConfirmOpen(true);
+  };
+
+  const onConfirmUpdate = () => {
+    if (pendingData) {
+      update(pendingData);
+      setPendingData(null);
+    }
+    setConfirmOpen(false);
+  };
+
   return (
-    <Form {...form}>
-      <form
-        key={serverToEdit.id}
-        onSubmit={form.handleSubmit((data) => update(data))}
-        className="space-y-8"
-      >
-        <input type="hidden" {...form.register("serverId")} />
+    <>
+      <Form {...form}>
+        <form
+          key={serverToEdit.id}
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-8"
+        >
+          <input type="hidden" {...form.register("serverId")} />
 
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg">Nombre del servidor</FormLabel>
-              <FormControl>
-                <Input type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
-            name="ramGB"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>RAM (GB)</FormLabel>
+                <FormLabel className="text-lg">Nombre del servidor</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="diskCount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cantidad de Discos</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="ramGB"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>RAM (GB)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <GpuForm />
+            <FormField
+              control={form.control}
+              name="diskCount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cantidad de Discos</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-        <div className="flex justify-center gap-4 mt-4">
-          <Button
-            type="submit"
-            className="w-40 bg-green-app hover:bg-green-app-transparent"
-          >
-            <Save className="mr-2" />
-            Actualizar servidor
-          </Button>
-          <DialogClose asChild>
+          <GpuForm />
+
+          <div className="flex justify-center gap-4 mt-4">
             <Button
-              type="button"
-              className="w-40 bg-red-app hover:bg-red-app-transparent"
+              type="submit"
+              className="w-40 bg-green-app hover:bg-green-app-transparent"
             >
-              <CircleMinus className="mr-2" />
-              Cancelar
+              <Save className="mr-2" />
+              Actualizar servidor
             </Button>
-          </DialogClose>
-        </div>
-      </form>
-    </Form>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                className="w-40 bg-red-app hover:bg-red-app-transparent"
+              >
+                <CircleMinus className="mr-2" />
+                Cancelar
+              </Button>
+            </DialogClose>
+          </div>
+        </form>
+      </Form>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={onConfirmUpdate}
+        messageKey="update_server"
+        params={{
+          name: pendingData?.name || serverToEdit.name,
+        }}
+      />
+    </>
   );
 }

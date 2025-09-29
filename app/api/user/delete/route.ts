@@ -37,14 +37,6 @@ export async function DELETE(request: Request) {
       userName.data.secondSurname ?? undefined,
       userName.data.name ?? undefined
     );
-    const deleted = await deleteUserById(userId);
-
-    if (!deleted || deleted.error || !deleted.success) {
-      return NextResponse.json(
-        { data: null, success: false, error: "No se pudo eliminar el usuario" },
-        { status: 500 }
-      );
-    }
 
     const log = await createEventLog({
       eventType: "USER_DELETED",
@@ -55,6 +47,15 @@ export async function DELETE(request: Request) {
     if (!log || log.error) {
       return NextResponse.json(
         { data: null, success: false, error: "Error al crear el registro de evento" },
+        { status: 500 }
+      );
+    }
+
+    const deleted = await deleteUserById(userId);
+
+    if (!deleted || deleted.error || !deleted.success) {
+      return NextResponse.json(
+        { data: null, success: false, error: "No se pudo eliminar el usuario" },
         { status: 500 }
       );
     }
