@@ -1,6 +1,6 @@
 "use client";
 
-import { SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 import Image from "next/image";
 
@@ -14,22 +14,11 @@ export function LanguageSwitcher() {
   const altText = nextLanguage === "es" ? "Español" : "English";
 
   return (
-    <div className="flex flex-col gap-2">
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          onClick={() => changeLanguage(nextLanguage)}
-          className="flex items-center gap-3 text-base font-medium rounded-md transition-colors hover:bg-gray-app-200-transparent"
-        >
-          <Image
-            src={flagSrc}
-            alt={altText}
-            width={18}
-            height={18}
-            className="mr-2"
-          />
-          {label}
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    </div>
+    <Button
+      onClick={() => changeLanguage(nextLanguage)}
+      className="flex items-center justify-baseline shadow-none text-base font-medium rounded-md -ml-2 gap-3 text-gray-app-600 bg-gray-app-100-transparent transition-colors hover:bg-gray-app-200-transparent"
+    >
+      <Image src={flagSrc} alt={altText} width={18} height={18} /> {label}
+    </Button>
   );
 }
