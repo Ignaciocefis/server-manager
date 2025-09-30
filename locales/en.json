@@ -1,4 +1,21 @@
 {
+  "app": {
+    "auth": {
+      "subtitle": "Server and GPU Management System",
+      "login": "Log in",
+      "credentials": "Enter your credentials to access the system",
+      "email": "Corporate email",
+      "exampleEmail": "example@alumn.us.es",
+      "password": "Password",
+      "forgotPassword": "Forgot password",
+      "noAccess": "Restricted access system. Authorized personnel only.",
+      "loading": "Loading...",
+      "invalidValues": "Invalid values",
+      "userInactive": "User inactive, please contact an administrator to request account activation",
+      "invalidCredentials": "Invalid email or password",
+      "successLogin": "Login successful"
+    }
+  },
   "Shared": {
     "AppSidebar": {
       "logout": "Log out"

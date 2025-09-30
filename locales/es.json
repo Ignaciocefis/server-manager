@@ -1,4 +1,21 @@
 {
+  "app": {
+    "auth": {
+      "subtitle": "Sistema de Gestión de Servidores y GPUs",
+      "login": "Iniciar sesión",
+      "credentials": "Ingresa tus credenciales para acceder al sistema",
+      "email": "Correo corporativo",
+      "exampleEmail": "ejemplo@alumn.us.es",
+      "password": "Contraseña",
+      "forgotPassword": "Recuperar contraseña",
+      "noAccess": "Sistema de acceso restringido. Solo personal autorizado.",
+      "loading": "Cargando...",
+      "invalidValues": "Valores inválidos",
+      "userInactive": "Usuario inactivo, habla con un administrador para solicitar el alta de tu cuenta",
+      "invalidCredentials": "Email o contraseña incorrectos",
+      "successLogin": "Inicio de sesión exitoso"
+    } 
+  },
   "Shared": {
     "AppSidebar": {
       "logout": "Cerrar sesión"

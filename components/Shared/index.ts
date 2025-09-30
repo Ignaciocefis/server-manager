@@ -1,4 +1,3 @@
-export * from "./AppImage/AppImage";
 export * from "./AppSidebar/AppSidebar";
 export * from "./ConfirmDialog/ConfirmDialog";
 export * from "./ErrorPage/ErrorPage";

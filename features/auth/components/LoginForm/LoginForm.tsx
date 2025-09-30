@@ -11,25 +11,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLoginForm } from "./useLoginForm";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function LoginForm() {
-  const { form, onSubmit } = useLoginForm();
+  const { t } = useLanguage();
 
+  const { form, onSubmit } = useLoginForm();
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-1/3 gap-4 flex flex-col text-gray-app-600"
+        className="w-4/5 mx-auto gap-4 flex flex-col text-gray-app-600"
       >
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold">Correo corporativo</FormLabel>
+              <FormLabel className="font-bold">{t.app.auth.email}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="ejemplo@alumn.us.es"
+                  placeholder={t.app.auth.exampleEmail}
                   {...field}
                   className="bg-gray-app-100"
                   autoComplete="email"
@@ -45,7 +47,14 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold">Contraseña</FormLabel>
+              <div className="flex justify-between items-center">
+                <FormLabel className="font-bold">
+                  {t.app.auth.password}
+                </FormLabel>
+                <span className="text-sm text-gray-app-500 cursor-pointer hover:underline">
+                  {t.app.auth.forgotPassword}
+                </span>
+              </div>
               <FormControl>
                 <Input
                   type="password"
@@ -61,9 +70,9 @@ export function LoginForm() {
         />
         <Button
           type="submit"
-          className="bg-gray-app-600 text-white hover:bg-gray-app-500"
+          className="bg-gray-app-600 text-white hover:bg-gray-app-500 cursor-pointer"
         >
-          Iniciar sesión
+          {t.app.auth.login}
         </Button>
       </form>
     </Form>
