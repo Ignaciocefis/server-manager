@@ -16,7 +16,7 @@ type Translations = typeof es;
 
 interface LanguageContextProps {
   language: Language;
-  t: Translations;
+  t: (path: string) => string;
   changeLanguage: (lang: Language) => void;
 }
 
@@ -24,9 +24,14 @@ const LanguageContext = createContext<LanguageContextProps | undefined>(
   undefined
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getTranslation(obj: any, path: string): string {
+  return path.split(".").reduce((acc, key) => acc?.[key], obj) ?? path;
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("es");
-  const [t, setT] = useState<Translations>(es);
+  const [translations, setTranslations] = useState<Translations>(es);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -34,15 +39,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("language") as Language | null;
     if (saved && (saved === "es" || saved === "en")) {
       setLanguage(saved);
-      setT(saved === "es" ? es : en);
+      setTranslations(saved === "es" ? es : en);
     }
   }, []);
 
   const changeLanguage = useCallback((lang: Language) => {
     setLanguage(lang);
-    setT(lang === "es" ? es : en);
+    setTranslations(lang === "es" ? es : en);
     localStorage.setItem("language", lang);
   }, []);
+
+  const t = useCallback(
+    (path: string) => getTranslation(translations, path),
+    [translations]
+  );
 
   if (!isMounted) {
     return null;

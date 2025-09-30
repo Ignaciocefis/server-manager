@@ -18,6 +18,11 @@
   },
   "Shared": {
     "AppSidebar": {
+      "serverList": "Server List",
+      "calendar": "Calendar",
+      "logs": "Logs",
+      "userManagement": "User Management",
+      "statistics": "Statistics",
       "logout": "Log out"
     }
   }

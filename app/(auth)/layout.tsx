@@ -20,7 +20,7 @@ export default function AppLayout({
             priority
           />
           <span className="font-semibold text-gray-app-600 text-center -mt-10">
-            {t.app.auth.subtitle}
+            {t("app.auth.subtitle")}
           </span>
           <div className="md:w-[480px] w-full mt-10">{children}</div>
         </div>

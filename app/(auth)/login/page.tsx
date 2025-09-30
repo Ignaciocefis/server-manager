@@ -15,19 +15,19 @@ export default function Login() {
       </div>
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-2xl font-bold text-gray-app-600">
-          {t.app.auth.login}
+          {t("app.auth.login")}
         </h1>
         <span className="text-sm text-gray-app-500">
-          {t.app.auth.credentials}
+          {t("app.auth.credentials")}
         </span>
       </div>
-      <Suspense fallback={<div>{t.app.auth.loading}</div>}>
+      <Suspense fallback={<div>{t("app.auth.loading")}</div>}>
         <LoginForm />
       </Suspense>
       <hr className="border-gray-app-300 w-4/5 mx-auto my-4" />
       <div className="flex items-center justify-center">
         <span className="text-xs text-center text-muted-foreground mt-2">
-          {t.app.auth.noAccess}
+          {t("app.auth.noAccess")}
         </span>
       </div>
     </div>

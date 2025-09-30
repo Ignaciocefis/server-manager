@@ -30,7 +30,7 @@ export function useLoginForm() {
     const result = loginFormSchema.safeParse(values);
 
     if (!result.success) {
-      toast.error(t.app.auth.invalidValues);
+      toast.error(t("app.auth.invalidValues"));
       return;
     }
 
@@ -40,7 +40,7 @@ export function useLoginForm() {
       params: { email },
     }).then(async (result) => {
       if (!result?.data?.data?.isActive) {
-        toast.error(t.app.auth.userInactive);
+        toast.error(t("app.auth.userInactive"));
         return;
       }
       const res = await signIn("credentials", {
@@ -50,9 +50,9 @@ export function useLoginForm() {
         callbackUrl,
       });
       if (res?.error) {
-        toast.error(t.app.auth.invalidCredentials);
+        toast.error(t("app.auth.invalidCredentials"));
       } else {
-        toast.success(t.app.auth.successLogin);
+        toast.success(t("app.auth.successLogin"));
         router.push(res.url || "/");
       }
     }).catch((error) => {

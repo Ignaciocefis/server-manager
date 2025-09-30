@@ -43,7 +43,7 @@ export function AppSidebar() {
                       }`}
                     >
                       <link.icon className="mr-2 w-5 h-5" />
-                      <Link href={link.href}>{link.name}</Link>
+                      <Link href={link.href}>{t(link.name)}</Link>
                     </SidebarMenuButton>
                     <div
                       className={`${
@@ -71,7 +71,7 @@ export function AppSidebar() {
                       }`}
                     >
                       <link.icon className="mr-2 w-5 h-5" />
-                      <Link href={link.href}>{link.name}</Link>
+                      <Link href={link.href}>{t(link.name)}</Link>
                     </SidebarMenuButton>
                     <div
                       className={`${
@@ -98,7 +98,7 @@ export function AppSidebar() {
                   className="flex items-center gap-3 w-56 text-base font-medium peer transition-colors hover:bg-gray-app-200-transparent"
                 >
                   <LogOut className="mr-2 w-6 h-6" />
-                  <span>{t.Shared.AppSidebar.logout}</span>
+                  <span>{t("Shared.AppSidebar.logout")}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

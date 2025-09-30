@@ -28,10 +28,10 @@ export function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold">{t.app.auth.email}</FormLabel>
+              <FormLabel className="font-bold">{t("app.auth.email")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder={t.app.auth.exampleEmail}
+                  placeholder={t("app.auth.exampleEmail")}
                   {...field}
                   className="bg-gray-app-100"
                   autoComplete="email"
@@ -49,10 +49,10 @@ export function LoginForm() {
             <FormItem>
               <div className="flex justify-between items-center">
                 <FormLabel className="font-bold">
-                  {t.app.auth.password}
+                  {t("app.auth.password")}
                 </FormLabel>
                 <span className="text-sm text-gray-app-500 cursor-pointer hover:underline">
-                  {t.app.auth.forgotPassword}
+                  {t("app.auth.forgotPassword")}
                 </span>
               </div>
               <FormControl>
@@ -72,7 +72,7 @@ export function LoginForm() {
           type="submit"
           className="bg-gray-app-600 text-white hover:bg-gray-app-500 cursor-pointer"
         >
-          {t.app.auth.login}
+          {t("app.auth.login")}
         </Button>
       </form>
     </Form>
