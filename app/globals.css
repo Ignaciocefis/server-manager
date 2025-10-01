@@ -66,28 +66,40 @@
   --color-gray-app-600: #3C3C3C;
   --color-gray-app-600-transparent: rgba(60, 60, 60, 0.5);
 
-  /* Verde */
+   /* Verde */
   --color-green-app: #00BF63;
+  --color-green-app-100: #33D178; /* más claro */
+  --color-green-app-200: #66E68C; /* aún más claro */
   --color-green-app-transparent: rgba(0, 191, 99, 0.5);
 
   /* Rojo */
   --color-red-app: #FF3131;
+  --color-red-app-100: #FF5C5C;
+  --color-red-app-200: #FF8787;
   --color-red-app-transparent: rgba(255, 49, 49, 0.5);
 
   /* Azul */
   --color-blue-app: #007BFF;
+  --color-blue-app-100: #339CFF;
+  --color-blue-app-200: #66BDFF;
   --color-blue-app-transparent: rgba(0, 123, 255, 0.5);
 
   /* Amarillo */
   --color-yellow-app: #FFCC00;
+  --color-yellow-app-100: #FFD633;
+  --color-yellow-app-200: #FFE066;
   --color-yellow-app-transparent: rgba(255, 204, 0, 0.5);
 
   /* Naranja */
   --color-orange-app: #FF7A00;
+  --color-orange-app-100: #FF9140;
+  --color-orange-app-200: #FFA660;
   --color-orange-app-transparent: rgba(255, 122, 0, 0.5);
 
   /* Morado */
   --color-purple-app: #9B59B6;
+  --color-purple-app-100: #AB75C6;
+  --color-purple-app-200: #BC91D6;
   --color-purple-app-transparent: rgba(155, 89, 182, 0.5);
 }
 
