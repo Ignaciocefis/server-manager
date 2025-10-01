@@ -12,9 +12,9 @@ export function getFullName(
 
 export function getCategory(category: Category) {
   const categoryMap: Record<Category, string> = {
-    ADMIN: "Administrador",
-    RESEARCHER: "Investigador",
-    JUNIOR: "Júnior",
+    ADMIN: "User.ProfileSheet.admin",
+    RESEARCHER: "User.ProfileSheet.researcher",
+    JUNIOR: "User.ProfileSheet.junior",
   };
   return categoryMap[category] ?? category;
 }

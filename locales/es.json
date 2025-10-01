@@ -25,5 +25,46 @@
       "statistics": "Estadísticas",
       "logout": "Cerrar sesión"
     }
+  },
+  "User":{
+    "Schemas": {
+      "nameRequired": "El nombre es obligatorio",
+      "nameTooLong": "El nombre no puede tener más de 50 caracteres",
+      "firstSurnameRequired": "El primer apellido es obligatorio",
+      "firstSurnameTooLong": "El primer apellido no puede tener más de 50 caracteres",
+      "emailRequired": "El email es obligatorio",
+      "invalidEmail": "Email inválido",
+      "currentPassword": "La contraseña actual es obligatoria",
+      "newPasswordMin": "La nueva contraseña debe tener al menos 6 caracteres",
+      "newPasswordMax": "La nueva contraseña no puede tener más de 20 caracteres",
+      "confirmNewPassword": "Debes confirmar la nueva contraseña",
+      "passwordsDoNotMatch": "Las contraseñas no coinciden"
+    },
+    "ProfileSheet": {
+      "title": "Mi perfil",
+      "description": "Aquí puedes ver y editar la información de tu perfil.",
+      "name": "Nombre",
+      "firstSurname": "Primer Apellido",
+      "secondSurname": "Segundo Apellido",
+      "email": "Email",
+      "category": "Categoría",
+      "admin": "Administrador",
+      "researcher": "Investigador",
+      "junior": "Junior",
+      "researcherAssigned": "Investigador asignado",
+      "saveChanges": "Guardar cambios",
+      "cancel": "Cancelar",
+      "editProfile": "Editar perfil",
+      "changePassword": "Cambiar contraseña"
+    },
+    "ChangePassword": {
+      "title": "Cambiar contraseña",
+      "description": "Aquí puedes cambiar tu contraseña de acceso.",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Nueva contraseña",
+      "confirmNewPassword": "Confirmar nueva contraseña",
+      "saveChanges": "Guardar cambios",
+      "cancel": "Cancelar"
+    }
   }
 }

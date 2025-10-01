@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,8 +23,12 @@ import { useEffect } from "react";
 import { ChangePasswordProps } from "./ChangePassword.types";
 import { handleChangePassword } from "./ChangePassword.handlers";
 import { useChangePasswordForm } from "./useChangePassword";
+import { LockKeyhole } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
+  const { t } = useLanguage();
+
   const form = useChangePasswordForm();
 
   const { handleSubmit, reset } = form;
@@ -40,7 +45,15 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Cambiar contraseña</DialogTitle>
+          <div className="flex items-center gap-2">
+            <LockKeyhole className="w-8 h-8 text-blue-app" />
+            <DialogTitle className="text-2xl font-bold">
+              {t("User.ChangePassword.title")}
+            </DialogTitle>
+          </div>
+          <DialogDescription className="ml-10">
+            {t("User.ChangePassword.description")}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -50,7 +63,9 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
               name="currentPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contraseña actual</FormLabel>
+                  <FormLabel>
+                    {t("User.ChangePassword.currentPassword")}
+                  </FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -64,7 +79,7 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nueva contraseña</FormLabel>
+                  <FormLabel>{t("User.ChangePassword.newPassword")}</FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -78,7 +93,9 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirmar nueva contraseña</FormLabel>
+                  <FormLabel>
+                    {t("User.ChangePassword.confirmNewPassword")}
+                  </FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -90,16 +107,16 @@ export function ChangePassword({ open, onOpenChange }: ChangePasswordProps) {
             <DialogFooter className="flex flex-row justify-center gap-4 mt-8 w-full">
               <Button
                 type="submit"
-                className="w-40 bg-green-app hover:bg-green-app-transparent text-white"
+                className="w-40 bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md cursor-pointer"
               >
-                Guardar
+                {t("User.ChangePassword.saveChanges")}
               </Button>
               <Button
                 type="button"
-                className="w-40 bg-red-app hover:bg-red-app-transparent"
+                className="w-40 bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer"
                 onClick={() => onOpenChange(false)}
               >
-                Cancelar
+                {t("User.ChangePassword.cancel")}
               </Button>
             </DialogFooter>
           </form>

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import z from "zod";
 
 export async function handleChangePassword(
-  data: z.infer<typeof changePasswordSchema>,
+  data: z.infer<ReturnType<typeof changePasswordSchema>>,
   onSuccess: () => void
 ) {
   await axios.put("/api/user/update/password", {

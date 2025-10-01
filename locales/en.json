@@ -25,5 +25,46 @@
       "statistics": "Statistics",
       "logout": "Log out"
     }
+  },
+  "User":{
+    "Schemas": {
+      "nameRequired": "The name is required",
+      "nameTooLong": "The name cannot be longer than 50 characters",
+      "firstSurnameRequired": "The first surname is required",
+      "firstSurnameTooLong": "The first surname cannot be longer than 50 characters",
+      "emailRequired": "The email is required",
+      "invalidEmail": "Invalid email",
+      "currentPassword": "The current password is required",
+      "newPasswordMin": "The new password must be at least 6 characters long",
+      "newPasswordMax": "The new password cannot be longer than 20 characters",
+      "confirmNewPassword": "You must confirm the new password",
+      "passwordsDoNotMatch": "The passwords do not match"
+    },
+    "ProfileSheet": {
+      "title": "My Profile",
+      "description": "Here you can view and edit your profile information.",
+      "name": "Name",
+      "firstSurname": "First Surname",
+      "secondSurname": "Second Surname",
+      "email": "Email",
+      "category": "Category",
+      "admin": "Administrator",
+      "researcher": "Researcher",
+      "junior": "Junior",
+      "researcherAssigned": "Assigned Researcher",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel",
+      "editProfile": "Edit Profile",
+      "changePassword": "Change Password"
+    },
+    "ChangePassword": {
+      "title": "Change Password",
+      "description": "Here you can change your access password.",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmNewPassword": "Confirm New Password",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel"
+    }
   }
 }
