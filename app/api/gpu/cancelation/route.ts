@@ -69,7 +69,7 @@ export async function PUT(req: Request) {
 
     const log = await createEventLog({
       eventType: "RESERVATION_CANCELLED",
-      message: `La reserva de la gráfica ${gpuName.data.name} del servidor ${serverName.data[0].name} ha sido cancelada.`,
+      message: `EventLog.logMessage.reservation_cancelled|${gpuName.data.name}|${serverName.data[0].name}`,
       reservationId: reservationId,
       userId: userId,
       serverId: reservation.data.serverId,

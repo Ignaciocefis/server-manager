@@ -41,7 +41,7 @@ export async function DELETE(request: Request) {
     const log = await createEventLog({
       eventType: "USER_DELETED",
       userId: userId,
-      message: `Usuario ${userFullName} eliminado`,
+      message: `EventLog.logMessage.user_deleted|${userFullName}`,
     });
 
     if (!log || log.error) {

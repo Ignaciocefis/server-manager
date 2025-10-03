@@ -53,7 +53,7 @@ export async function PUT(request: Request) {
 
     const log = await createEventLog({
       eventType: `${updated.data ? "SERVER_AVAILABLE" : "SERVER_UNAVAILABLE"}`,
-      message: `El estado de disponibilidad del servidor ${updatedServer.data.name} ha sido cambiada a ${updated.data ? "disponible" : "no disponible"}.`,
+      message: `EventLog.logMessage.server_${updated.data ? "available" : "unavailable"}|${updatedServer.data.name}`,
       serverId: serverId,
     });
 

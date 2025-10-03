@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     const log = await createEventLog({
       eventType: "USER_CREATED",
       userId: userCreated.data,
-      message: `Usuario ${userFullName} creado`,
+      message: `EventLog.logMessage.user_created|${userFullName}`,
     });
 
     if (!log || log.error) {

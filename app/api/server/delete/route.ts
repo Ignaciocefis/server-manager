@@ -53,7 +53,7 @@ export async function DELETE(req: Request) {
 
     const log = await createEventLog({
       eventType: "SERVER_DELETED",
-      message: `El servidor ${serverName.data[0].name} ha sido eliminado.`,
+      message: `EventLog.logMessage.server_deleted|${serverName.data[0].name}`,
       serverId: serverId,
     });
 

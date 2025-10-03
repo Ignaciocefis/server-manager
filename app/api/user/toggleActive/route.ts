@@ -52,7 +52,7 @@ export async function PATCH(request: Request) {
     const log = await createEventLog({
       eventType: `${result.data ? "USER_REACTIVATED" : "USER_DEACTIVATED"}`,
       userId,
-      message: `Usuario ${userFullName} ${result.data ? "activado" : "desactivado"}`,
+      message: `EventLog.logMessage.user_${result.data ? "reactivated" : "deactivated"}|${userFullName}`,
     });
 
     if (!log || log.error) {

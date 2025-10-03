@@ -48,7 +48,7 @@ export async function POST(request: Request) {
 
     const log = await createEventLog({
       eventType: "SERVER_CREATED",
-      message: `Se ha creado un nuevo servidor: ${data.name}`,
+      message: `EventLog.logMessage.server_created|${data.name}`,
       serverId: serverCreated.data,
     });
 

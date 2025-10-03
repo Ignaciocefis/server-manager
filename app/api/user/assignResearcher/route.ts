@@ -69,7 +69,7 @@ export async function PUT(request: Request) {
     const log = await createEventLog({
       eventType: "USER_ASSIGNED_MENTOR",
       userId,
-      message: `Usuario ${userFullName} asignado al investigador ${researcherFullName}`,
+      message: `EventLog.logMessage.user_assigned_mentor|${userFullName}|${researcherFullName}`,
     });
 
     if (!log || log.error) {

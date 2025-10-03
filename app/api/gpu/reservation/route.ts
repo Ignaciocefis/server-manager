@@ -136,7 +136,7 @@ export async function POST(req: Request) {
 
       const log = await createEventLog({
         eventType: "RESERVATION_CREATED",
-        message: `Reserva creada para la gráfica ${gpuName.data.name} en el servidor ${serverName.data[0].name} desde ${startDate.toISOString()} hasta ${endDate.toISOString()}.`,
+        message: `EventLog.logMessage.reservation_created|${gpuName.data.name}|${serverName.data[0].name}|${startDate.toISOString()}|${endDate.toISOString()}`,
         reservationId: reservation.id,
         userId: userId,
         serverId: reservation.serverId,

@@ -48,7 +48,7 @@ export async function PUT(request: Request) {
     const log = await createEventLog({
       eventType: "USER_UPDATED",
       userId,
-      message: `Usuario ${userFullName} actualizado su perfil`,
+      message: `EventLog.logMessage.user_updated|${userFullName}`,
     });
 
     if (!log || log.error) {

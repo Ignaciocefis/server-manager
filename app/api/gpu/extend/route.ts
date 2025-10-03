@@ -132,7 +132,7 @@ export async function PUT(req: Request) {
 
     const log = await createEventLog({
       eventType: "RESERVATION_EXTENDED",
-      message: `La reserva de la gráfica ${gpuName.data.name} del servidor ${serverName.data[0].name} ha sido extendida hasta ${extendedUntilDate.toISOString()}.`,
+      message: `EventLog.logMessage.reservation_extended|${gpuName.data.name}|${serverName.data[0].name}|${extendedUntilDate.toISOString()}`,
       reservationId: reservationId,
       userId: userId,
       serverId: reservation.serverId,

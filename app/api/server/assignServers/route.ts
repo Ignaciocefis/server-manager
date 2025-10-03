@@ -64,7 +64,7 @@ export async function PUT(request: Request) {
       const log = await createEventLog({
         eventType: "USER_GRANTED_SERVER_ACCESS",
         userId: targetUserId,
-        message: `Usuario ${userFullName} tiene acceso al servidor: ${serverName}`,
+        message: `EventLog.logMessage.user_granted_server_access|${userFullName}|${serverName}`,
         serverId,
       });
 
@@ -82,7 +82,7 @@ export async function PUT(request: Request) {
       const log = await createEventLog({
         eventType: "USER_REVOKED_SERVER_ACCESS",
         userId: targetUserId,
-        message: `Usuario ${userFullName} ha perdido acceso al servidor: ${serverName}`,
+        message: `EventLog.logMessage.user_revoked_server_access|${userFullName}|${serverName}`,
         serverId: serverDeleteAccess.id,
       });
 

@@ -55,7 +55,7 @@ export async function PUT(request: Request) {
 
     const log = await createEventLog({
       eventType: "SERVER_UPDATED",
-      message: `El servidor ${updatedServer.data.name} ha sido actualizado.`,
+      message: `EventLog.logMessage.server_updated|${updatedServer.data.name}`,
       serverId: serverId,
     });
 
