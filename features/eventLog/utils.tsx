@@ -1,6 +1,5 @@
 import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
-import { TYPE_TRANSLATIONS, TYPE_VARIANTS } from "./helpers";
-import { Badge } from "@/components/ui/badge";
+import { TYPE_VARIANTS } from "./helpers";
 import { LogsTableDataProps } from "./types";
 
 export function getNestedValue(obj: unknown, path: string): unknown {
@@ -50,28 +49,6 @@ export const getTypeIcon = (type: string) => {
     default:
       return <Info className="w-4 h-4" />;
   }
-};
-
-export const getTypeBadge = (type: string) => {
-  const variant = TYPE_VARIANTS[type] ?? "info";
-  const label = TYPE_TRANSLATIONS[type] ?? type.replace(/_/g, " ");
-
-  const color = {
-    error: "bg-red-app-transparent",
-    warning: "bg-yellow-app-transparent",
-    success: "bg-green-app-transparent",
-    info: "bg-blue-app-transparent",
-  }[variant];
-
-  return (
-    <Badge
-      variant="outline"
-      className={`flex items-center gap-1 px-2 py-1 text-xs rounded-lg font-medium ${color} gap-2`}
-    >
-      {getTypeIcon(type)}
-      <span>{label}</span>
-    </Badge>
-  );
 };
 
 export const exportLogsToCSV = (logs: LogsTableDataProps[]) => {

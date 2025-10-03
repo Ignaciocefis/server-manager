@@ -24,6 +24,12 @@
       "userManagement": "Gestión de usuarios",
       "statistics": "Estadísticas",
       "logout": "Cerrar sesión"
+    },
+    "NotificationButton": {
+      "title": "Notificaciones",
+      "description": "Aquí puedes ver todas tus notificaciones.",
+      "noNotifications": "No tienes notificaciones",
+      "markAllAsRead": "Marcar todas como leídas"
     }
   },
   "User":{
@@ -65,6 +71,48 @@
       "confirmNewPassword": "Confirmar nueva contraseña",
       "saveChanges": "Guardar cambios",
       "cancel": "Cancelar"
+    }
+  },
+  "EventLog": {
+    "logType": {
+      "user_created": "Usuario creado",
+      "user_updated": "Usuario actualizado",
+      "user_deleted": "Usuario eliminado",
+      "user_deactivated": "Usuario desactivado",
+      "user_reactivated": "Usuario reactivado",
+      "user_assigned_mentor": "Usuario asignado a mentor",
+      "user_granted_server_access": "Acceso a servidor concedido",
+      "user_revoked_server_access": "Acceso a servidor revocado",
+      "server_created": "Servidor creado",
+      "server_updated": "Servidor actualizado",
+      "server_deleted": "Servidor eliminado",
+      "server_available": "Servidor disponible",
+      "server_unavailable": "Servidor no disponible",
+      "reservation_created": "Reserva creada",
+      "reservation_available": "Reserva disponible",
+      "reservation_extended": "Reserva extendida",
+      "reservation_completed": "Reserva completada",
+      "reservation_cancelled": "Reserva cancelada"
+    },
+    "logMessage": {
+      "user_created": "El usuario {0} ha sido creado",
+      "user_updated": "El usuario {0} ha actualizado su perfil",
+      "user_deleted": "El usuario {0} ha sido eliminado",
+      "user_deactivated": "El usuario {0} ha sido desactivado",
+      "user_reactivated": "El usuario {0} ha sido reactivado",
+      "user_assigned_mentor": "El usuario {0} ha sido asignado al mentor {1}",
+      "user_granted_server_access": "El usuario {0} ha recibido acceso al servidor {1}",
+      "user_revoked_server_access": "El usuario {0} ha perdido acceso al servidor {1}",
+      "server_created": "El servidor {0} ha sido creado",
+      "server_updated": "El servidor {0} ha sido actualizado",
+      "server_deleted": "El servidor {0} ha sido eliminado",
+      "server_available": "El servidor {0} ha sido marcado como disponible",
+      "server_unavailable": "El servidor {0} ha sido marcado como no disponible",
+      "reservation_created": "La reserva de la gráfica {0} del servidor {1} ha sido creada desde {2} hasta {3}",
+      "reservation_available": "La reserva de la gráfica {0} del servidor {1} está disponible",
+      "reservation_extended": "La reserva de la gráfica {0} del servidor {1} ha sido extendida hasta {2}",
+      "reservation_completed": "La reserva de la gráfica {0} del servidor {1} ha sido completada",
+      "reservation_cancelled": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada"
     }
   }
 }

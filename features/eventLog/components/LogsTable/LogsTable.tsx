@@ -40,12 +40,7 @@ import {
 } from "@/components/ui/select";
 
 import { TYPE_TRANSLATIONS, TYPE_VARIANTS } from "../../helpers";
-import {
-  exportLogsToCSV,
-  getNestedValue,
-  getTypeBadge,
-  toDisplay,
-} from "../../utils";
+import { exportLogsToCSV, getNestedValue, toDisplay } from "../../utils";
 import { useLogsTable } from "./useLogsTable";
 import {
   handleSort,
@@ -55,6 +50,7 @@ import {
   handleLimitChange,
 } from "./LogsTable.helpers";
 import { useImperativeHandle, forwardRef } from "react";
+import { TypeBadge } from "..";
 
 export type LogsTableHandle = {
   exportFilteredLogs: () => void;
@@ -251,7 +247,7 @@ export const LogsTable = forwardRef<
                       let content: React.ReactNode;
 
                       if (column.key === "eventType") {
-                        content = getTypeBadge(log.eventType);
+                        content = <TypeBadge type={log.eventType} />;
                       } else if (column.key === "createdAt") {
                         content = (
                           <time

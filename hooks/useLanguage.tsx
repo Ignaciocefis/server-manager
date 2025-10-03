@@ -16,13 +16,24 @@ type Translations = typeof es;
 
 interface LanguageContextProps {
   language: Language;
-  t: (path: string) => string;
+  t: (path: string, params?: Array<string | number>) => string;
+  tLog: (message: string) => string;
   changeLanguage: (lang: Language) => void;
 }
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(
   undefined
 );
+
+/**
+ *
+ * t("logs.server_created", ["Servidor01"])
+ * → "Se ha creado un nuevo servidor: Servidor01"
+ *
+ * tLog("logs.server_created|Servidor01")
+ * → "Se ha creado un nuevo servidor: Servidor01"
+ *
+ */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getTranslation(obj: any, path: string): string {
@@ -50,16 +61,31 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (path: string) => getTranslation(translations, path),
+    (path: string, params?: Array<string | number>) => {
+      let template = getTranslation(translations, path);
+      if (params && params.length > 0) {
+        template = template.replace(/\{(\d+)\}/g, (_, index) => {
+          return params[Number(index)]?.toString() ?? "";
+        });
+      }
+      return template;
+    },
     [translations]
   );
 
-  if (!isMounted) {
-    return null;
-  }
+  const tLog = useCallback(
+    (msg: string) => {
+      if (!msg.includes("|")) return msg;
+      const [key, ...params] = msg.split("|");
+      return t(key, params);
+    },
+    [t]
+  );
+
+  if (!isMounted) return null;
 
   return (
-    <LanguageContext.Provider value={{ language, t, changeLanguage }}>
+    <LanguageContext.Provider value={{ language, t, tLog, changeLanguage }}>
       {children}
     </LanguageContext.Provider>
   );

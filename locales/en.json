@@ -24,6 +24,12 @@
       "userManagement": "User Management",
       "statistics": "Statistics",
       "logout": "Log out"
+    },
+    "NotificationButton": {
+      "title": "Notifications",
+      "description": "Here you can see all your notifications.",
+      "noNotifications": "You have no notifications",
+      "markAllAsRead": "Mark all as read"
     }
   },
   "User":{
@@ -65,6 +71,48 @@
       "confirmNewPassword": "Confirm New Password",
       "saveChanges": "Save Changes",
       "cancel": "Cancel"
+    }
+  },
+  "EventLog": {
+    "logType": {
+      "user_created": "User created",
+      "user_updated": "User updated",
+      "user_deleted": "User deleted",
+      "user_deactivated": "User deactivated",
+      "user_reactivated": "User reactivated",
+      "user_assigned_mentor": "User assigned to mentor",
+      "user_granted_server_access": "User granted server access",
+      "user_revoked_server_access": "User revoked server access",
+      "server_created": "Server created",
+      "server_updated": "Server updated",
+      "server_deleted": "Server deleted",
+      "server_available": "Server available",
+      "server_unavailable": "Server unavailable",
+      "reservation_created": "Reservation created",
+      "reservation_available": "Reservation available",
+      "reservation_extended": "Reservation extended",
+      "reservation_completed": "Reservation completed",
+      "reservation_cancelled": "Reservation cancelled"
+    },
+    "logMessage": {
+      "user_created": "The user {0} has been created",
+      "user_updated": "The user {0} has updated their profile",
+      "user_deleted": "The user {0} has been deleted",
+      "user_deactivated": "The user {0} has been deactivated",
+      "user_reactivated": "The user {0} has been reactivated",
+      "user_assigned_mentor": "The user {0} has been assigned to mentor {1}",
+      "user_granted_server_access": "The user {0} has been granted access to server {1}",
+      "user_revoked_server_access": "The user {0} has been revoked access to server {1}",
+      "server_created": "The server {0} has been created",
+      "server_updated": "The server {0} has been updated",
+      "server_deleted": "The server {0} has been deleted",
+      "server_available": "The server {0} has been marked as available",
+      "server_unavailable": "The server {0} has been marked as unavailable",
+      "reservation_created": "The reservation for the GPU {0} on server {1} has been created from {2} to {3}",
+      "reservation_available": "The reservation for the GPU {0} on server {1} is available",
+      "reservation_extended": "The reservation for the GPU {0} on server {1} has been extended to {2}",
+      "reservation_completed": "The reservation for the GPU {0} on server {1} has been completed",
+      "reservation_cancelled": "The reservation for the GPU {0} on server {1} has been cancelled"
     }
   }
 }
