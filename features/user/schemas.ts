@@ -30,6 +30,12 @@ export const updateUserProfileSchema = (t: (path: string) => string) => z.object
   assignedToId: z.string().optional().nullable(),
 });
 
+export const updateUserSchema = z.object({
+  name: z.string().min(1, "Nombre obligatorio"),
+  firstSurname: z.string().min(1, "Primer apellido obligatorio"),
+  secondSurname: z.string().optional(),
+});
+
 export const changePasswordSchema = (t: (path: string) => string) => z.object({
   currentPassword:
     z.string().min(1, t("User.Schemas.currentPassword")),
@@ -40,6 +46,13 @@ export const changePasswordSchema = (t: (path: string) => string) => z.object({
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: t("User.Schemas.passwordsDoNotMatch"),
   path: ["confirmPassword"],
+});
+
+export const updateUserPasswordSchema = z.object({
+  currentPassword:
+    z.string().min(1, "La contraseña actual es obligatoria"),
+  newPassword:
+    z.string().min(6, "La nueva contraseña debe tener al menos 6 caracteres"),
 });
 
 export const assignResearcherFormSchema = z.object({
