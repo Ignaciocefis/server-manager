@@ -140,6 +140,19 @@
       "reserved": "Reservado",
       "canceling": "Cancelando...",
       "cancelUsage": "Cancelar uso"
+    },
+    "createReservation": {
+      "requestButton": "Solicitar uso de GPUs",
+      "title": "Crear reserva de GPU",
+      "description": "Aquí puedes solicitar el uso de una GPU en uno de tus servidores asignados.",
+      "dateRange": "Seleccionar rango de fechas",
+      "startHour": "Fecha de inicio",
+      "endHour": "Fecha de fin",
+      "availableGpus": "Seleccionar GPUs disponibles",
+      "noAvailableGpus": "No hay GPUs disponibles en el rango seleccionado.",
+      "reserve": "Reservar",
+      "cancel": "Cancelar",
+      "loading": "Cargando..."
     }
   },
   "EventLog": {

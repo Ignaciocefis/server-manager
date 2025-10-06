@@ -8,19 +8,22 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { GpuReservationProps } from "./GpuSelector.types";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function GpuSelector({ name, availableGpus }: GpuReservationProps) {
+  const { t } = useLanguage();
+
   return (
     <FormField
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>GPUs disponibles</FormLabel>
+          <FormLabel>{t("Gpu.createReservation.availableGpus")}</FormLabel>
           <FormControl>
             <div className="border rounded-md p-2 max-h-40 overflow-y-auto space-y-2">
               {availableGpus.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No hay GPUs disponibles en el rango seleccionado.
+                  {t("Gpu.createReservation.noAvailableGpus")}
                 </p>
               ) : (
                 availableGpus.map((gpu) => {
