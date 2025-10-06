@@ -112,6 +112,28 @@
       "removeGPU": "Remove GPU"
     }
   },
+  "Gpu": {
+    "reservationsList": {
+      "errorLoadingReservations": "Error loading reservations",
+      "noGpuReservations": "You have no GPU reservations.",
+      "noSearchResults": "No results found for the search.",
+      "gpuDetails": "GPU Details:",
+      "serverDetails": "Server Details",
+      "gpuType": "Type",
+      "disks": "Disks",
+      "pending": "Pending...",
+      "extended": "Extended",
+      "extendForHours": "How many hours do you want to extend? (1-12)",
+      "extend": "Extend",
+      "errorExtending": "An error occurred while extending the reservation",
+      "extending": "Extending...",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "reserved": "Reserved",
+      "canceling": "Canceling...",
+      "cancelUsage": "Cancel usage"
+    }
+  },
   "EventLog": {
     "logType": {
       "user_created": "User created",

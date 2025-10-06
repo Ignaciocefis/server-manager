@@ -113,6 +113,28 @@
       
     }
   },
+  "Gpu": {
+    "reservationsList": {
+      "errorLoadingReservations": "Error al cargar las reservas",
+      "noGpuReservations": "No tienes GPUs reservadas.",
+      "noSearchResults": "No se encontraron resultados para la búsqueda.",
+      "gpuDetails": "Detalles de la GPU:",
+      "serverDetails": "Detalles del servidor",
+      "gpuType": "Tipo",
+      "disks": "Discos",
+      "pending": "Esperando...",
+      "extended": "En prórroga",
+      "extendForHours": "¿Cuántas horas quieres extender? (1-12)",
+      "extend": "Prórroga",
+      "errorExtending": "Ha ocurrido un error al extender la reserva",
+      "extending": "Extendiendo...",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "reserved": "Reservado",
+      "canceling": "Cancelando...",
+      "cancelUsage": "Cancelar uso"
+    }
+  },
   "EventLog": {
     "logType": {
       "user_created": "Usuario creado",

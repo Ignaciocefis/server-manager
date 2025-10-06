@@ -6,6 +6,7 @@ import { sortReservations } from "../../utils";
 import { JSX } from "react";
 import { GpuReservationListSkeleton } from "./GpuReservationsList.skeleton";
 import { TriangleAlert } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function GpuReservationsList({
   refresh,
@@ -15,6 +16,8 @@ export function GpuReservationsList({
   gpuSearchTerm: string;
 }): JSX.Element {
   const { reservations, loading, error } = useReservations();
+
+  const { t } = useLanguage();
 
   const sortedReservations = sortReservations(reservations);
 
@@ -34,7 +37,7 @@ export function GpuReservationsList({
 
         <div className="flex flex-col justify-center">
           <h3 className="text-lg md:text-2xl font-bold text-red-700">
-            Ha ocurrido un error
+            {t("app.reservationsList.errorLoadingReservations")}
           </h3>
           <p className="text-sm md:text-base text-red-app">{error}</p>
         </div>
@@ -42,12 +45,14 @@ export function GpuReservationsList({
     );
 
   return (
-    <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
+    <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]  md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))] justify-items-center w-full mb-4">
       {sortedReservations.length === 0 ? (
-        <p className="col-span-full text-center">No tienes GPUs reservadas.</p>
+        <p className="col-span-full text-center text-gray-600">
+          {t("app.reservationsList.noGpuReservations")}
+        </p>
       ) : filteredReservations.length === 0 ? (
-        <p className="col-span-full text-center">
-          No se encontraron resultados para la búsqueda.
+        <p className="col-span-full text-center text-gray-600">
+          {t("app.reservationsList.noSearchResults")}
         </p>
       ) : (
         filteredReservations.map((r) => (
