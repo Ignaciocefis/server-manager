@@ -14,7 +14,15 @@
       "userInactive": "Usuario inactivo, habla con un administrador para solicitar el alta de tu cuenta",
       "invalidCredentials": "Email o contraseña incorrectos",
       "successLogin": "Inicio de sesión exitoso"
-    } 
+    },
+    "home": {
+      "serverList": "Listado de servidores",
+      "serverListDescription": "Aquí puedes ver todos los servidores a los que tienes acceso y gestionar tus reservas de tarjetas gráficas.",
+      "gpuReservations": "Mis reservas de tarjetas gráficas",
+      "accessibleServers": "Mis servidores accesibles",
+      "searchGpu": "Buscar reservas de GPU...",
+      "searchServer": "Buscar servidores..."
+    }
   },
   "Shared": {
     "AppSidebar": {

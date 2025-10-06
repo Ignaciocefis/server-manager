@@ -14,6 +14,14 @@
       "userInactive": "User inactive, please contact an administrator to request account activation",
       "invalidCredentials": "Invalid email or password",
       "successLogin": "Login successful"
+    },
+    "home": {
+      "serverList": "Server List",
+      "serverListDescription": "Here you can see all the servers you have access to and manage your GPU reservations.",
+      "gpuReservations": "My GPU Reservations",
+      "accessibleServers": "My Accessible Servers",
+      "searchGpu": "Search GPU reservations...",
+      "searchServer": "Search servers..."
     }
   },
   "Shared": {
