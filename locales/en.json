@@ -73,6 +73,37 @@
       "cancel": "Cancel"
     }
   },
+  "Server":{
+    "Schemas":{
+      "nameMin": "The server name must be at least 3 characters long",
+      "nameMax": "The server name cannot exceed 100 characters",
+      "ramGBInvalid": "RAM must be a number",
+      "ramGBInt": "RAM must be an integer",
+      "ramGBMin": "RAM must be at least 1 GB",
+      "diskCountInvalid": "Disk count must be a number",
+      "diskCountInt": "Disk count must be an integer",
+      "diskCountMin": "Disk count must be at least 1",
+      "gpuNameMin": "GPU name is required",
+      "gpuTypeMin": "GPU type is required",
+      "gpuRamGBInvalid": "GPU RAM must be a number",
+      "gpuRamGBInt": "GPU RAM must be an integer",
+      "gpuRamGBMin": "GPU must have at least 1 GB of RAM",
+      "gpuMin": "At least one GPU is required"
+    },
+    "CreateServer": {
+      "addServer": "Add new server",
+      "description": "Here you can add a new server to the system.",
+      "serverName": "Server Name",
+      "diskCount": "Disk Count",
+      "create": "Create Server",
+      "cancel": "Cancel",
+      "gpuTitle": "GPUs",
+      "addGpu": "Add GPU",
+      "gpuName": "GPU Name",
+      "gpuType": "GPU Type",
+      "removeGPU": "Remove GPU"
+    }
+  },
   "EventLog": {
     "logType": {
       "user_created": "User created",

@@ -6,12 +6,17 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { createServerFormSchema } from "@/features/server/shemas";
 import { submitServer } from "./CreateServerForm.handlers";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export const useCreateServerForm = (closeDialog?: () => void) => {
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof createServerFormSchema>>({
-    resolver: zodResolver(createServerFormSchema),
+  const { t } = useLanguage();
+
+  const schema = createServerFormSchema(t);
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       ramGB: 1,
@@ -20,7 +25,7 @@ export const useCreateServerForm = (closeDialog?: () => void) => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof createServerFormSchema>) =>
+  const onSubmit = (data: z.infer<typeof schema>) =>
     submitServer(data, router, closeDialog);
 
   return { form, onSubmit };

@@ -14,6 +14,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { CirclePlus, CircleMinus } from "lucide-react";
 import { useCreateServerForm } from "./useCreateServerForm";
 import { GpuForm } from "@/features/gpu/components";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function CreateServerForm({
   closeDialog,
@@ -21,6 +22,7 @@ export function CreateServerForm({
   closeDialog?: () => void;
 }) {
   const { form, onSubmit } = useCreateServerForm(closeDialog);
+  const { t } = useLanguage();
 
   return (
     <Form {...form}>
@@ -30,7 +32,9 @@ export function CreateServerForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-lg">Nombre del servidor</FormLabel>
+              <FormLabel className="text-lg">
+                {t("Server.CreateServer.serverName")}
+              </FormLabel>
               <FormControl>
                 <Input type="text" {...field} />
               </FormControl>
@@ -47,7 +51,7 @@ export function CreateServerForm({
               <FormItem>
                 <FormLabel>RAM (GB)</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input type="number" min="1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -59,9 +63,9 @@ export function CreateServerForm({
             name="diskCount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Cantidad de Discos</FormLabel>
+                <FormLabel>{t("Server.CreateServer.diskCount")}</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input type="number" min="1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -74,18 +78,18 @@ export function CreateServerForm({
         <div className="flex justify-center gap-4 mt-6">
           <Button
             type="submit"
-            className="w-40 bg-green-app hover:bg-green-app-transparent"
+            className="bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md cursor-pointer w-40"
           >
             <CirclePlus className="mr-2" />
-            Añadir servidor
+            {t("Server.CreateServer.create")}
           </Button>
           <DialogClose asChild>
             <Button
               type="button"
-              className="w-40 bg-red-app hover:bg-red-app-transparent"
+              className="bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-40"
             >
               <CircleMinus className="mr-2" />
-              Cancelar
+              {t("Server.CreateServer.cancel")}
             </Button>
           </DialogClose>
         </div>
