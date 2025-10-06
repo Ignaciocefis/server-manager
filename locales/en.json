@@ -110,6 +110,14 @@
       "gpuName": "GPU Name",
       "gpuType": "GPU Type",
       "removeGPU": "Remove GPU"
+    },
+    "serverList": {
+      "noAssignedServers": "You have no assigned servers.",
+      "noSearchResults": "No results found for the search.",
+      "errorLoadingServers": "An error occurred while loading servers.",
+      "installedGpus": "Installed GPUs:",
+      "availableGpus": "Available GPUs:",
+      "noAvailableGpus": "Not available"
     }
   },
   "Gpu": {

@@ -2,7 +2,14 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Cpu, HardDrive, MemoryStick, MinusCircle, Zap } from "lucide-react";
+import {
+  Cpu,
+  HardDrive,
+  MemoryStick,
+  MinusCircle,
+  Server,
+  Zap,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { GpuReservationCardProps } from "./GpuReservationCard.types";
 import { useGpuCountdown } from "./useGpuReservationCard";
@@ -96,7 +103,7 @@ export default function GpuReservationCard({
 
           <div>
             <h3 className="font-semibold mb-3 text-sm text-gray-800 flex items-center gap-2">
-              <HardDrive size={16} className="text-blue-600" />
+              <Server size={16} className="text-blue-600" />
               {t("Gpu.reservationsList.serverDetails")}{" "}
               <span className="text-gray-600 font-normal">{server.name}</span>
             </h3>
@@ -152,7 +159,7 @@ export default function GpuReservationCard({
             <Button
               onClick={() => setShowConfirm(true)}
               disabled={cancelling}
-              className="bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-40"
+              className="bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-auto sm:w-40"
             >
               <MinusCircle size={16} className="inline mr-1" />
               {cancelling
