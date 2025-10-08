@@ -2,6 +2,8 @@ import { gpuName, reservationForCalendar, reservationSummary, reservationSummary
 import { db } from "@/lib/db";
 import { ApiResponse } from "@/lib/types/BDResponse.types";
 import { formatReservationsForCalendar } from "./utils";
+import { GpuUsageByDay } from "../server/types";
+import { eachDayOfInterval, endOfYear, startOfYear } from "date-fns";
 
 export const existGpusByIdsAndServer = async (
   selectedGpuIds: string[],
@@ -270,3 +272,56 @@ export const getAccessibleReservationsByUser = async (
     };
   }
 };
+
+export const getGpuUsageByYear = async (
+  serverId: string,
+  year: number
+): Promise<ApiResponse<GpuUsageByDay[] | null>> => {
+  try {
+    const start = startOfYear(new Date(year, 0, 1));
+    const end = endOfYear(start);
+
+    const reservations = await db.gpuReservation.findMany({
+      where: {
+        serverId,
+        OR: [
+          { startDate: { lte: end }, actualEndDate: { gte: start } },
+          { startDate: { lte: end }, endDate: { gte: start } },
+        ],
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+        actualEndDate: true,
+      },
+    });
+
+    const usageMap = new Map<string, number>();
+
+    for (const r of reservations) {
+      const effectiveEnd = r.actualEndDate ?? r.endDate;
+      const days = eachDayOfInterval({
+        start: r.startDate,
+        end: effectiveEnd,
+      });
+
+      for (const d of days) {
+        const dayKey = d.toISOString().split("T")[0];
+        usageMap.set(dayKey, (usageMap.get(dayKey) ?? 0) + 1);
+      }
+    }
+
+    const gpuUsageByDay: GpuUsageByDay[] = Array.from(usageMap, ([date, count]) => ({
+      date,
+      count,
+    }));
+
+    gpuUsageByDay.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    return { success: true, data: gpuUsageByDay, error: null };
+  } catch (error) {
+    console.error("Error fetching GPU usage by year:", error);
+    return { success: false, data: null, error };
+  }
+};
+
