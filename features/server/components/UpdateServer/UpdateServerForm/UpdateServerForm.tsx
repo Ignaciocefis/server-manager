@@ -18,6 +18,7 @@ import { useUpdateServerForm } from "./hooks/useUpdateServerForm";
 import { UpdateServerFormProps } from "./UpdateServerForm.types";
 import { GpuForm } from "@/features/gpu/components";
 import { ConfirmDialog } from "@/components/Shared/ConfirmDialog/ConfirmDialog";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function UpdateServerForm({
   serverToEdit,
@@ -26,6 +27,8 @@ export function UpdateServerForm({
 }: UpdateServerFormProps) {
   const form = useUpdateServerFormSchema(serverToEdit);
   const { update } = useUpdateServerForm({ onUpdate, closeDialog });
+
+  const { t } = useLanguage();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingData, setPendingData] = useState<{
@@ -88,7 +91,9 @@ export function UpdateServerForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg">Nombre del servidor</FormLabel>
+                <FormLabel className="text-lg">
+                  {t("Server.Edit.name")}
+                </FormLabel>
                 <FormControl>
                   <Input type="text" {...field} />
                 </FormControl>
@@ -117,7 +122,7 @@ export function UpdateServerForm({
               name="diskCount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cantidad de Discos</FormLabel>
+                  <FormLabel>{t("Server.Edit.diskCount")}</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
@@ -135,7 +140,7 @@ export function UpdateServerForm({
               className="w-40 bg-green-app hover:bg-green-app-transparent"
             >
               <Save className="mr-2" />
-              Actualizar servidor
+              {t("Server.Edit.button")}
             </Button>
             <DialogClose asChild>
               <Button
@@ -143,7 +148,7 @@ export function UpdateServerForm({
                 className="w-40 bg-red-app hover:bg-red-app-transparent"
               >
                 <CircleMinus className="mr-2" />
-                Cancelar
+                {t("Server.Edit.cancel")}
               </Button>
             </DialogClose>
           </div>

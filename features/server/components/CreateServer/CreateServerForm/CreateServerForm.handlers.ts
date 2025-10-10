@@ -6,7 +6,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { handleApiError } from "@/lib/services/errors/errors";
 
 export const submitServer = async (
-  data: z.infer<typeof createServerFormSchema>,
+  data: z.infer<ReturnType<typeof createServerFormSchema>>,
   router: AppRouterInstance,
   closeDialog?: () => void
 ) => {

@@ -83,6 +83,7 @@
   },
   "Server":{
     "Schemas":{
+      "serverIdRequired": "The server ID is required",
       "nameMin": "The server name must be at least 3 characters long",
       "nameMax": "The server name cannot exceed 100 characters",
       "ramGBInvalid": "RAM must be a number",
@@ -118,7 +119,44 @@
       "installedGpus": "Installed GPUs:",
       "availableGpus": "Available GPUs:",
       "noAvailableGpus": "Not available"
-    }
+    },
+    "details": {
+      "loading": "Loading server...",
+      "error": "An error occurred",
+      "not_found": "Server not found",
+      "description": "Here you can view the details of the server, its status, and logs.",
+      "serverDetails": "Server Details",
+      "not_available": "Not available",
+      "diskCount": "Disk Count:",
+      "set_maintenance": "Set Server to Maintenance",
+      "set_available": "Set Server to Available",
+      "delete_server": "Delete Server",
+      "noAvailableGpus": "No GPUs available.",
+      "type": "Type:",
+      "usageHeatmap": "GPU Usage Heatmap",
+      "usageHeatmapNone": "No usage",
+      "usageHeatmapMore": "4 or more",
+      "donutChartTitle": "GPU Status",
+      "donutChartAvailable": "Available",
+      "donutChartUsed": "Used",
+      "currentGpuUsers": "Current GPU Users",
+      "noCurrentGpuUsers": "No users currently using GPUs.",
+      "gpuName": "GPU Name",
+      "userFullName": "User Full Name",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "status": "Status",
+      "status.active": "Active",
+      "status.extended": "Extended"
+        },
+        "Edit": {
+      "button": "Edit Server",
+      "title": "Edit Server",
+      "description": "Here you can edit your server information.",
+      "name": "Server Name",
+      "diskCount": "Disk Count",
+      "cancel": "Cancel"
+        }
   },
   "Gpu": {
     "reservationsList": {

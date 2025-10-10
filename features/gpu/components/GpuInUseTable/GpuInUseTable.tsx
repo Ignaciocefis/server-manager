@@ -19,23 +19,32 @@ import {
   mapReservationsFromServer,
 } from "./GpuInUseTable.data";
 import { useMemo } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
+import { User } from "lucide-react";
 
 export function GpuInUseTable({ data }: { data: ServerListItem }) {
   const tableData = useMemo(() => {
     return mapReservationsFromServer(data);
   }, [data]);
 
+  const { t, language } = useLanguage();
+
   const table = useReactTable({
     data: tableData,
-    columns: gpuInUseColumns,
+    columns: gpuInUseColumns(language),
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
-    <div className="w-11/12 mx-auto mt-6 px-8 py-4 rounded-xl border overflow-hidden shadow-sm bg-gray-app-100">
-      <h2 className="text-xl font-semibold mb-2">
-        Usuarios utilizando GPUs actualmente
-      </h2>
+    <div className="w-11/12 border rounded-xl shadow-md bg-white p-5 flex flex-col gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 rounded-lg border border-gray-app-200 shadow-sm bg-white mb-4">
+        <div className="flex items-center gap-3">
+          <User className="w-6 h-6 text-blue-app" />
+          <h2 className="text-xl md:text-2xl font-bold text-gray-app-700">
+            {t("Server.details.currentGpuUsers")}
+          </h2>
+        </div>
+      </div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((hg) => (
@@ -44,9 +53,13 @@ export function GpuInUseTable({ data }: { data: ServerListItem }) {
                 <TableHead key={header.id} className="text-sm font-semibold">
                   {header.isPlaceholder
                     ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+                    : t(
+                        String(
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )
+                        )
                       )}
                 </TableHead>
               ))}
@@ -70,10 +83,10 @@ export function GpuInUseTable({ data }: { data: ServerListItem }) {
           ) : (
             <TableRow>
               <TableCell
-                colSpan={gpuInUseColumns.length}
+                colSpan={table.getAllColumns().length}
                 className="text-center py-10 text-muted-foreground"
               >
-                No hay usuarios utilizando GPUs actualmente.
+                {t("Server.details.noCurrentGpuUsers")}
               </TableCell>
             </TableRow>
           )}
