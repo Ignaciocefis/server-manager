@@ -232,7 +232,31 @@
       "reservation_available": "La reserva de la gráfica {0} del servidor {1} está disponible",
       "reservation_extended": "La reserva de la gráfica {0} del servidor {1} ha sido extendida hasta {2}",
       "reservation_completed": "La reserva de la gráfica {0} del servidor {1} ha sido completada",
-      "reservation_cancelled": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada"
+      "reservation_cancelled": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada",
+      "reservation_cancelled_server_unavailable": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada debido a que el servidor se ha marcado como no disponible"
+    },
+    "logsTable": {
+      "title": "Registros de eventos",
+      "description": "Aquí puedes ver todos los eventos del sistema.",
+      "export": "Exportar datos",
+      "filterType": "Tipo",
+      "filterAll": "Todos",
+      "searchPlaceholder": "Buscar en logs...",
+      "filterColumns": "Columnas",
+      "showColumns": "Mostrar columnas",
+      "refresh": "Actualizar",
+      "errorLoading": "Error al cargar los registros",
+      "loading": "Cargando logs...",
+      "noLogs": "No se encontraron logs",
+      "createdAt": "Fecha y hora",
+      "userFullName": "Nombre del usuario",
+      "serverName": "Servidor",
+      "gpuName": "GPU",
+      "eventType": "Tipo de evento",
+      "message": "Mensaje",
+      "paginationShowing": "Mostrando",
+      "paginationTo": "a",
+      "paginationOf": "de"
     }
   }
 }

@@ -51,7 +51,10 @@ export const getTypeIcon = (type: string) => {
   }
 };
 
-export const exportLogsToCSV = (logs: LogsTableDataProps[]) => {
+export const exportLogsToCSV = (
+  logs: LogsTableDataProps[],
+  tLog: (msg: string) => string
+) => {
   if (!logs || logs.length === 0) return;
 
   const csvRows: string[] = [];
@@ -61,7 +64,11 @@ export const exportLogsToCSV = (logs: LogsTableDataProps[]) => {
   for (const log of logs) {
     const values = headers.map((header) => {
       const value = getNestedValue(log, header);
-      const displayValue = toDisplay(value).replace(/"/g, '""');
+
+      const rawValue =
+        header === "message" ? tLog(String(value)) : toDisplay(value);
+      const displayValue = rawValue.replace(/"/g, '""');
+
       return `"${displayValue}"`;
     });
     csvRows.push(values.join(","));

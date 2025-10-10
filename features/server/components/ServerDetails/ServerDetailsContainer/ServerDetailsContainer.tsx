@@ -118,7 +118,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
         onReservationSuccess={triggerRefresh}
       />
 
-      <div className="flex flex-col md:flex-row items-center justify-between w-11/12 mx-auto">
+      <div className="flex flex-col 2xl:flex-row items-center justify-between w-11/12 mx-auto">
         <div className="w-full md:w-auto">
           <GpuUsageHeatmap serverId={server.id} />
         </div>
@@ -136,7 +136,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
         <GpuInUseTable data={server} />
       </div>
 
-      <div className="flex w-11/12 mx-auto mt-4">
+      <div className="mt-8 w-11/12 mx-auto">
         <LogsTable serverId={server.id} limit={10} />
       </div>
 

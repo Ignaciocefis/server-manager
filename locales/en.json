@@ -232,7 +232,31 @@
       "reservation_available": "The reservation for the GPU {0} on server {1} is available",
       "reservation_extended": "The reservation for the GPU {0} on server {1} has been extended to {2}",
       "reservation_completed": "The reservation for the GPU {0} on server {1} has been completed",
-      "reservation_cancelled": "The reservation for the GPU {0} on server {1} has been cancelled"
+      "reservation_cancelled": "The reservation for the GPU {0} on server {1} has been cancelled",
+      "reservation_cancelled_server_unavailable": "The reservation for the GPU {0} on server {1} has been cancelled due to the server being marked as unavailable"
+    },
+    "logsTable": {
+      "title": "Event Logs",
+      "description": "Here you can view all system events.",
+      "export": "Export Data",
+      "filterType": "Type",
+      "filterAll": "All",
+      "searchPlaceholder": "Search logs...",
+      "filterColumns": "Columns",
+      "showColumns": "Show Columns",
+      "refresh": "Refresh",
+      "errorLoading": "Error loading logs",
+      "loading": "Loading logs...",
+      "noLogs": "No logs found",
+      "createdAt": "Date and Time",
+      "userFullName": "User Full Name",
+      "serverName": "Server",
+      "gpuName": "GPU",
+      "eventType": "Event Type",
+      "message": "Message",
+      "paginationShowing": "Showing",
+      "paginationTo": "to",
+      "paginationOf": "of"
     }
   }
 }

@@ -114,7 +114,6 @@ export const getAllLogs = async (
   }
 };
 
-// 🔹 Logs con restricción de accesos
 export const getAccessibleLogs = async (
   userId: string,
   serverId?: string,

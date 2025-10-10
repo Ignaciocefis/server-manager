@@ -34,7 +34,7 @@ export const createServer = async (
 };
 
 export const updateServerWithGpus = async (
-  data: z.infer<typeof updateServerFormSchema>
+  data: z.infer<ReturnType<typeof updateServerFormSchema>>
 ): Promise<ApiResponse<ServerSummary | null>> => {
   const { serverId, gpus, ...serverData } = data;
 
@@ -379,7 +379,7 @@ export const changeServerAvailability = async (
         const eventLog = await db.eventLog.create({
           data: {
             eventType: "RESERVATION_CANCELLED",
-            message: `La reserva de la tarjeta gráfica ${reservation.gpu.name} del servidor ${reservation.server.name} ha sido cancelada al cambiar la disponibilidad del servidor a no disponible.`,
+            message: `EventLog.logMessage.reservation_cancelled_server_unavailable|${reservation.gpu.name}|${reservation.server.name}`,
             reservationId: reservation.id,
             serverId: serverId,
           }, select: { id: true }

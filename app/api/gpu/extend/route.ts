@@ -132,7 +132,7 @@ export async function PUT(req: Request) {
 
     const log = await createEventLog({
       eventType: "RESERVATION_EXTENDED",
-      message: `EventLog.logMessage.reservation_extended|${gpuName.data.name}|${serverName.data[0].name}|${extendedUntilDate.toISOString()}`,
+      message: `EventLog.logMessage.reservation_extended|${gpuName.data.name}|${serverName.data[0].name}|${new Date(extendedUntilDate).toLocaleString()}`,
       reservationId: reservationId,
       userId: userId,
       serverId: reservation.serverId,
