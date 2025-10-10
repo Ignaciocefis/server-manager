@@ -6,7 +6,7 @@ import { createServerFormSchema, updateServerFormSchema } from "@/features/serve
 import { getGpuAvailabilityStats } from "@/features/server/utils";
 
 export const createServer = async (
-  data: z.infer<typeof createServerFormSchema>
+  data: z.infer<ReturnType<typeof createServerFormSchema>>
 ): Promise<ApiResponse<string | null>> => {
   try {
     const { gpus, ...serverData } = data;

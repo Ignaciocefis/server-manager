@@ -71,3 +71,8 @@ export interface AccessToServerWithEmailAndGpus {
   email: string;
   gpus: string[];
 }
+
+export interface GpuUsageByDay {
+  date: string;
+  count: number;
+}
