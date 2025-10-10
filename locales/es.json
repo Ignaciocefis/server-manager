@@ -191,6 +191,21 @@
       "reserve": "Reservar",
       "cancel": "Cancelar",
       "loading": "Cargando..."
+    },
+    "calendar":{
+      "title": "Calendario de reservas de GPUs",
+      "description": "Consulta las reservas de Tarjetas Gráficas en un calendario. Haga clic en una reserva para ver más detalles.",
+      "error": "Ha ocurrido un error al cargar las reservas. Inténtalo de nuevo más tarde.",
+      "today": "Hoy",
+      "reservationDetailsTitle": "Detalles de la reserva",
+      "reservationDetailsDescription": "Aquí puedes ver los detalles de la reserva seleccionada.",
+      "user": "Usuario: ",
+      "gpu": "GPU: ",
+      "server": "Servidor: ",
+      "status": "Estado: ",
+      "start": "Inicio: ",
+      "end": "Fin: ",
+      "close": "Cerrar"
     }
   },
   "EventLog": {

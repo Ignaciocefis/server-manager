@@ -37,7 +37,7 @@ export function GpuReservationsList({
 
         <div className="flex flex-col justify-center">
           <h3 className="text-lg md:text-2xl font-bold text-red-700">
-            {t("app.reservationsList.errorLoadingReservations")}
+            {t("Gpu.reservationsList.errorLoadingReservations")}
           </h3>
           <p className="text-sm md:text-base text-red-app">{error}</p>
         </div>
@@ -48,11 +48,11 @@ export function GpuReservationsList({
     <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]  md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))] justify-items-center w-full mb-4">
       {sortedReservations.length === 0 ? (
         <p className="col-span-full text-center text-gray-600">
-          {t("app.reservationsList.noGpuReservations")}
+          {t("Gpu.reservationsList.noGpuReservations")}
         </p>
       ) : filteredReservations.length === 0 ? (
         <p className="col-span-full text-center text-gray-600">
-          {t("app.reservationsList.noSearchResults")}
+          {t("Gpu.reservationsList.noSearchResults")}
         </p>
       ) : (
         filteredReservations.map((r) => (

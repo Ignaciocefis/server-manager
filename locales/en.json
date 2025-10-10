@@ -191,6 +191,21 @@
       "reserve": "Reserve",
       "cancel": "Cancel",
       "loading": "Loading..."
+    },
+    "calendar":{
+      "title": "GPU Reservations Calendar",
+      "description": "View GPU reservations in a calendar. Click on a reservation to see more details.",
+      "error": "An error occurred while loading reservations. Please try again later.",
+      "today": "Today",
+      "reservationDetailsTitle": "Reservation Details",
+      "reservationDetailsDescription": "Here you can view the details of the selected reservation.",
+      "user": "User: ",
+      "gpu": "GPU: ",
+      "server": "Server: ",
+      "status": "Status: ",
+      "start": "Start: ",
+      "end": "End: ",
+      "close": "Close"
     }
   },
   "EventLog": {
