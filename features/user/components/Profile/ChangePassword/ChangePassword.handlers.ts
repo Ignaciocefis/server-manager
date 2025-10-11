@@ -1,6 +1,4 @@
 import { changePasswordSchema } from "@/features/user/schemas";
-import { useLanguage } from "@/hooks/useLanguage";
-import { handleApiError } from "@/lib/services/errors/errors";
 import axios from "axios";
 import { toast } from "sonner";
 import z from "zod";
@@ -13,10 +11,10 @@ export async function handleChangePassword(
     currentPassword: data.currentPassword,
     newPassword: data.newPassword,
   }).then(() => {
-    const { t } = useLanguage();
-    toast.success(t("User.ChangePassword.changeSuccess"));
+    toast.success("Password changed successfully");
     onSuccess();
   }).catch((error) => {
-    handleApiError(error, true);
+    console.error(error);
+    toast.error(error.response?.data?.message || "Error changing password");
   });
 }
