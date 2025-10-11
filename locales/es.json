@@ -402,5 +402,20 @@
       "paginationTo": "a",
       "paginationOf": "de"
     }
+  },
+  "Error": {
+    "unauthorized": {
+      "title": "No tienes permiso",
+      "description": "No estás autorizado para acceder a esta página. Contacta con un administrador si crees que esto es un error."
+    },
+    "notFound": {
+      "title": "Página no encontrada",
+      "description": "La página que buscas no existe. Verifica la URL o vuelve al inicio."
+    },
+    "error": {
+      "title": "Ha ocurrido un error",
+      "description": "Lo sentimos, ha ocurrido un error inesperado. Inténtalo de nuevo más tarde o contacta con soporte si el problema persiste."
+    },
+    "button": "Volver al inicio"
   }
 }

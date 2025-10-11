@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TriangleAlert } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ErrorPageProps {
   title: string;
@@ -19,6 +20,8 @@ export function ErrorPage({
   gifUrl = "/error.gif",
 }: ErrorPageProps) {
   const router = useRouter();
+
+  const { t } = useLanguage();
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center">
@@ -47,7 +50,7 @@ export function ErrorPage({
             onClick={() => router.push("/")}
             className="mt-4 px-8 py-4 bg-red-app text-white text-lg font-bold rounded-lg hover:bg-red-800 transition"
           >
-            Volver al inicio
+            {t("Error.button")}
           </button>
         </div>
       </div>

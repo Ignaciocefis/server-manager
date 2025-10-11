@@ -402,5 +402,20 @@
       "paginationTo": "to",
       "paginationOf": "of"
     }
+  },
+  "Error": {
+    "unauthorized": {
+      "title": "No permission",
+      "description": "You are not authorized to access this page. Contact an administrator if you believe this is an error."
+    },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist. Check the URL or return to the home page."
+    },
+    "error": {
+      "title": "An error occurred",
+      "description": "Sorry, an unexpected error occurred. Please try again later or contact support if the problem persists."
+    },
+    "button": "Return to home"
   }
 }

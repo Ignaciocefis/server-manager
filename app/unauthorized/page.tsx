@@ -1,12 +1,15 @@
 "use client";
 
 import { ErrorPage } from "@/components/Shared";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function UnauthorizedPage() {
+  const { t } = useLanguage();
+
   return (
     <ErrorPage
-      title="No tienes permiso"
-      description="No estás autorizado para acceder a esta página. Contacta con un administrador si crees que esto es un error."
+      title={t("Error.unauthorized.title")}
+      description={t("Error.unauthorized.description")}
     />
   );
 }
