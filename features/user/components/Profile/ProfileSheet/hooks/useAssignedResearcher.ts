@@ -8,11 +8,12 @@ export function useAssignedResearcher(category: string, assignedToId: string | n
   useEffect(() => {
     const fetchResearcher = async () => {
       if (category === "JUNIOR" && assignedToId) {
-        axios.get(`/api/researcher/findResearcher?id=${assignedToId}`)
+        axios.get(`/api/user/researcher/findResearcher?id=${assignedToId}`)
           .then((res) => {
             const researcher = res.data.data;
-            setResearcherName(researcher)
-          }).catch((error) => {
+            setResearcherName(researcher ?? null);
+          })
+          .catch((error) => {
             handleApiError(error, true);
           });
       } else {
