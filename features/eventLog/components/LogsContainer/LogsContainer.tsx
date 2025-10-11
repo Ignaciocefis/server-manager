@@ -28,8 +28,7 @@ export function LogsContainer({ isAdmin }: { isAdmin: boolean }) {
 
         {isAdmin && (
           <Button
-            variant="outline"
-            size="sm"
+            className="bg-gray-app-100 text-gray-app-600 font-bold hover:bg-gray-app-200 shadow-md cursor-pointer w-40"
             onClick={() => {
               if (logsRef.current) {
                 logsRef.current.exportFilteredLogs();
