@@ -10,8 +10,8 @@ export function useAssignedResearcher(category: string, assignedToId: string | n
       if (category === "JUNIOR" && assignedToId) {
         axios.get(`/api/user/researcher/findResearcher?id=${assignedToId}`)
           .then((res) => {
-            const researcher = res.data.data;
-            setResearcherName(researcher ?? null);
+            const researcherName = res.data.data.name + " " + res.data.data.firstSurname;
+            setResearcherName(researcherName ?? null);
           })
           .catch((error) => {
             handleApiError(error, true);
@@ -23,6 +23,8 @@ export function useAssignedResearcher(category: string, assignedToId: string | n
 
     fetchResearcher();
   }, [category, assignedToId]);
+
+  console.log("Assigned Researcher:", researcherName);
 
   return researcherName;
 }
