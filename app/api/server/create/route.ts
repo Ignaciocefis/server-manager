@@ -3,11 +3,14 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { existsServerByName, createServer } from "@/features/server/data";
 import { createServerFormSchema } from "@/features/server/shemas";
 import { createEventLog } from "@/features/eventLog/data";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function POST(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const body = await request.json();
-    const data = createServerFormSchema.parse(body);
+    const data = createServerFormSchema(t).parse(body);
 
     const isAdmin = await hasCategory("ADMIN");
     if (!isAdmin) {

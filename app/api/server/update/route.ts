@@ -2,6 +2,7 @@ import { createEventLog } from "@/features/eventLog/data";
 import { existsServerByName, getServerById, updateServerWithGpus } from "@/features/server/data";
 import { updateServerFormSchema } from "@/features/server/shemas";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
@@ -15,8 +16,10 @@ export async function PUT(request: Request) {
       );
     }
 
+    const { t } = await getServerLanguage();
+
     const body = await request.json();
-    const data = updateServerFormSchema.parse(body);
+    const data = updateServerFormSchema(t).parse(body);
     const { serverId, ...serverData } = data;
 
     if (!serverId || typeof serverId !== "string") {
