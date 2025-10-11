@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ComboboxResearchersProps } from "./ComboboxResearchers.types";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function ComboboxResearchers({
   value,
@@ -26,6 +27,8 @@ export function ComboboxResearchers({
   const [open, setOpen] = useState(false);
 
   const selectedResearcher = researchers.find((r) => r.id === value);
+
+  const { t } = useLanguage();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -38,15 +41,17 @@ export function ComboboxResearchers({
         >
           {selectedResearcher
             ? `${selectedResearcher.name} ${selectedResearcher.firstSurname} ${selectedResearcher.secondSurname || ""}`
-            : "Selecciona un investigador"}
+            : t("User.management.assignResearcherSelect")}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent className="w-full p-0">
         <Command className="md:min-w-[350px]">
-          <CommandInput placeholder="Buscar investigador..." />
-          <CommandEmpty>No hay investigadores</CommandEmpty>
+          <CommandInput
+            placeholder={t("User.management.searchResearcherPlaceholder")}
+          />
+          <CommandEmpty>{t("User.management.noResearchers")}</CommandEmpty>
           <CommandGroup>
             {researchers.map((researcher) => (
               <CommandItem

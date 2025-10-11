@@ -26,11 +26,14 @@ import { handleCreateUser } from "./CreateUserForm.handlers";
 import { CreateUserFormProps } from "./CreateUserForm.types";
 import { useCreateUserForm } from "./hooks/useCreateUserForm";
 import { useFetchResearchers } from "./hooks/useFetchResearchers";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function CreateUserForm({
   closeDialog,
   onSuccess,
 }: CreateUserFormProps) {
+  const { t } = useLanguage();
+
   const { form } = useCreateUserForm();
 
   const selectedCategory = useWatch({
@@ -56,7 +59,9 @@ export function CreateUserForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg">Correo electrónico</FormLabel>
+                <FormLabel className="text-lg">
+                  {t("User.management.email")}
+                </FormLabel>
                 <FormControl>
                   <Input type="email" {...field} />
                 </FormControl>
@@ -69,7 +74,7 @@ export function CreateUserForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nombre</FormLabel>
+                <FormLabel>{t("User.management.name")}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -82,7 +87,7 @@ export function CreateUserForm({
             name="firstSurname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Primer Apellido</FormLabel>
+                <FormLabel>{t("User.management.firstSurname")}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -95,7 +100,7 @@ export function CreateUserForm({
             name="secondSurname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Segundo Apellido</FormLabel>
+                <FormLabel>{t("User.management.secondSurname")}</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -111,7 +116,9 @@ export function CreateUserForm({
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-lg">Categoría</FormLabel>
+                <FormLabel className="text-lg">
+                  {t("User.management.category")}
+                </FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
@@ -123,9 +130,15 @@ export function CreateUserForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="JUNIOR">Junior</SelectItem>
-                    <SelectItem value="RESEARCHER">Investigador</SelectItem>
-                    <SelectItem value="ADMIN">Administrador</SelectItem>
+                    <SelectItem value="JUNIOR">
+                      {t("User.management.junior")}
+                    </SelectItem>
+                    <SelectItem value="RESEARCHER">
+                      {t("User.management.researcher")}
+                    </SelectItem>
+                    <SelectItem value="ADMIN">
+                      {t("User.management.admin")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -139,7 +152,7 @@ export function CreateUserForm({
               name="assignedToId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Asignar a Investigador</FormLabel>
+                  <FormLabel>{t("User.management.assignResearcher")}</FormLabel>
                   <FormControl>
                     <ComboboxResearchers
                       value={field.value ?? ""}
@@ -157,18 +170,18 @@ export function CreateUserForm({
         <div className="md:col-span-2 flex justify-center gap-4 mt-4">
           <Button
             type="submit"
-            className="w-40 bg-green-app hover:bg-green-app-transparent"
+            className="bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md cursor-pointer w-40"
           >
             <CirclePlus />
-            Añadir usuario
+            {t("User.management.createUserButton")}
           </Button>
           <DialogClose asChild>
             <Button
               type="button"
-              className="w-40 bg-red-app hover:bg-red-app-transparent"
+              className="w-40 bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer"
             >
               <CircleMinus />
-              Cancelar
+              {t("User.management.cancelButton")}
             </Button>
           </DialogClose>
         </div>

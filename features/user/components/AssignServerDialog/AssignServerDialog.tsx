@@ -7,15 +7,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ServerIcon } from "lucide-react";
+import { ServerIcon, User } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { assignServers } from "./handlers/assignServers";
 import { useState } from "react";
 import { AssignServersDialogProps } from "./AssignServerDialog.types";
 import { useServerAssignment } from "./useAssignServerDialog";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function AssignServersDialog({
   userId,
@@ -23,6 +25,8 @@ export function AssignServersDialog({
   onAssigned,
 }: AssignServersDialogProps) {
   const [open, setOpen] = useState(false);
+
+  const { t } = useLanguage();
 
   const {
     selected,
@@ -49,18 +53,26 @@ export function AssignServersDialog({
       <DialogTrigger asChild>
         <div className="flex items-center gap-4 px-2 py-1.5 text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground hover:bg-green-100">
           <ServerIcon className="w-4 h-4" />
-          Asignar servidores
+          {t("User.management.assignServers")}
         </div>
       </DialogTrigger>
 
       <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Asignar servidores</DialogTitle>
+        <DialogHeader className="mb-4">
+          <div className="flex items-center gap-4">
+            <User className="w-8 h-8 text-blue-app" />
+            <DialogTitle className="text-2xl font-bold">
+              {t("User.management.assignServers")}
+            </DialogTitle>
+          </div>
+          <DialogDescription className="md:ml-12 -ml-7">
+            {t("User.management.assignServersDescription")}
+          </DialogDescription>
         </DialogHeader>
 
         <input
           type="text"
-          placeholder="Buscar servidores..."
+          placeholder={t("User.management.searchServers")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-3 w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none"
@@ -68,10 +80,12 @@ export function AssignServersDialog({
 
         <ScrollArea className="h-64">
           {loading ? (
-            <div className="p-4 text-center text-gray-500">Cargando...</div>
+            <div className="p-4 text-center text-gray-500">
+              {t("User.management.loading")}
+            </div>
           ) : filteredServers.length === 0 ? (
             <div className="p-4 text-center text-gray-500">
-              No hay servidores disponibles
+              {t("User.management.noServers")}
             </div>
           ) : (
             filteredServers.map((server) => (
@@ -91,9 +105,9 @@ export function AssignServersDialog({
           <Button
             onClick={handleSave}
             size="sm"
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md cursor-pointer w-40"
           >
-            Guardar
+            {t("User.management.save")}
           </Button>
         </DialogFooter>
       </DialogContent>
