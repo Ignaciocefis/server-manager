@@ -1,26 +1,29 @@
 import { getUserByIdWithPassword, updatePassword } from "@/features/user/data";
 import { updateUserPasswordSchema } from "@/features/user/schemas";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import bcrypt, { compare } from "bcryptjs";
 import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { userId } = await hasCategory();
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "No autorizado" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 401 }
       );
     }
 
     const body = await req.json();
-    const parsed = updateUserPasswordSchema.safeParse(body);
+    const parsed = updateUserPasswordSchema(t).safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Datos inválidos" },
+        { success: false, data: null, error: t("User.Route.invalidValues") },
         { status: 400 }
       );
     }
@@ -31,7 +34,7 @@ export async function PUT(req: Request) {
 
     if (!user || !user.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Usuario no encontrado" },
+        { success: false, data: null, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -40,7 +43,7 @@ export async function PUT(req: Request) {
 
     if (!passwordMatch) {
       return NextResponse.json(
-        { success: false, data: null, error: "Contraseña actual incorrecta" },
+        { success: false, data: null, error: t("User.Route.currentPasswordIncorrect") },
         { status: 401 }
       );
     }
@@ -51,7 +54,7 @@ export async function PUT(req: Request) {
 
     if (!updatedUser || !updatedUser.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al actualizar la contraseña" },
+        { success: false, data: null, error: t("User.Route.updatePasswordError") },
         { status: 500 }
       );
     }
@@ -65,9 +68,9 @@ export async function PUT(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en PUT /api/user/update/password:", error);
+    console.error("Error in PUT /api/user/update/password:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

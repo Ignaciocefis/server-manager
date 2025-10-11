@@ -70,6 +70,22 @@
       "juniorIdRequired": "El ID del junior es requerido",
       "researcherIdRequired": "El ID del investigador es requerido"
     },
+    "Route": {
+      "unauthorized": "No tienes permisos para editar usuarios",
+      "userNotFound": "Usuario no encontrado",
+      "unassignedToResearcher": "Error al asignar investigador",
+      "createEventLogError": "Error al crear el registro de evento",
+      "invalidValues": "Datos inválidos",
+      "userExists": "El usuario ya existe",
+      "emailSendError": "Error al enviar el correo de bienvenida",
+      "userCreateError": "No se pudo crear el usuario",
+      "userDeleteError": "No se pudo eliminar el usuario",
+      "getResearchersError": "Error al obtener investigadores",
+      "toggleUserStatusError": "No se pudo actualizar el estado del usuario",
+      "currentPasswordIncorrect": "Contraseña actual incorrecta",
+      "updatePasswordError": "Error al actualizar la contraseña",
+      "updateProfileError": "Error al actualizar el perfil"
+    },
     "ProfileSheet": {
       "title": "Mi perfil",
       "description": "Aquí puedes ver y editar la información de tu perfil.",

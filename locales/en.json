@@ -70,6 +70,22 @@
       "juniorIdRequired": "The Junior ID is required",
       "researcherIdRequired": "The Researcher ID is required"
     },
+    "Route": {
+      "unauthorized": "You do not have permission to edit users",
+      "userNotFound": "User not found",
+      "unassignedToResearcher": "Error assigning researcher",
+      "createEventLogError": "Error creating event log",
+      "invalidValues": "Invalid data",
+      "userExists": "User already exists",
+      "emailSendError": "Error sending welcome email",
+      "userCreateError": "Could not create user",
+      "userDeleteError": "Could not delete user",
+      "getResearchersError": "Error fetching researchers",
+      "toggleUserStatusError": "Could not update user status",
+      "currentPasswordIncorrect": "Current password incorrect",
+      "updatePasswordError": "Error updating password",
+      "updateProfileError": "Error updating profile"
+    },
     "ProfileSheet": {
       "title": "My Profile",
       "description": "Here you can view and edit your profile information.",

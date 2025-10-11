@@ -12,21 +12,22 @@ import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 export async function POST(request: Request) {
   try {
     const { isCategory } = await hasCategory("ADMIN");
+
+    const { t } = await getServerLanguage();
+
     if (!isCategory) {
       return NextResponse.json(
-        { success: false, data: null, error: "No tienes permisos para crear usuarios" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 403 }
       );
     }
-
-    const { t } = await getServerLanguage();
 
     const body = await request.json();
     const parsed = createUserSchema(t).safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Datos inválidos" },
+        { success: false, data: null, error: t("User.Route.invalidValues") },
         { status: 400 }
       );
     }
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
     const exists = await existsUserByEmail(data.email);
     if (exists.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "El usuario ya existe" },
+        { success: false, data: null, error: t("User.Route.userExists") },
         { status: 400 }
       );
     }
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
 
     if (!emailSent) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al enviar el correo de bienvenida" },
+        { success: false, data: null, error: t("User.Route.emailSendError") },
         { status: 500 }
       );
     }
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
 
     if (!userCreated.success || userCreated.error || !userCreated.data) {
       return NextResponse.json(
-        { success: false, data: null, error: userCreated.error || "No se pudo crear el usuario" },
+        { success: false, data: null, error: userCreated.error || t("User.Route.userCreateError") },
         { status: 500 }
       );
     }
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
     const userName = await getUserNameById(userCreated.data);
     if (userName.error || !userName.success || !userName.data) {
       return NextResponse.json(
-        { data: null, success: false, error: "Usuario no encontrado" },
+        { data: null, success: false, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -83,7 +84,7 @@ export async function POST(request: Request) {
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("User.Route.createEventLogError") },
         { status: 500 }
       );
     }
@@ -97,9 +98,9 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error en POST /api/user/create:", error);
+    console.error("Error in POST /api/user/create:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

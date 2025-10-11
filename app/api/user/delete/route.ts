@@ -2,6 +2,7 @@ import { createEventLog } from "@/features/eventLog/data";
 import { deleteUserById, getUserNameById } from "@/features/user/data";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function DELETE(request: Request) {
@@ -9,9 +10,11 @@ export async function DELETE(request: Request) {
     const body = await request.json();
     const { userId } = body;
 
+    const { t } = await getServerLanguage();
+
     if (!userId || typeof userId !== "string") {
       return NextResponse.json(
-        { data: null, success: false, error: "ID de usuario no proporcionado o inválido" },
+        { data: null, success: false, error: t("User.Route.userIdInvalid") },
         { status: 400 }
       );
     }
@@ -19,7 +22,7 @@ export async function DELETE(request: Request) {
     const { isCategory } = await hasCategory("ADMIN");
     if (!isCategory) {
       return NextResponse.json(
-        { data: null, success: false, error: "No tienes permisos para eliminar usuarios" },
+        { data: null, success: false, error: t("User.Route.unauthorized") },
         { status: 403 }
       );
     }
@@ -27,7 +30,7 @@ export async function DELETE(request: Request) {
 
     if (userName.error || !userName.success || !userName.data) {
       return NextResponse.json(
-        { data: null, success: false, error: "Usuario no encontrado" },
+        { data: null, success: false, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -46,7 +49,7 @@ export async function DELETE(request: Request) {
 
     if (!log || log.error) {
       return NextResponse.json(
-        { data: null, success: false, error: "Error al crear el registro de evento" },
+        { data: null, success: false, error: t("User.Route.createEventLogError") },
         { status: 500 }
       );
     }
@@ -55,7 +58,7 @@ export async function DELETE(request: Request) {
 
     if (!deleted || deleted.error || !deleted.success) {
       return NextResponse.json(
-        { data: null, success: false, error: "No se pudo eliminar el usuario" },
+        { data: null, success: false, error: t("User.Route.userDeleteError") },
         { status: 500 }
       );
     }
@@ -65,9 +68,9 @@ export async function DELETE(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en DELETE /api/user/delete:", error);
+    console.error("Error in DELETE /api/user/delete:", error);
     return NextResponse.json(
-      { data: null, success: false, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
