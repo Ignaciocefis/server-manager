@@ -1,7 +1,7 @@
 import z from "zod";
 
-export const gpuReservationFormSchema = z.object({
-  serverId: z.string().min(1, "El ID del servidor es obligatorio"),
+export const gpuReservationFormSchema = (t: (key: string) => string) => z.object({
+  serverId: z.string().min(1, t("Gpu.Schemas.selectServer")),
   range: z.object({
     from: z.preprocess((val) => {
       if (typeof val === "string" || val instanceof Date) return new Date(val);
@@ -12,11 +12,11 @@ export const gpuReservationFormSchema = z.object({
   }),
   startHour: z
     .string()
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Hora de inicio inválida"),
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, t("Gpu.Schemas.invalidStartHour")),
   endHour: z
     .string()
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Hora de fin inválida"),
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, t("Gpu.Schemas.invalidEndHour")),
   selectedGpuIds: z
     .array(z.string())
-    .min(1, "Debes seleccionar al menos una GPU"),
+    .min(1, t("Gpu.Schemas.selectGpu")),
 });

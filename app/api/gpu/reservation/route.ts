@@ -8,6 +8,7 @@ import {
 import { gpuReservationFormSchema } from "@/features/gpu/schemas";
 import { getServersNameById, hasAccessToServer } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -21,8 +22,10 @@ export async function POST(req: Request) {
   }
 
   try {
+    const { t } = await getServerLanguage();
+
     const body = await req.json();
-    const data = gpuReservationFormSchema.parse(body);
+    const data = gpuReservationFormSchema(t).parse(body);
 
     if (data.startHour >= data.endHour) {
       return NextResponse.json(

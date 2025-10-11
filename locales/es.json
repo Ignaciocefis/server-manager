@@ -208,6 +208,12 @@
     }
   },
   "Gpu": {
+    "Schemas": {
+      "selectServer": "Debes seleccionar un servidor",
+      "invalidStartHour": "Hora de inicio inválida",
+      "invalidEndHour": "Hora de fin inválida",
+      "selectGpu": "Debes seleccionar al menos una GPU"
+    },
     "reservationsList": {
       "errorLoadingReservations": "Error al cargar las reservas",
       "noGpuReservations": "No tienes GPUs reservadas.",
