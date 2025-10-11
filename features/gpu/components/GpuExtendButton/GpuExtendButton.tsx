@@ -12,6 +12,7 @@ import { handleExtendReservation } from "./GpuExtendButton.handlers";
 import { GpuExtendButtonProps } from "./GpuExtendButton.types";
 import { ConfirmDialog } from "@/components/Shared";
 import { useLanguage } from "@/hooks/useLanguage";
+import { Input } from "@/components/ui/input";
 
 export default function GpuExtendButton({
   reservationId,
@@ -64,16 +65,23 @@ export default function GpuExtendButton({
           <p className="text-sm mb-2">
             {t("Gpu.reservationsList.extendForHours")}
           </p>
-          <input
+          <Input
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min={1}
             max={12}
             step={1}
             value={hoursToExtend}
-            onChange={(e) => setHoursToExtend(Number(e.target.value))}
+            onChange={(e) => {
+              let val = e.target.valueAsNumber;
+              if (isNaN(val)) return;
+              if (val > 12) val = 12;
+              if (val < 1) val = 1;
+              setHoursToExtend(Math.floor(val));
+            }}
             className="w-full border rounded px-2 py-1 text-sm mb-2"
           />
-
           {error && (
             <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
               <div className="flex-shrink-0 flex items-center">
@@ -88,7 +96,6 @@ export default function GpuExtendButton({
               </div>
             </div>
           )}
-
           <div className="flex gap-2 w-full">
             <Button
               onClick={openConfirmDialog}
