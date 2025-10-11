@@ -45,6 +45,12 @@
       "emailInvalid": "Must be a valid email.",
       "emailTooShort": "Email is too short.",
       "passwordTooShort": "Password must be at least 6 characters long."
+    },
+    "Route": {
+      "unauthorized": "No autorizado",
+      "userNotFound": "Usuario no encontrado",
+      "internalServerError": "Error interno del servidor",
+      "invalidEmail": "Email inválido"
     }
   },
   "User":{
