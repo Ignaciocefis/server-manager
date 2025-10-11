@@ -254,6 +254,8 @@ export const getAccessibleReservationsByUser = async (
           },
         },
       },
+      orderBy: { startDate: "desc" },
+      take: 50
     });
 
     const formattedReservations = formatReservationsForCalendar(reservations);
