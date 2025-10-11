@@ -332,6 +332,12 @@
     }
   },
   "EventLog": {
+    "Route":{
+      "unauthorized": "No tienes permisos para ver los registros",
+      "fetchNotificationsError": "Error al obtener notificaciones",
+      "missingNotificationData": "Faltan datos de la notificación",
+      "markNotificationError": "Error al marcar notificación como leída"
+    },
     "logType": {
       "user_created": "Usuario creado",
       "user_updated": "Usuario actualizado",

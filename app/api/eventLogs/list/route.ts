@@ -2,16 +2,19 @@ import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { getAccessibleLogs, getAllLogs } from "@/features/eventLog/data";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function GET(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     await updateGpuReservationStatuses();
 
     const { userId, isCategory } = await hasCategory("ADMIN");
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "No autenticado" },
+        { success: false, data: null, error: t("EventLogs.Route.unauthorized") },
         { status: 401 }
       );
     }
@@ -57,9 +60,9 @@ export async function GET(request: Request) {
       { status: 200 }
     )
   } catch (error) {
-    console.error("Error en GET /api/logs/list:", error);
+    console.error("Error in GET /api/eventLogs/list:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
