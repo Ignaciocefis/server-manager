@@ -13,23 +13,23 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function POST(req: Request) {
-  const { userId, isCategory } = await hasCategory("ADMIN");
-  if (!userId) {
-    return NextResponse.json(
-      { success: false, data: null, error: "Usuario no autenticado" },
-      { status: 401 }
-    );
-  }
-
   try {
     const { t } = await getServerLanguage();
 
     const body = await req.json();
     const data = gpuReservationFormSchema(t).parse(body);
 
+    const { userId, isCategory } = await hasCategory("ADMIN");
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, data: null, error: t("Gpu.Route.unauthorized") },
+        { status: 401 }
+      );
+    }
+
     if (data.startHour >= data.endHour) {
       return NextResponse.json(
-        { success: false, data: null, error: "La hora de inicio debe ser anterior a la hora de fin." },
+        { success: false, data: null, error: t("Gpu.Route.theStartHourMustBeBeforeEndHour") },
         { status: 400 }
       );
     }
@@ -53,14 +53,14 @@ export async function POST(req: Request) {
 
     if (startDate >= endDate) {
       return NextResponse.json(
-        { success: false, data: null, error: "La fecha y hora de inicio deben ser anteriores a las de fin." },
+        { success: false, data: null, error: t("Gpu.Route.theStartHourMustBeBeforeEndHour") },
         { status: 400 }
       );
     }
 
     if (endDate <= now || startDate < now) {
       return NextResponse.json(
-        { success: false, data: null, error: "No puedes crear reservas en el pasado." },
+        { success: false, data: null, error: t("Gpu.Route.noReservationsInThePast") },
         { status: 400 }
       );
     }
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       const access = await hasAccessToServer(userId, data.serverId);
       if (!access) {
         return NextResponse.json(
-          { success: false, data: null, error: "No tienes acceso al servidor especificado." },
+          { success: false, data: null, error: t("Gpu.Route.noAccessToServer") },
           { status: 403 }
         );
       }
@@ -78,13 +78,13 @@ export async function POST(req: Request) {
     const gpuCheck = await existGpusByIdsAndServer(data.selectedGpuIds, data.serverId);
     if (!gpuCheck.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al verificar GPUs", details: gpuCheck.error },
+        { success: false, data: null, error: t("Gpu.Route.errorFetchingGpus"), details: gpuCheck.error },
         { status: 500 }
       );
     }
     if (!gpuCheck.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Algunas GPUs no existen o no pertenecen al servidor indicado." },
+        { success: false, data: null, error: t("Gpu.Route.gpuNotFoundOrNotBelong") },
         { status: 400 }
       );
     }
@@ -92,13 +92,13 @@ export async function POST(req: Request) {
     const overlapCheck = await getOverlappingReservations(data.selectedGpuIds, startDate, endDate);
     if (!overlapCheck.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al comprobar solapamientos", details: overlapCheck.error },
+        { success: false, data: null, error: t("Gpu.Route.errorOverlappingReservations"), details: overlapCheck.error },
         { status: 500 }
       );
     }
     if (overlapCheck.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Una o más GPUs ya están reservadas en ese rango de fechas." },
+        { success: false, data: null, error: t("Gpu.Route.gpuAlreadyReserved") },
         { status: 409 }
       );
     }
@@ -106,14 +106,14 @@ export async function POST(req: Request) {
     const creation = await createGpuReservations(data.selectedGpuIds, userId, data.serverId, startDate, endDate);
     if (!creation.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear la reserva", details: creation.error },
+        { success: false, data: null, error: t("Gpu.Route.errorCreatingReservation"), details: creation.error },
         { status: 500 }
       );
     }
 
     if (!creation.data || !creation.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "No se pudo crear la reserva" },
+        { success: false, data: null, error: t("Gpu.Route.errorCreatingReservation") },
         { status: 500 }
       );
     }
@@ -123,7 +123,7 @@ export async function POST(req: Request) {
 
       if (!gpuName || !gpuName.success || !gpuName.data) {
         return NextResponse.json(
-          { success: false, data: null, error: "GPU no encontrada" },
+          { success: false, data: null, error: t("Gpu.Route.gpuNotFound") },
           { status: 404 }
         );
       }
@@ -132,7 +132,7 @@ export async function POST(req: Request) {
 
       if (!serverName || !serverName.success || !serverName.data) {
         return NextResponse.json(
-          { success: false, data: null, error: "Servidor no encontrado" },
+          { success: false, data: null, error: t("Gpu.Route.serverNotFound") },
           { status: 404 }
         );
       }
@@ -147,7 +147,7 @@ export async function POST(req: Request) {
 
       if (!log || log.error) {
         return NextResponse.json(
-          { success: false, data: null, error: "Error al crear el registro de evento" },
+          { success: false, data: null, error: t("Gpu.Route.eventLogError") },
           { status: 500 }
         );
       }
@@ -165,9 +165,9 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error("Reserva error:", error);
+    console.error("Error in POST /api/gpu/reservation:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

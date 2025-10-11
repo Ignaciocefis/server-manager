@@ -1,10 +1,13 @@
 import { getGpuUsageByYear } from "@/features/gpu/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
+
+    const { t } = await getServerLanguage();
 
     await updateGpuReservationStatuses();
 
@@ -12,7 +15,7 @@ export async function GET(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "Usuario no autenticado" },
+        { success: false, data: null, error: t("Gpu.Route.unauthorized") },
         { status: 401 }
       );
     }
@@ -23,7 +26,7 @@ export async function GET(req: Request) {
 
     if (!serverId || !year) {
       return NextResponse.json(
-        { success: false, data: null, error: "Faltan parámetros: serverId o year" },
+        { success: false, data: null, error: t("Gpu.Route.missingParameters") },
         { status: 400 }
       );
     }
@@ -32,7 +35,7 @@ export async function GET(req: Request) {
 
     if (!usage.success) {
       return NextResponse.json(
-        { success: false, data: null, error: usage.error || "Error al obtener el uso de las GPU" },
+        { success: false, data: null, error: usage.error || t("Gpu.Route.errorFetchingUsage") },
         { status: 500 }
       );
     }
@@ -42,9 +45,9 @@ export async function GET(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching GPU reservations:", error);
+    console.error("Error in GET /api/gpu/heatmap:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno al obtener las reservas" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
