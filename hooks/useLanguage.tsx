@@ -58,6 +58,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLanguage(lang);
     setTranslations(lang === "es" ? es : en);
     localStorage.setItem("language", lang);
+    document.cookie = `language=${lang}; path=/; max-age=31536000`;
   }, []);
 
   const t = useCallback(
