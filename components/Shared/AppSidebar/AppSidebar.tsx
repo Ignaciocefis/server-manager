@@ -16,12 +16,14 @@ import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { LanguageSwitcher } from "..";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useHasCategory } from "@/hooks/useHasCategory";
 
 export function AppSidebar() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { state } = useSidebar();
   const pathName = usePathname();
   const { t } = useLanguage();
+  const { hasCategory } = useHasCategory(["ADMIN", "RESEARCHER"]);
 
   return (
     <Sidebar
@@ -58,33 +60,35 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroup>
           <hr className="border-gray-app-300 w-4/5 mx-auto my-4" />{" "}
-          <SidebarGroup>
-            <SidebarMenu className="pl-4">
-              {adminLinks.map((link) => (
-                <SidebarMenuItem key={link.name}>
-                  <div className="grid grid-cols-[2rem_auto] items-center">
-                    <SidebarMenuButton
-                      className={`flex items-center gap-3 w-56 -ml-2 text-base font-medium peer transition-colors ${
-                        pathName === link.href
-                          ? "bg-gray-app-200-transparent rounded-md hover:bg-gray-app-200-transparent"
-                          : "hover:bg-gray-app-200-transparent"
-                      }`}
-                    >
-                      <link.icon className="mr-2 w-5 h-5" />
-                      <Link href={link.href}>{t(link.name)}</Link>
-                    </SidebarMenuButton>
-                    <div
-                      className={`${
-                        pathName === link.href
-                          ? "bg-gray-app-200 rounded-md w-8 h-8 -ml-20 transition-colors peer-hover:bg-gray-app-150"
-                          : "opacity-0"
-                      }`}
-                    />
-                  </div>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
+          {hasCategory && (
+            <SidebarGroup>
+              <SidebarMenu className="pl-4">
+                {adminLinks.map((link) => (
+                  <SidebarMenuItem key={link.name}>
+                    <div className="grid grid-cols-[2rem_auto] items-center">
+                      <SidebarMenuButton
+                        className={`flex items-center gap-3 w-56 -ml-2 text-base font-medium peer transition-colors ${
+                          pathName === link.href
+                            ? "bg-gray-app-200-transparent rounded-md hover:bg-gray-app-200-transparent"
+                            : "hover:bg-gray-app-200-transparent"
+                        }`}
+                      >
+                        <link.icon className="mr-2 w-5 h-5" />
+                        <Link href={link.href}>{t(link.name)}</Link>
+                      </SidebarMenuButton>
+                      <div
+                        className={`${
+                          pathName === link.href
+                            ? "bg-gray-app-200 rounded-md w-8 h-8 -ml-20 transition-colors peer-hover:bg-gray-app-150"
+                            : "opacity-0"
+                        }`}
+                      />
+                    </div>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
         </div>
 
         <div className="mt-auto">
