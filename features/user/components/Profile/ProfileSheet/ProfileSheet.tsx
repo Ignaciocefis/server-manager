@@ -160,7 +160,7 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
                 <FormLabel>
                   {t("User.ProfileSheet.researcherAssigned")}
                 </FormLabel>
-                <div className="px-3 py-2 text-sm rounded bg-gray-app-100 text-gray-app-500 border border-gray-200">
+                <div className="w-full bg-gray-app-100 text-gray-app-400 px-3 py-2 rounded text-sm border border-transparent">
                   {researcherName}
                 </div>
               </FormItem>
