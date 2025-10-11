@@ -40,6 +40,13 @@
       "markAllAsRead": "Marcar todas como leídas"
     }
   },
+  "Auth": {
+    "Schema": {
+      "emailInvalid": "Debe ser un email válido.",
+      "emailTooShort": "El email es muy corto.",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres."
+    }
+  },
   "User":{
     "Schemas": {
       "nameRequired": "El nombre es obligatorio",

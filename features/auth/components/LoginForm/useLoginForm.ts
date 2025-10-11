@@ -18,16 +18,23 @@ export function useLoginForm() {
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const { t } = useLanguage();
 
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
+  type LoginFormValues = {
+    email: string;
+    password: string;
+  };
+
+  const schema = loginFormSchema(t);
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(schema as z.ZodType<LoginFormValues>),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-    const result = loginFormSchema.safeParse(values);
+  const onSubmit = async (values: z.infer<typeof schema>) => {
+    const result = schema.safeParse(values);
 
     if (!result.success) {
       toast.error(t("app.auth.invalidValues"));
