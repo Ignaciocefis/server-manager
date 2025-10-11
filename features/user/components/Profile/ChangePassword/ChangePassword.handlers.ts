@@ -1,4 +1,5 @@
 import { changePasswordSchema } from "@/features/user/schemas";
+import { useLanguage } from "@/hooks/useLanguage";
 import { handleApiError } from "@/lib/services/errors/errors";
 import axios from "axios";
 import { toast } from "sonner";
@@ -12,7 +13,8 @@ export async function handleChangePassword(
     currentPassword: data.currentPassword,
     newPassword: data.newPassword,
   }).then(() => {
-    toast.success("Contraseña actualizada correctamente");
+    const { t } = useLanguage();
+    toast.success(t("User.ChangePassword.changeSuccess"));
     onSuccess();
   }).catch((error) => {
     handleApiError(error, true);

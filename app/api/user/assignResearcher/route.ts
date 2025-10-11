@@ -3,12 +3,15 @@ import { assignJuniorToResearcher, getUserNameById, userExistsById } from "@/fea
 import { assignResearcherFormSchema } from "@/features/user/schemas";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const body = await request.json();
-    const data = assignResearcherFormSchema.parse(body);
+    const data = assignResearcherFormSchema(t).parse(body);
     const { userId, researcherId } = data;
 
     const { isCategory } = await hasCategory("ADMIN");

@@ -7,7 +7,7 @@ export type CreateUserFormProps = {
   onSuccess?: () => void;
 };
 
-export type CreateUserFormData = z.infer<typeof createUserSchema>;
+export type CreateUserFormData = z.infer<ReturnType<typeof createUserSchema>>;
 
 export type UseFetchResearchersResult = {
   researchers: Researcher[];

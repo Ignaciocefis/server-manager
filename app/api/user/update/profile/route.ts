@@ -3,6 +3,7 @@ import { updateUser } from "@/features/user/data";
 import { updateUserSchema } from "@/features/user/schemas";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
@@ -15,8 +16,10 @@ export async function PUT(request: Request) {
       );
     }
 
+    const { t } = await getServerLanguage();
+
     const body = await request.json();
-    const parsed = updateUserSchema.safeParse(body);
+    const parsed = updateUserSchema(t).safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(

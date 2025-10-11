@@ -59,7 +59,10 @@
       "newPasswordMin": "The new password must be at least 6 characters long",
       "newPasswordMax": "The new password cannot be longer than 20 characters",
       "confirmNewPassword": "You must confirm the new password",
-      "passwordsDoNotMatch": "The passwords do not match"
+      "passwordsDoNotMatch": "The passwords do not match",
+      "juniorMustHaveResearcherAssigned": "A Junior must have an assigned researcher",
+      "juniorIdRequired": "The Junior ID is required",
+      "researcherIdRequired": "The Researcher ID is required"
     },
     "ProfileSheet": {
       "title": "My Profile",
@@ -85,7 +88,8 @@
       "newPassword": "New Password",
       "confirmNewPassword": "Confirm New Password",
       "saveChanges": "Save Changes",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "changeSuccess": "Password changed successfully"
     },
     "management": {
       "title": "User Management",

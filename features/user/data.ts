@@ -270,7 +270,7 @@ export const getAssignedUsers = async (
 };
 
 export const createUser = async (
-  data: z.infer<typeof createUserSchema>,
+  data: z.infer<ReturnType<typeof createUserSchema>>,
   generatedPassword: string
 ): Promise<ApiResponse<string | null>> => {
   const { email, name, firstSurname, secondSurname, category, assignedToId } = data;

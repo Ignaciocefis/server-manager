@@ -7,6 +7,7 @@ import { createUserSchema } from "@/features/user/schemas";
 import { createEventLog } from "@/features/eventLog/data";
 import { getFullName } from "@/features/user/utils";
 import { sendEmailCreateUser } from "@/lib/services/resend/CreateUser/createUser";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function POST(request: Request) {
   try {
@@ -18,8 +19,10 @@ export async function POST(request: Request) {
       );
     }
 
+    const { t } = await getServerLanguage();
+
     const body = await request.json();
-    const parsed = createUserSchema.safeParse(body);
+    const parsed = createUserSchema(t).safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(

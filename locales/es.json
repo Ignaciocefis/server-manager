@@ -59,7 +59,10 @@
       "newPasswordMin": "La nueva contraseña debe tener al menos 6 caracteres",
       "newPasswordMax": "La nueva contraseña no puede tener más de 20 caracteres",
       "confirmNewPassword": "Debes confirmar la nueva contraseña",
-      "passwordsDoNotMatch": "Las contraseñas no coinciden"
+      "passwordsDoNotMatch": "Las contraseñas no coinciden",
+      "juniorMustHaveResearcherAssigned": "Un Junior debe tener un investigador asignado",
+      "juniorIdRequired": "El ID del junior es requerido",
+      "researcherIdRequired": "El ID del investigador es requerido"
     },
     "ProfileSheet": {
       "title": "Mi perfil",
@@ -85,7 +88,8 @@
       "newPassword": "Nueva contraseña",
       "confirmNewPassword": "Confirmar nueva contraseña",
       "saveChanges": "Guardar cambios",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "changeSuccess": "Contraseña cambiada exitosamente"
     },
     "management": {
       "title": "Gestión de usuarios",
