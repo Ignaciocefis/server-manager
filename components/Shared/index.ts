@@ -8,4 +8,3 @@ export * from "./FormItems/TimePickerField/TimePickerField";
 export * from "./LanguageSwitcher/LanguageSwitcher";
 export * from "./Navbar/Navbar";
 export * from "./NotificationButton/NotificationButton";
-export * from "./PageTitle/PageTitle";
