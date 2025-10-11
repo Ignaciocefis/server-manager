@@ -374,7 +374,7 @@
       "server_unavailable": "El servidor {0} ha sido marcado como no disponible",
       "reservation_created": "La reserva de la gráfica {0} del servidor {1} ha sido creada desde {2} hasta {3}",
       "reservation_available": "La reserva de la gráfica {0} del servidor {1} está disponible",
-      "reservation_extended": "La reserva de la gráfica {0} del servidor {1} ha sido extendida hasta {2}",
+      "reservation_extended": "La reserva de la gráfica {0} del servidor {1} ha sido extendida durante {2} horas hasta {3}",
       "reservation_completed": "La reserva de la gráfica {0} del servidor {1} ha sido completada",
       "reservation_cancelled": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada",
       "reservation_cancelled_server_unavailable": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada debido a que el servidor se ha marcado como no disponible"

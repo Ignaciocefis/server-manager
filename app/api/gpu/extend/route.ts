@@ -24,7 +24,7 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-    const { extendedUntil, reservationId } = body;
+    const { extendedUntil, reservationId, hoursToExtend } = body;
 
     if (!reservationId || typeof reservationId !== "string") {
       return NextResponse.json(
@@ -134,7 +134,7 @@ export async function PUT(req: Request) {
 
     const log = await createEventLog({
       eventType: "RESERVATION_EXTENDED",
-      message: `EventLog.logMessage.reservation_extended|${gpuName.data.name}|${serverName.data[0].name}|${new Date(extendedUntilDate).toLocaleString()}`,
+      message: `EventLog.logMessage.reservation_extended|${gpuName.data.name}|${serverName.data[0].name}|${hoursToExtend}|${new Date(extendedUntilDate).toLocaleString()}`,
       reservationId: reservationId,
       userId: userId,
       serverId: reservation.serverId,

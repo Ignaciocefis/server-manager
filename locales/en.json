@@ -374,7 +374,7 @@
       "server_unavailable": "The server {0} has been marked as unavailable",
       "reservation_created": "The reservation for the GPU {0} on server {1} has been created from {2} to {3}",
       "reservation_available": "The reservation for the GPU {0} on server {1} is available",
-      "reservation_extended": "The reservation for the GPU {0} on server {1} has been extended to {2}",
+      "reservation_extended": "The reservation for the GPU {0} on server {1} has been extended for {2} hours until {3}",
       "reservation_completed": "The reservation for the GPU {0} on server {1} has been completed",
       "reservation_cancelled": "The reservation for the GPU {0} on server {1} has been cancelled",
       "reservation_cancelled_server_unavailable": "The reservation for the GPU {0} on server {1} has been cancelled due to the server being marked as unavailable"
