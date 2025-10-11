@@ -1,9 +1,12 @@
 import { getUserAccessibleServers } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const url = new URL(req.url);
     const searchParams = url.searchParams;
     const idParam = searchParams.get("id");
@@ -12,7 +15,7 @@ export async function GET(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "El ID de usuario es obligatorio" },
+        { success: false, data: null, error: t("Server.Route.userIdRequired") },
         { status: 400 }
       );
     }
@@ -23,7 +26,7 @@ export async function GET(req: Request) {
 
     if (!serverList.success) {
       return NextResponse.json(
-        { success: false, data: null, error: serverList.error || "Error al obtener los servidores" },
+        { success: false, data: null, error: serverList.error || t("Server.Route.getServerListError") },
         { status: 500 }
       );
     }
@@ -34,9 +37,9 @@ export async function GET(req: Request) {
     );
 
   } catch (error) {
-    console.error("Error al obtener los servidores accesibles:", error);
+    console.error("Error in GET /api/server/list:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno al obtener los servidores" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

@@ -3,15 +3,18 @@ import { assignServersToUser, getServersNameById } from "@/features/server/data"
 import { getUserNameById } from "@/features/user/data";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { userId: requesterId, isCategory } = await hasCategory(["ADMIN", "RESEARCHER"]);
 
     if (!requesterId || !isCategory) {
       return NextResponse.json(
-        { success: false, data: null, error: "No autenticado o sin permisos" },
+        { success: false, data: null, error: t("Server.Route.unauthorized") },
         { status: 401 }
       );
     }
@@ -21,7 +24,7 @@ export async function PUT(request: Request) {
 
     if (!targetUserId || !Array.isArray(serverIds) || serverIds.some(id => typeof id !== "string")) {
       return NextResponse.json(
-        { success: false, data: null, error: "Parámetros inválidos" },
+        { success: false, data: null, error: t("Server.Route.invalidFields") },
         { status: 400 }
       );
     }
@@ -30,7 +33,7 @@ export async function PUT(request: Request) {
 
     if (!result.success || !result.data?.removed || result.error) {
       return NextResponse.json(
-        { success: false, data: null, error: result.error || "No se pudo asignar los servidores" },
+        { success: false, data: null, error: result.error || t("Server.Route.assignError") },
         { status: 500 }
       );
     }
@@ -39,7 +42,7 @@ export async function PUT(request: Request) {
 
     if (userName.error || !userName.success || !userName.data) {
       return NextResponse.json(
-        { data: null, success: false, error: "Usuario no encontrado" },
+        { data: null, success: false, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -54,7 +57,7 @@ export async function PUT(request: Request) {
 
     if (serverNames.error || !serverNames.success || !serverNames.data) {
       return NextResponse.json(
-        { data: null, success: false, error: "Servidores no encontrados" },
+        { data: null, success: false, error: t("Server.Route.serversNotFound") },
         { status: 404 }
       );
     }
@@ -70,7 +73,7 @@ export async function PUT(request: Request) {
 
       if (!log || log.error) {
         return NextResponse.json(
-          { success: false, data: null, error: "Error al crear el registro de evento" },
+          { success: false, data: null, error: t("Server.Route.eventLogError") },
           { status: 500 }
         );
       }
@@ -88,7 +91,7 @@ export async function PUT(request: Request) {
 
       if (!log || log.error) {
         return NextResponse.json(
-          { success: false, data: null, error: "Error al crear el registro de evento" },
+          { success: false, data: null, error: t("Server.Route.eventLogError") },
           { status: 500 }
         );
       }
@@ -104,9 +107,9 @@ export async function PUT(request: Request) {
     );
 
   } catch (error) {
-    console.error("Error en PUT /api/server/assignServers:", error);
+    console.error("Error in PUT /api/server/assignServers:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

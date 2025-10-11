@@ -7,16 +7,17 @@ import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { isCategory } = await hasCategory("ADMIN");
 
     if (!isCategory) {
       return NextResponse.json(
-        { success: false, data: null, error: "No tienes permisos para editar servidores" },
+        { success: false, data: null, error: t("Server.Route.accessDenied") },
         { status: 403 }
       );
     }
 
-    const { t } = await getServerLanguage();
 
     const body = await request.json();
     const data = updateServerFormSchema(t).parse(body);
@@ -24,7 +25,7 @@ export async function PUT(request: Request) {
 
     if (!serverId || typeof serverId !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: "ID de servidor inválido" },
+        { success: false, data: null, error: t("Server.Route.invalidServerId") },
         { status: 400 }
       );
     }
@@ -32,7 +33,7 @@ export async function PUT(request: Request) {
     const existingServer = await getServerById(serverId);
     if (!existingServer || !existingServer.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Servidor no encontrado" },
+        { success: false, data: null, error: t("Server.Route.serverNotFound") },
         { status: 404 }
       );
     }
@@ -41,7 +42,7 @@ export async function PUT(request: Request) {
       const nameExists = await existsServerByName(serverData.name);
       if (!nameExists || nameExists.data) {
         return NextResponse.json(
-          { success: false, data: null, error: "Ya existe un servidor con ese nombre" },
+          { success: false, data: null, error: t("Server.Route.serverNameExists") },
           { status: 409 }
         );
       }
@@ -51,7 +52,7 @@ export async function PUT(request: Request) {
 
     if (!updatedServer || !updatedServer.success || !updatedServer.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error actualizando el servidor" },
+        { success: false, data: null, error: t("Server.Route.updateServerError") },
         { status: 500 }
       );
     }
@@ -64,7 +65,7 @@ export async function PUT(request: Request) {
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("Server.Route.eventLogError") },
         { status: 500 }
       );
     }
@@ -79,9 +80,9 @@ export async function PUT(request: Request) {
     );
 
   } catch (error) {
-    console.error("Error actualizando servidor:", error);
+    console.error("Error in PUT /api/server/update:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

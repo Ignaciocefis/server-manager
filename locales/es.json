@@ -170,6 +170,26 @@
       "gpuRamGBMin": "La GPU debe tener al menos 1 GB de RAM",
       "gpuMin": "Debe haber al menos una GPU"
     },
+    "Route":{
+      "unauthorized": "No tienes permisos para gestionar servidores",
+      "invalidValues": "Datos inválidos",
+      "createServerError": "No se pudo crear el servidor",
+      "fetchServersError": "Error al obtener los servidores",
+      "fetchServerError": "Error al obtener el servidor",
+      "serverNotFound": "Servidor no encontrado",
+      "updateServerError": "No se pudo actualizar el servidor",
+      "deleteServerError": "No se pudo eliminar el servidor",
+      "setServerAvailableError": "No se pudo marcar el servidor como disponible",
+      "setServerMaintenanceError": "No se pudo marcar el servidor como en mantenimiento",
+      "eventLogError": "Error al crear el registro de evento",
+      "serverIdRequired": "El ID del servidor es requerido",
+      "serverExists": "Ya existe un servidor con ese nombre",
+      "getServerNameError": "Error al obtener el nombre del servidor",
+      "accessDenied": "Acceso denegado",
+      "userIdRequired": "El ID de usuario es requerido",
+      "getServerListError": "Error al obtener los servidores",
+      "serverNameExists": "Ya existe un servidor con ese nombre"
+    },
     "CreateServer": {
       "addServer": "Añadir nuevo servidor",
       "description": "Aquí puedes añadir un nuevo servidor al sistema.",

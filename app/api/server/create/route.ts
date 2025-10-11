@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         {
           success: false,
           data: null,
-          error: "No tienes permisos para crear servidores",
+          error: t("Server.Route.unauthorized"),
         },
         { status: 403 }
       );
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         {
           success: false,
           data: null,
-          error: "Ya existe un servidor con ese nombre",
+          error: t("Server.Route.serverExists"),
         },
         { status: 409 }
       );
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
         {
           success: false,
           data: null,
-          error: "No se pudo crear el servidor",
+          error: t("Server.Route.createServerError"),
         },
         { status: 500 }
       );
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("Server.Route.eventLogError") },
         { status: 500 }
       );
     }
@@ -72,13 +72,9 @@ export async function POST(request: Request) {
     );
 
   } catch (error) {
-    console.error("Error interno en POST /api/server/create:", error);
+    console.error("Error in CREATE /api/server/create:", error);
     return NextResponse.json(
-      {
-        success: false,
-        data: null,
-        error: "Error interno del servidor",
-      },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
