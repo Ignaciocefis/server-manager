@@ -16,6 +16,7 @@ import {
 } from "@/components/Shared/ConfirmDialog/ConfirmDialog.types";
 import { useLanguage } from "@/hooks/useLanguage";
 import GpuUsageHeatmap from "@/features/gpu/components/GpuUsageHeatmap/GpuUsageHeatmap";
+import ServerDetailsContainerSkeleton from "./ServerDetailsContainer.skeleton";
 
 export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   const router = useRouter();
@@ -37,12 +38,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
 
   const { t } = useLanguage();
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-full min-h-[300px]">
-        <p className="text-2xl">{t("Server.details.loading")}</p>
-      </div>
-    );
+  if (loading) return <ServerDetailsContainerSkeleton />;
 
   if (error)
     return (

@@ -2,32 +2,46 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ServerListSkeleton() {
   return (
-    <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
-      {Array.from({ length: 3 }).map((_, i) => (
+    <div
+      className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] 
+                 md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))] 
+                 justify-items-center w-full mb-4"
+    >
+      {Array.from({ length: 2 }).map((_, i) => (
         <div
           key={i}
-          className={`bg-gray-app-500 text-gray-app-100 rounded-xl p-4 w-[200px] 
-            ${i > 0 ? "hidden sm:block" : ""}`}
+          className="bg-white border border-gray-200 rounded-2xl shadow-md 
+                     p-5 w-full max-w-[380px] flex flex-col gap-4"
         >
-          <div className="flex flex-col gap-2 items-start p-0 w-full">
-            <div className="flex justify-between w-full items-center mb-2">
-              <Skeleton className="h-6 w-24 rounded" />
-              <Skeleton className="h-8 w-8 rounded-full" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="flex flex-col gap-1">
+                <Skeleton className="h-5 w-32 rounded" />
+                <Skeleton className="h-3 w-20 rounded" />
+              </div>
             </div>
-            <div className="flex items-center gap-2 w-full">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-28 rounded" />
-            </div>
-            <div className="flex items-center gap-2 w-full">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-36 rounded" />
-            </div>
-            <div className="flex items-center gap-2 w-full">
+            <Skeleton className="h-8 w-8 rounded-md" />
+          </div>
+
+          <div className="flex flex-col gap-2 mt-2">
+            <div className="flex items-center gap-3">
               <Skeleton className="h-4 w-4 rounded-full" />
               <Skeleton className="h-4 w-40 rounded" />
             </div>
-            <Skeleton className="h-8 w-full rounded mt-2" />
-            <Skeleton className="h-8 w-full rounded mt-1" />
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-36 rounded" />
+            </div>
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-32 rounded" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 mt-4">
+            <Skeleton className="h-9 w-full rounded-lg" />
+            <Skeleton className="h-9 w-full rounded-lg" />
           </div>
         </div>
       ))}
