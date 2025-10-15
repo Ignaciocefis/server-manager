@@ -84,7 +84,8 @@
       "toggleUserStatusError": "Could not update user status",
       "currentPasswordIncorrect": "Current password incorrect",
       "updatePasswordError": "Error updating password",
-      "updateProfileError": "Error updating profile"
+      "updateProfileError": "Error updating profile",
+      "categoryUpdateFailed": "Could not update user category"
     },
     "ProfileSheet": {
       "title": "My Profile",
@@ -149,7 +150,23 @@
       "researcher": "Researcher",
       "admin": "Administrator",
       "createUserButton": "Create user",
-      "cancelButton": "Cancel"
+      "cancelButton": "Cancel",
+      "actionsTitle": "User Actions",
+      "actionsDescription": "Here you can perform actions on user {0}.",
+      "deactivateUser": "Deactivate user",
+      "activateUser": "Activate user",
+      "deleteUser": "Delete user",
+      "changeCategory": "Change category",
+      "categoryUpdatedSuccess": "Category successfully changed to {0}",
+      "categoryUpdatedError": "Error changing category",
+      "editCategory": "Edit category",
+      "editCategoryDescription": "Here you can change the user's category.",
+      "selectCategory": "Select a category",
+      "saving": "Saving...",
+      "saveChanges": "Save changes",
+      "loadingServers": "Loading servers...",
+      "researcherAssignedSuccess": "Researcher assigned successfully",
+      "serversAssignedSuccess": "Servers assigned successfully"
     }
   },
   "Server":{
@@ -377,7 +394,8 @@
       "reservation_extended": "The reservation for the GPU {0} on server {1} has been extended for {2} hours until {3}",
       "reservation_completed": "The reservation for the GPU {0} on server {1} has been completed",
       "reservation_cancelled": "The reservation for the GPU {0} on server {1} has been cancelled",
-      "reservation_cancelled_server_unavailable": "The reservation for the GPU {0} on server {1} has been cancelled due to the server being marked as unavailable"
+      "reservation_cancelled_server_unavailable": "The reservation for the GPU {0} on server {1} has been cancelled due to the server being marked as unavailable",
+      "user_updated_category": "The user {0} has changed their category to {1}"
     },
     "logsTable": {
       "title": "Event Logs",

@@ -12,10 +12,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsRight,
-  Trash2,
-  MoreVertical,
-  UserRoundCheck,
-  UserRoundMinus,
   TriangleAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,7 +28,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -57,17 +52,15 @@ import {
   getStatusTypeBadge,
 } from "../../utils";
 import { useHasCategory } from "@/hooks/useHasCategory";
-import { AssignResearcherDialog, AssignServersDialog } from "..";
-import { handleDeleteUser, handleToggleActive } from "./UsersTable.handlers";
 import { getNestedValue, toDisplay } from "@/features/eventLog/utils";
 import { UsersTableProps } from "./UserTable.type";
-import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/Shared/ConfirmDialog/ConfirmDialog";
 import {
   ConfirmMessageKey,
   ConfirmMessageParams,
 } from "@/components/Shared/ConfirmDialog/ConfirmDialog.types";
 import { useLanguage } from "@/hooks/useLanguage";
+import { UserActionsDialog } from "..";
 
 export function UsersTable({
   users,
@@ -251,8 +244,6 @@ export function UsersTable({
                 </TableRow>
               ) : (
                 users.map((user, idx) => {
-                  const isUserJunior = user.category === "JUNIOR";
-
                   return (
                     <TableRow
                       key={user.id}
@@ -279,142 +270,17 @@ export function UsersTable({
                             );
                           } else if (column.key === "actions") {
                             content = (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <MoreVertical className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  {((isAdmin.hasCategory &&
-                                    (user.category === "RESEARCHER" ||
-                                      user.category === "JUNIOR")) ||
-                                    (isResearcher.hasCategory &&
-                                      user.category === "JUNIOR")) && (
-                                    <DropdownMenuItem asChild>
-                                      <AssignServersDialog
-                                        userId={user.id}
-                                        editorId={isAdmin.userId || ""}
-                                        onAssigned={() =>
-                                          handleRefreshUsers(
-                                            fetchUsers,
-                                            pagination,
-                                            searchTerm,
-                                            sortField,
-                                            sortOrder as "desc" | "asc"
-                                          )
-                                        }
-                                      />
-                                    </DropdownMenuItem>
-                                  )}
-
-                                  {isUserJunior && isAdmin.hasCategory && (
-                                    <DropdownMenuItem asChild>
-                                      <AssignResearcherDialog
-                                        userId={user.id}
-                                        researcherId={
-                                          user.assignedToId ?? undefined
-                                        }
-                                        onAssigned={() =>
-                                          handleRefreshUsers(
-                                            fetchUsers,
-                                            pagination,
-                                            searchTerm,
-                                            sortField,
-                                            sortOrder as "desc" | "asc"
-                                          )
-                                        }
-                                      />
-                                    </DropdownMenuItem>
-                                  )}
-
-                                  {user.category !== "ADMIN" && (
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        openConfirmDialog(
-                                          () =>
-                                            handleToggleActive(user.id).then(
-                                              () =>
-                                                handleRefreshUsers(
-                                                  fetchUsers,
-                                                  pagination,
-                                                  searchTerm,
-                                                  sortField,
-                                                  sortOrder as "desc" | "asc"
-                                                )
-                                            ),
-                                          "activate_user",
-                                          {
-                                            userName: user.userFullName,
-                                            active: !user.isActive,
-                                          }
-                                        )
-                                      }
-                                      className="text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground focus:bg-green-100"
-                                    >
-                                      {user.isActive ? (
-                                        <>
-                                          <UserRoundMinus className="w-4 h-4 mr-2" />
-                                          {language === "es"
-                                            ? "Desactivar"
-                                            : "Deactivate"}
-                                        </>
-                                      ) : (
-                                        <>
-                                          <UserRoundCheck className="w-4 h-4 mr-2" />
-                                          {language === "es"
-                                            ? "Activar"
-                                            : "Activate"}
-                                        </>
-                                      )}
-                                    </DropdownMenuItem>
-                                  )}
-
-                                  {isAdmin.hasCategory && (
-                                    <>
-                                      <DropdownMenuSeparator />
-                                      <DropdownMenuItem
-                                        className="text-red-600 focus:bg-red-100"
-                                        onClick={() =>
-                                          openConfirmDialog(
-                                            async () => {
-                                              try {
-                                                await handleDeleteUser(user.id);
-                                                handleRefreshUsers(
-                                                  fetchUsers,
-                                                  pagination,
-                                                  searchTerm,
-                                                  sortField,
-                                                  sortOrder as "desc" | "asc"
-                                                );
-                                              } catch (error) {
-                                                console.error(
-                                                  "Error deleting user:",
-                                                  error
-                                                );
-                                                toast.error(
-                                                  "Error al eliminar usuario"
-                                                );
-                                              }
-                                            },
-                                            "delete_user",
-                                            {
-                                              userName: user.userFullName,
-                                            }
-                                          )
-                                        }
-                                      >
-                                        <Trash2 className="w-4 h-4 mr-2" />
-                                        {t("User.management.delete")}
-                                      </DropdownMenuItem>
-                                    </>
-                                  )}
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                              <UserActionsDialog
+                                user={user}
+                                isAdmin={isAdmin.hasCategory}
+                                isResearcher={isResearcher.hasCategory}
+                                fetchUsers={fetchUsers}
+                                pagination={pagination}
+                                searchTerm={searchTerm}
+                                sortField={sortField}
+                                sortOrder={sortOrder}
+                                openConfirmDialog={openConfirmDialog}
+                              />
                             );
                           } else {
                             content = toDisplay(

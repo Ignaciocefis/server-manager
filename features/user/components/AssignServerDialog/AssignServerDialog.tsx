@@ -18,6 +18,7 @@ import { useState } from "react";
 import { AssignServersDialogProps } from "./AssignServerDialog.types";
 import { useServerAssignment } from "./useAssignServerDialog";
 import { useLanguage } from "@/hooks/useLanguage";
+import { toast } from "sonner";
 
 export function AssignServersDialog({
   userId,
@@ -25,6 +26,7 @@ export function AssignServersDialog({
   onAssigned,
 }: AssignServersDialogProps) {
   const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const { t } = useLanguage();
 
@@ -38,23 +40,36 @@ export function AssignServersDialog({
   } = useServerAssignment(open, editorId, userId);
 
   const handleSave = async () => {
-    await assignServers({
-      userId,
-      serverIds: selected,
-      onSuccess: () => {
-        setOpen(false);
-        onAssigned?.();
-      },
-    });
+    try {
+      setSaving(true);
+      await assignServers({
+        userId,
+        serverIds: selected,
+        onSuccess: () => {
+          toast.success(t("User.management.serversAssignedSuccess"));
+          setOpen(false);
+          onAssigned?.();
+        },
+      });
+    } catch (error) {
+      console.error("Error assigning servers:", error);
+      toast.error(t("User.management.serversAssignedError"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="flex items-center gap-4 px-2 py-1.5 text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground hover:bg-green-100">
-          <ServerIcon className="w-4 h-4" />
+        <Button className="bg-gray-app-100 text-gray-app-600 font-bold hover:bg-gray-app-200 shadow-md cursor-pointer">
+          <ServerIcon className="w-4 h-4 mr-1" />
           {t("User.management.assignServers")}
-        </div>
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-md">
@@ -81,7 +96,7 @@ export function AssignServersDialog({
         <ScrollArea className="h-64">
           {loading ? (
             <div className="p-4 text-center text-gray-500">
-              {t("User.management.loading")}
+              {t("User.management.loadingServers")}
             </div>
           ) : filteredServers.length === 0 ? (
             <div className="p-4 text-center text-gray-500">
@@ -101,13 +116,23 @@ export function AssignServersDialog({
           )}
         </ScrollArea>
 
-        <DialogFooter>
+        <DialogFooter className="flex justify-end gap-4 mt-4">
           <Button
             onClick={handleSave}
-            size="sm"
+            disabled={saving}
             className="bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md cursor-pointer w-40"
           >
-            {t("User.management.save")}
+            {saving
+              ? t("User.management.saving")
+              : t("User.management.saveChanges")}
+          </Button>
+
+          <Button
+            onClick={handleCancel}
+            disabled={saving}
+            className="bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-40"
+          >
+            {t("User.management.cancelButton")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,6 +1,5 @@
 import { handleApiError } from "@/lib/services/errors/errors";
 import axios from "axios";
-import { toast } from "sonner";
 
 export async function assignServers({
   userId,
@@ -15,7 +14,6 @@ export async function assignServers({
 }) {
   await axios.put("/api/server/assignServers", { userId, serverIds })
     .then(() => {
-      toast.success("Servidores asignados correctamente");
       onSuccess();
     })
     .catch((error) => {

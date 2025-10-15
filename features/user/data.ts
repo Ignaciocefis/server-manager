@@ -425,3 +425,27 @@ export const updateUser = async (
     return { success: false, data: null, error };
   }
 }
+
+export const updateUserCategory = async (
+  userId: string,
+  newCategory: "ADMIN" | "RESEARCHER" | "JUNIOR"
+): Promise<ApiResponse<null>> => {
+  if (!userId || !newCategory) {
+    return { success: false, data: null, error: "Missing required fields" };
+  }
+
+  try {
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        category: newCategory,
+        assignedToId: undefined
+      },
+    });
+
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    console.error("Error updating user category:", error);
+    return { success: false, data: null, error };
+  }
+};

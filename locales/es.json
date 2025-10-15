@@ -84,7 +84,8 @@
       "toggleUserStatusError": "No se pudo actualizar el estado del usuario",
       "currentPasswordIncorrect": "Contraseña actual incorrecta",
       "updatePasswordError": "Error al actualizar la contraseña",
-      "updateProfileError": "Error al actualizar el perfil"
+      "updateProfileError": "Error al actualizar el perfil",
+      "categoryUpdateFailed": "No se pudo actualizar la categoría del usuario"
     },
     "ProfileSheet": {
       "title": "Mi perfil",
@@ -149,7 +150,23 @@
       "researcher": "Investigador",
       "admin": "Administrador",
       "createUserButton": "Crear usuario",
-      "cancelButton": "Cancelar"
+      "cancelButton": "Cancelar",
+      "actionsTitle": "Acciones de usuario",
+      "actionsDescription": "Aquí puedes realizar acciones del usuario {0}.",
+      "deactivateUser": "Desactivar usuario",
+      "activateUser": "Activar usuario",
+      "deleteUser": "Eliminar usuario",
+      "changeCategory": "Cambiar categoría",
+      "categoryUpdatedSuccess": "Categoría cambiada a {0} exitosamente",
+      "categoryUpdatedError": "Error al cambiar la categoría",
+      "editCategory": "Editar categoría",
+      "editCategoryDescription": "Aquí puedes cambiar la categoría del usuario.",
+      "selectCategory": "Selecciona una categoría",
+      "saving": "Guardando...",
+      "saveChanges": "Guardar cambios",
+      "loadingServers": "Cargando servidores...",
+      "researcherAssignedSuccess": "Investigador asignado exitosamente",
+      "serversAssignedSuccess": "Servidores asignados exitosamente"
     }
   },
   "Server":{
@@ -377,7 +394,8 @@
       "reservation_extended": "La reserva de la gráfica {0} del servidor {1} ha sido extendida durante {2} horas hasta {3}",
       "reservation_completed": "La reserva de la gráfica {0} del servidor {1} ha sido completada",
       "reservation_cancelled": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada",
-      "reservation_cancelled_server_unavailable": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada debido a que el servidor se ha marcado como no disponible"
+      "reservation_cancelled_server_unavailable": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada debido a que el servidor se ha marcado como no disponible",
+      "user_updated_category": "El usuario {0} ha cambiado su categoría a {1}"
     },
     "logsTable": {
       "title": "Registros de eventos",

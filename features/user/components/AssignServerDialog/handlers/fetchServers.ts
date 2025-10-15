@@ -14,7 +14,6 @@ export async function fetchServers(editorId: string, userId: string) {
       servers = availableRes.data.data ?? [];
       const assignedData = Array.isArray(assignedRes.data.data) ? assignedRes.data.data : [];
       selectedIds = assignedData.map((s: ServerSummary) => s.id);
-
     })
     .catch((error) => {
       handleApiError(error, true);

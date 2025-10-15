@@ -58,3 +58,8 @@ export const assignResearcherFormSchema = (t: (path: string) => string) => z.obj
   userId: z.string().min(1, t("User.Schemas.juniorIdRequired")),
   researcherId: z.string().min(1, t("User.Schemas.researcherIdRequired")),
 });
+
+export const updateUserCategorySchema = (t: (path: string) => string) => z.object({
+  userId: z.string().min(1, t("User.Schemas.userIdRequired")),
+  category: z.enum(["JUNIOR", "RESEARCHER", "ADMIN"]),
+});
