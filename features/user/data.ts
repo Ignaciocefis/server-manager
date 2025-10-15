@@ -449,3 +449,30 @@ export const updateUserCategory = async (
     return { success: false, data: null, error };
   }
 };
+
+export const userRecoverPassword = async (
+  email: string,
+  newPassword: string
+): Promise<ApiResponse<string | null>> => {
+  if (!email || !newPassword) {
+    return { success: false, data: null, error: "Missing required fields" };
+  }
+
+  try {
+    const user = await db.user.findUnique({ where: { email }, select: { id: true } });
+
+    if (!user) {
+      return { success: false, data: null, error: "User not found" };
+    }
+
+    await db.user.update({
+      where: { id: user.id },
+      data: { password: await bcrypt.hash(newPassword, 10) },
+    });
+
+    return { success: true, data: user.id, error: null };
+  } catch (error) {
+    console.error("Error recovering user password:", error);
+    return { success: false, data: null, error };
+  }
+};

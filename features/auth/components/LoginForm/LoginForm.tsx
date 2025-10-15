@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLoginForm } from "./useLoginForm";
 import { useLanguage } from "@/hooks/useLanguage";
+import { RecoverPasswordForm } from "..";
 
 export function LoginForm() {
   const { t } = useLanguage();
@@ -51,9 +52,7 @@ export function LoginForm() {
                 <FormLabel className="font-bold">
                   {t("app.auth.password")}
                 </FormLabel>
-                <span className="text-sm text-gray-app-500 cursor-pointer hover:underline">
-                  {t("app.auth.forgotPassword")}
-                </span>
+                <RecoverPasswordForm />
               </div>
               <FormControl>
                 <Input

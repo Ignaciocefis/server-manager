@@ -47,10 +47,24 @@
       "passwordTooShort": "Password must be at least 6 characters long."
     },
     "Route": {
-      "unauthorized": "No autorizado",
-      "userNotFound": "Usuario no encontrado",
-      "internalServerError": "Error interno del servidor",
-      "invalidEmail": "Email inválido"
+      "unauthorized": "Unauthorized",
+      "userNotFound": "User not found",
+      "internalServerError": "Internal server error",
+      "invalidEmail": "Invalid email",
+      "invalidValues": "Invalid values",
+      "userChangePasswordError": "Could not change password",
+      "emailSendError": "Error sending recovery email"
+    },
+    "RecoverPassword": {
+      "forgotPassword": "Forgot your password?",
+      "recoverPasswordTitle": "Recover Password",
+      "recoverPasswordDesc": "Enter your email and we will send you an email with your new password.",
+      "email": "Corporate email",
+      "exampleEmail": "example@alumn.us.es",
+      "sending": "Sending...",
+      "sendRecoveryEmail": "Send recovery email",
+      "recoverySuccess": "Recovery email sent. Check your inbox.",
+      "recoveryError": "Error sending recovery email."
     }
   },
   "User":{
@@ -395,7 +409,8 @@
       "reservation_completed": "The reservation for the GPU {0} on server {1} has been completed",
       "reservation_cancelled": "The reservation for the GPU {0} on server {1} has been cancelled",
       "reservation_cancelled_server_unavailable": "The reservation for the GPU {0} on server {1} has been cancelled due to the server being marked as unavailable",
-      "user_updated_category": "The user {0} has changed their category to {1}"
+      "user_updated_category": "The user {0} has changed their category to {1}",
+      "user_changePassword": "The user {0} has changed their password"
     },
     "logsTable": {
       "title": "Event Logs",

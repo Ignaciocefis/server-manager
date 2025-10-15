@@ -50,7 +50,21 @@
       "unauthorized": "No autorizado",
       "userNotFound": "Usuario no encontrado",
       "internalServerError": "Error interno del servidor",
-      "invalidEmail": "Email inválido"
+      "invalidEmail": "Email inválido",
+      "invalidValues": "Valores inválidos",
+      "userChangePasswordError": "No se pudo cambiar la contraseña",
+      "emailSendError": "Error al enviar el correo de recuperación"
+    },
+    "RecoverPassword": {
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "recoverPasswordTitle": "Recuperar contraseña",
+      "recoverPasswordDesc": "Introduce tu correo electrónico y te enviaremos un correo electrónico con su nueva contraseña.",
+      "email": "Correo corporativo",
+      "exampleEmail": "ejemplo@alumn.us.es",
+      "sending": "Enviando...",
+      "sendRecoveryEmail": "Enviar correo de recuperación",
+      "recoverySuccess": "Correo de recuperación enviado. Revisa tu bandeja de entrada.",
+      "recoveryError": "Error al enviar el correo de recuperación."
     }
   },
   "User":{
@@ -395,7 +409,8 @@
       "reservation_completed": "La reserva de la gráfica {0} del servidor {1} ha sido completada",
       "reservation_cancelled": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada",
       "reservation_cancelled_server_unavailable": "La reserva de la gráfica {0} en el servidor {1} ha sido cancelada debido a que el servidor se ha marcado como no disponible",
-      "user_updated_category": "El usuario {0} ha cambiado su categoría a {1}"
+      "user_updated_category": "El usuario {0} ha cambiado su categoría a {1}",
+      "user_changePassword": "El usuario {0} ha cambiado su contraseña"
     },
     "logsTable": {
       "title": "Registros de eventos",
