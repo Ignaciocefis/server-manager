@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
   return (
     <Button
       onClick={() => changeLanguage(nextLanguage)}
-      className="flex items-center justify-baseline shadow-none text-base font-medium rounded-md -ml-2 gap-3 text-gray-app-600 bg-gray-app-100-transparent transition-colors hover:bg-gray-app-200-transparent"
+      className="flex items-center justify-baseline shadow-none text-base font-medium cursor-pointer rounded-md -ml-2 gap-3 text-gray-app-600 bg-gray-app-100-transparent transition-colors hover:bg-gray-app-200-transparent"
     >
       <Image src={flagSrc} alt={altText} width={18} height={18} /> {label}
     </Button>

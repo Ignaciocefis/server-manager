@@ -36,25 +36,27 @@ export function AppSidebar() {
             <SidebarMenu className="pl-4">
               {userLinks.map((link) => (
                 <SidebarMenuItem key={link.name}>
-                  <div className="grid grid-cols-[2rem_auto] items-center">
-                    <SidebarMenuButton
-                      className={`flex items-center gap-3 w-56 -ml-2 text-base font-medium peer transition-colors ${
-                        pathName === link.href
-                          ? "bg-gray-app-200-transparent rounded-md hover:bg-gray-app-200-transparent"
-                          : "hover:bg-gray-app-200-transparent"
-                      }`}
-                    >
-                      <link.icon className="mr-2 w-5 h-5" />
-                      <Link href={link.href}>{t(link.name)}</Link>
-                    </SidebarMenuButton>
-                    <div
-                      className={`${
-                        pathName === link.href
-                          ? "bg-gray-app-200 rounded-md w-8 h-8 -ml-20 transition-colors peer-hover:bg-gray-app-200-transparent"
-                          : "opacity-0"
-                      }`}
-                    />
-                  </div>
+                  <Link href={link.href} className="cursor-pointer">
+                    <div className="grid grid-cols-[2rem_auto] items-center cursor-pointer">
+                      <SidebarMenuButton
+                        className={`flex items-center gap-3 w-56 -ml-2 text-base font-medium cursor-pointer peer transition-colors ${
+                          pathName === link.href
+                            ? "bg-gray-app-200-transparent rounded-md hover:bg-gray-app-200-transparent"
+                            : "hover:bg-gray-app-200-transparent"
+                        }`}
+                      >
+                        <link.icon className="mr-2 w-5 h-5" />
+                        {t(link.name)}
+                      </SidebarMenuButton>
+                      <div
+                        className={`${
+                          pathName === link.href
+                            ? "bg-gray-app-200 rounded-md w-8 h-8 -ml-20 transition-colors peer-hover:bg-gray-app-200-transparent"
+                            : "opacity-0"
+                        }`}
+                      />
+                    </div>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -65,25 +67,27 @@ export function AppSidebar() {
               <SidebarMenu className="pl-4">
                 {adminLinks.map((link) => (
                   <SidebarMenuItem key={link.name}>
-                    <div className="grid grid-cols-[2rem_auto] items-center">
-                      <SidebarMenuButton
-                        className={`flex items-center gap-3 w-56 -ml-2 text-base font-medium peer transition-colors ${
-                          pathName === link.href
-                            ? "bg-gray-app-200-transparent rounded-md hover:bg-gray-app-200-transparent"
-                            : "hover:bg-gray-app-200-transparent"
-                        }`}
-                      >
-                        <link.icon className="mr-2 w-5 h-5" />
-                        <Link href={link.href}>{t(link.name)}</Link>
-                      </SidebarMenuButton>
-                      <div
-                        className={`${
-                          pathName === link.href
-                            ? "bg-gray-app-200 rounded-md w-8 h-8 -ml-20 transition-colors peer-hover:bg-gray-app-150"
-                            : "opacity-0"
-                        }`}
-                      />
-                    </div>
+                    <Link href={link.href}>
+                      <div className="grid grid-cols-[2rem_auto] items-center cursor-pointers">
+                        <SidebarMenuButton
+                          className={`flex items-center gap-3 w-56 -ml-2 text-base font-medium cursor-pointer peer transition-colors ${
+                            pathName === link.href
+                              ? "bg-gray-app-200-transparent rounded-md hover:bg-gray-app-200-transparent"
+                              : "hover:bg-gray-app-200-transparent"
+                          }`}
+                        >
+                          <link.icon className="mr-2 w-5 h-5" />
+                          {t(link.name)}
+                        </SidebarMenuButton>
+                        <div
+                          className={`${
+                            pathName === link.href
+                              ? "bg-gray-app-200 rounded-md w-8 h-8 -ml-20 transition-colors peer-hover:bg-gray-app-200-transparent"
+                              : "opacity-0"
+                          }`}
+                        />
+                      </div>
+                    </Link>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
@@ -99,7 +103,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="flex items-center gap-3 w-56 text-base font-medium peer transition-colors hover:bg-gray-app-200-transparent"
+                  className="flex items-center gap-3 w-56 text-base font-medium peer cursor-pointer transition-colors hover:bg-gray-app-200-transparent"
                 >
                   <LogOut className="mr-2 w-6 h-6" />
                   <span>{t("Shared.AppSidebar.logout")}</span>
