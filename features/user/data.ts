@@ -439,9 +439,25 @@ export const updateUserCategory = async (
       where: { id: userId },
       data: {
         category: newCategory,
-        assignedToId: undefined
+        assignedToId: undefined,
       },
     });
+
+    if (newCategory === "ADMIN") {
+      const allServers = await db.server.findMany({ select: { id: true } });
+
+      if (allServers.length > 0) {
+        const createData = allServers.map((server) => ({
+          userId,
+          serverId: server.id,
+        }));
+
+        await db.userServerAccess.createMany({
+          data: createData,
+          skipDuplicates: true,
+        });
+      }
+    }
 
     return { success: true, data: null, error: null };
   } catch (error) {
@@ -449,6 +465,7 @@ export const updateUserCategory = async (
     return { success: false, data: null, error };
   }
 };
+
 
 export const userRecoverPassword = async (
   email: string,
