@@ -24,7 +24,5 @@ export function useAssignedResearcher(category: string, assignedToId: string | n
     fetchResearcher();
   }, [category, assignedToId]);
 
-  console.log("Assigned Researcher:", researcherName);
-
   return researcherName;
 }
