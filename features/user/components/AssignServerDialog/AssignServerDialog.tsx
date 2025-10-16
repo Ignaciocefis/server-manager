@@ -119,7 +119,7 @@ export function AssignServersDialog({
         <DialogFooter className="flex justify-end gap-4 mt-4">
           <Button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || selected.length === 0}
             className="bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md cursor-pointer w-40"
           >
             {saving

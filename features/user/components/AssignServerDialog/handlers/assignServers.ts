@@ -12,12 +12,17 @@ export async function assignServers({
   onSuccess: () => void;
   onError?: (error: unknown) => void;
 }) {
-  await axios.put("/api/server/assignServers", { userId, serverIds })
-    .then(() => {
-      onSuccess();
-    })
-    .catch((error) => {
-      handleApiError(error, true);
-      onError?.(error);
-    });
+  if (!serverIds || serverIds.length === 0) {
+    const errorMessage = "You must assign at least one server";
+    onError?.(errorMessage);
+    return;
+  }
+
+  try {
+    await axios.put("/api/server/assignServers", { userId, serverIds });
+    onSuccess();
+  } catch (error) {
+    handleApiError(error, true);
+    onError?.(error);
+  }
 }
