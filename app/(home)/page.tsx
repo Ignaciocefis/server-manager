@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { GpuReservationsList } from "@/features/gpu/components";
 import { CreateServerDialog, ServerList } from "@/features/server/components";
+import { useHasCategory } from "@/hooks/useHasCategory";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Gpu, PcCase, Search, Server } from "lucide-react";
 import { useState } from "react";
@@ -14,6 +15,7 @@ export default function Home() {
   const [gpuSearchTerm, setGpuSearchTerm] = useState("");
 
   const { t } = useLanguage();
+  const { hasCategory } = useHasCategory(["ADMIN"]);
 
   const handleRefresh = () => {
     setRefreshKey((prev) => prev + 1);
@@ -35,7 +37,7 @@ export default function Home() {
           </p>
         </div>
 
-        <CreateServerDialog />
+        {hasCategory && <CreateServerDialog />}
       </div>
 
       <div className="border rounded-xl shadow-md bg-white p-5 flex flex-col gap-4 mt-4">
