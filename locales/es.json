@@ -38,6 +38,70 @@
       "description": "Aquí puedes ver todas tus notificaciones.",
       "noNotifications": "No tienes notificaciones",
       "markAllAsRead": "Marcar todas como leídas"
+    }, 
+    "ConfirmDialog": {
+      "confirm": "Por favor, confirma antes de continuar.",
+      "cancel": "Cancelar",
+      "delete_user":{
+        "title": "Eliminar usuario",
+        "description_part1": "¿Seguro que deseas eliminar al usuario ",
+        "description_part2": "? Esta acción no se puede deshacer.",
+        "confirmLabel": "Eliminar usuario"
+      },
+      "activate_user": {
+        "title": "Cambiar estado del usuario",
+        "description_part1": "¿Seguro que deseas cambiar al usuario ",
+        "description_part2": " a un estado",
+        "confirmLabel": "Cambiar estado",
+        "active": "activo",
+        "inactive": "inactivo"
+      },
+      "update_server": {
+        "title": "Actualizar servidor",
+        "description_part1": "¿Seguro que deseas modificar el servidor ",
+        "description_part2": "?",
+        "confirmLabel": "Actualizar servidor"
+      },
+      "server_availability": {
+        "title": "Cambiar disponibilidad del servidor",
+        "description_part1": "¿Seguro que deseas",
+        "enable": "habilitar",
+        "disable": "deshabilitar",
+        "description_part2": " el servidor ",
+        "confirmLabel": "Cambiar disponibilidad"
+      },
+      "delete_server": {
+        "title": "Eliminar servidor",
+        "description_part1": "¿Seguro que deseas eliminar el servidor ",
+        "description_part2": "? Esta acción no se puede deshacer y se cancelarán todas las reservas activas en este servidor.",
+        "confirmLabel": "Eliminar servidor"
+      },
+      "cancel_reservation": {
+        "title": "Cancelar reserva",
+        "description_part1": "¿Seguro que deseas cancelar la reserva de la GPU ",
+        "description_part2": " en el servidor ",
+        "description_part3": " para la fecha ",
+        "description_part4": "? Esta acción no se puede deshacer.",
+        "confirmLabel": "Cancelar reserva"
+      },
+      "confirm_reservation": {
+        "title": "Confirmar reserva de GPUs",
+        "description_part1": "¿Confirmas la reserva de las GPU(s) [",
+        "description_part2": "] durante ",
+        "confirmLabel": "Confirmar reserva"
+      },
+      "extend_reservation": {
+        "title": "Extender reserva",
+        "description_part1": "¿Seguro que deseas extender la reserva de la GPU durante ",
+        "description_part2": " hora(s)",
+        "description_part3": " más?",
+        "confirmLabel": "Extender reserva"
+      },
+      "markAllNotificationsRead": {
+        "title": "Marcar todas las notificaciones como leídas",
+        "description": "¿Seguro que deseas marcar todas las notificaciones como leídas?",
+        "confirmLabel": "Marcar todas como leídas"
+      }
     }
   },
   "Auth": {

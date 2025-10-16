@@ -38,6 +38,70 @@
       "description": "Here you can see all your notifications.",
       "noNotifications": "You have no notifications",
       "markAllAsRead": "Mark all as read"
+    }, 
+    "ConfirmDialog": {
+      "confirm": "Please confirm before continuing.",
+      "cancel": "Cancel",
+      "delete_user": {
+      "title": "Delete user",
+      "description_part1": "Are you sure you want to delete user ",
+      "description_part2": "? This action cannot be undone.",
+      "confirmLabel": "Delete user"
+      },
+      "activate_user": {
+      "title": "Change user status",
+      "description_part1": "Are you sure you want to change user ",
+      "description_part2": " to a status",
+      "confirmLabel": "Change status",
+      "active": "active",
+      "inactive": "inactive"
+      },
+      "update_server": {
+      "title": "Update server",
+      "description_part1": "Are you sure you want to update server ",
+      "description_part2": "?",
+      "confirmLabel": "Update server"
+      },
+      "server_availability": {
+      "title": "Change server availability",
+      "description_part1": "Are you sure you want to",
+      "enable": "enable",
+      "disable": "disable",
+      "description_part2": " the server ",
+      "confirmLabel": "Change availability"
+      },
+      "delete_server": {
+      "title": "Delete server",
+      "description_part1": "Are you sure you want to delete server ",
+      "description_part2": "? This action cannot be undone and all active reservations on this server will be cancelled.",
+      "confirmLabel": "Delete server"
+      },
+      "cancel_reservation": {
+      "title": "Cancel reservation",
+      "description_part1": "Are you sure you want to cancel the reservation for GPU ",
+      "description_part2": " on server ",
+      "description_part3": " for the date ",
+      "description_part4": "? This action cannot be undone.",
+      "confirmLabel": "Cancel reservation"
+      },
+      "confirm_reservation": {
+      "title": "Confirm GPU reservation",
+      "description_part1": "Do you confirm the reservation of GPU(s) [",
+      "description_part2": "] for ",
+      "confirmLabel": "Confirm reservation"
+      },
+      "extend_reservation": {
+      "title": "Extend reservation",
+      "description_part1": "Are you sure you want to extend the reservation for the GPU for ",
+      "description_part2": " hour(s)?",
+      "description_part3": "",
+      "confirmLabel": "Extend reservation"
+      },
+      "markAllNotificationsRead": {
+      "title": "Mark all notifications as read",
+      "description": "Are you sure you want to mark all notifications as read?",
+      "confirmLabel": "Mark all as read"
+      }
     }
   },
   "Auth": {
