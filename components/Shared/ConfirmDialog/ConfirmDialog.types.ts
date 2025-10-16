@@ -28,5 +28,5 @@ export interface ConfirmDialogProps<K extends ConfirmMessageKey = ConfirmMessage
   onClose: () => void;
   onConfirm: () => void;
   messageKey: K;
-  params: ConfirmMessageParams[K];
+  params?: ConfirmMessageParams[K];
 }
