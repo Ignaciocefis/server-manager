@@ -10,7 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Info, XCircle } from "lucide-react";
-import { ConfirmDialogProps } from "./ConfirmDialog.types";
+import {
+  ConfirmDialogProps,
+  ConfirmMessageParams,
+} from "./ConfirmDialog.types";
 import { confirmMessages } from "./ConfirmDialog.utils";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -24,8 +27,11 @@ export function ConfirmDialog<K extends keyof typeof confirmMessages>({
   const { t } = useLanguage();
 
   const messages = confirmMessages(t);
+  const messageParams =
+    params ?? ({} as ConfirmMessageParams[typeof messageKey]);
+
   const { title, description, confirmLabel, iconType } =
-    messages[messageKey](params);
+    messages[messageKey](messageParams);
 
   const iconMap = {
     warning: { component: AlertTriangle, color: "text-yellow-app" },
