@@ -2,7 +2,14 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { HardDrive, MemoryStick, Microchip, MinusCircle } from "lucide-react";
+import {
+  Cpu,
+  HardDrive,
+  MemoryStick,
+  MinusCircle,
+  Server,
+  Zap,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { GpuReservationCardProps } from "./GpuReservationCard.types";
 import { useGpuCountdown } from "./useGpuReservationCard";
@@ -10,6 +17,7 @@ import { handleCancelReservation } from "./GpuReservationCard.handlers";
 import GpuExtendButton from "../GpuExtendButton/GpuExtendButton";
 import { ConfirmDialog } from "@/components/Shared/ConfirmDialog/ConfirmDialog";
 import { ConfirmMessageKey } from "@/components/Shared/ConfirmDialog/ConfirmDialog.types";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function GpuReservationCard({
   reservationId,
@@ -22,6 +30,8 @@ export default function GpuReservationCard({
   server,
   onRefresh,
 }: GpuReservationCardProps) {
+  const { t } = useLanguage();
+
   const start = useMemo(
     () => (startDate ? new Date(startDate) : null),
     [startDate]
@@ -45,7 +55,7 @@ export default function GpuReservationCard({
   });
 
   const [cancelling, setCancelling] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false); // 👈 estado para mostrar el dialog
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const isPending = status === "PENDING";
   const isExtended = status === "EXTENDED";
@@ -59,62 +69,80 @@ export default function GpuReservationCard({
 
   return (
     <>
-      <Card className="bg-gray-app-500 text-gray-app-100 rounded-xl p-4 w-auto">
-        <CardHeader className="flex w-full items-center">
-          <CardTitle className="text-xl font-bold">{gpu.name}</CardTitle>
+      <Card className="bg-white text-gray-900 rounded-2xl p-4 w-auto md:w-[380px] md:h-[290px] shadow-md border border-gray-200">
+        <CardHeader>
+          <div className="flex items-center gap-3 -ml-5">
+            <Zap className="w-6 h-6 text-blue-app" />
+            <CardTitle className="text-xl font-bold">{gpu.name}</CardTitle>
+          </div>
         </CardHeader>
 
-        <CardContent className="p-0">
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2 text-sm">Detalles de la GPU:</h3>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="flex items-center gap-1">
-                <MemoryStick size={16} />
-                <span>RAM: {gpu.ramGB} GB</span>
+        <CardContent className="px-4 py-3">
+          <div className="mb-5">
+            <h3 className="font-semibold mb-3 text-sm text-gray-800 flex items-center gap-2">
+              <Cpu size={16} className="text-blue-600" />
+              {t("Gpu.reservationsList.gpuDetails")}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8 text-sm">
+              <div className="flex items-center gap-2 text-gray-700">
+                <MemoryStick size={16} className="text-gray-500" />
+                <span className="font-medium">RAM:</span>
+                <span className="text-gray-600">{gpu.ramGB} GB</span>
               </div>
-              <div className="flex items-center gap-1">
-                <Microchip size={16} />
-                <span>Tipo: {gpu.type}</span>
+              <div className="flex items-center gap-2 text-gray-700">
+                <Cpu size={16} className="text-gray-500" />
+                <span className="font-medium">
+                  {t("Gpu.reservationsList.gpuType")}:
+                </span>
+                <span className="text-gray-600">{gpu.type}</span>
               </div>
             </div>
           </div>
 
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2 text-sm">
-              Detalles del servidor {server.name}:
+          <div className="border-t border-gray-200 my-4"></div>
+
+          <div>
+            <h3 className="font-semibold mb-3 text-sm text-gray-800 flex items-center gap-2">
+              <Server size={16} className="text-blue-600" />
+              {t("Gpu.reservationsList.serverDetails")}{" "}
+              <span className="text-gray-600 font-normal">{server.name}</span>
             </h3>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="flex items-center gap-1">
-                <MemoryStick size={16} />
-                <span>RAM: {server.ramGB} GB</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8 text-sm">
+              <div className="flex items-center gap-2 text-gray-700">
+                <MemoryStick size={16} className="text-gray-500" />
+                <span className="font-medium">RAM:</span>
+                <span className="text-gray-600">{server.ramGB} GB</span>
               </div>
-              <div className="flex items-center gap-1">
-                <HardDrive size={16} />
-                <span>Discos: {server.diskCount}</span>
+              <div className="flex items-center gap-2 text-gray-700">
+                <HardDrive size={16} className="text-gray-500" />
+                <span className="font-medium">
+                  {t("Gpu.reservationsList.disks")}:
+                </span>
+                <span className="text-gray-600">{server.diskCount}</span>
               </div>
             </div>
           </div>
         </CardContent>
 
-        <div className="border-t border-gray-700 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="border-t border-gray-200 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex justify-center items-center w-full sm:w-auto">
             {countdown && (
               <Button
                 className={`flex flex-col items-center justify-center text-center px-4 py-2 min-h-[3.5rem] whitespace-nowrap
-    ${
-      isPending
-        ? "bg-gray-app-400 hover:bg-gray-app-600"
-        : "bg-green-app hover:bg-green-app-transparent"
-    }`}
+              ${
+                isPending
+                  ? "bg-gray-app-100 hover:bg-gray-app-100 text-gray-app-600 font-bold shadow-md cursor-not-allowed w-40"
+                  : "bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md w-40"
+              }`}
               >
-                <span className="text-sm font-semibold tracking-wide">
+                <span className="text-sm font-semibold tracking-wide -mb-2">
                   {isPending
-                    ? "Esperando..."
+                    ? t("Gpu.reservationsList.pending")
                     : isExtended
-                      ? "En prórroga"
-                      : "Reservado"}
+                      ? t("Gpu.reservationsList.extended")
+                      : t("Gpu.reservationsList.reserved")}
                 </span>
-                <span className="text-xs opacity-80 mt-0.5">{countdown}</span>
+                <span className="text-xl">{countdown}</span>
               </Button>
             )}
           </div>
@@ -131,10 +159,12 @@ export default function GpuReservationCard({
             <Button
               onClick={() => setShowConfirm(true)}
               disabled={cancelling}
-              className="w-full bg-red-app hover:brightness-110 focus-visible:ring-2 focus-visible:ring-red-300"
+              className="bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-auto sm:w-40"
             >
               <MinusCircle size={16} className="inline mr-1" />
-              {cancelling ? "Cancelando..." : "Cancelar uso"}
+              {cancelling
+                ? t("Gpu.reservationsList.canceling")
+                : t("Gpu.reservationsList.cancelUsage")}
             </Button>
           </div>
         </div>

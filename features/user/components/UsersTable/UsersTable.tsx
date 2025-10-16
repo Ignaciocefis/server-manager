@@ -12,10 +12,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsRight,
-  Trash2,
-  MoreVertical,
-  UserRoundCheck,
-  UserRoundMinus,
   TriangleAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,7 +28,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -57,16 +52,15 @@ import {
   getStatusTypeBadge,
 } from "../../utils";
 import { useHasCategory } from "@/hooks/useHasCategory";
-import { AssignResearcherDialog, AssignServersDialog } from "..";
-import { handleDeleteUser, handleToggleActive } from "./UsersTable.handlers";
 import { getNestedValue, toDisplay } from "@/features/eventLog/utils";
 import { UsersTableProps } from "./UserTable.type";
-import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/Shared/ConfirmDialog/ConfirmDialog";
 import {
   ConfirmMessageKey,
   ConfirmMessageParams,
 } from "@/components/Shared/ConfirmDialog/ConfirmDialog.types";
+import { useLanguage } from "@/hooks/useLanguage";
+import { UserActionsDialog } from "..";
 
 export function UsersTable({
   users,
@@ -105,331 +99,241 @@ export function UsersTable({
     setConfirmDialogOpen(true);
   };
 
+  const { t, language } = useLanguage();
+
   return (
-    <div className="space-y-4 w-11/12 mx-auto mb-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 flex-1">
-          <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Buscar usuarios..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Settings2 className="w-4 h-4 mr-2" />
-                Columnas
-                <ChevronDown className="w-4 h-4 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Mostrar columnas</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {visibleColumns.map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.key}
-                  checked={column.visible}
-                  onCheckedChange={() =>
-                    toggleColumnUsers(
-                      column.key,
-                      visibleColumns,
-                      setVisibleColumns
-                    )
-                  }
-                >
-                  {column.label}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              handleRefreshUsers(
-                fetchUsers,
-                pagination,
-                searchTerm,
-                sortField,
-                sortOrder as "desc" | "asc"
-              )
-            }
-            disabled={loading}
-          >
-            <RefreshCw
-              className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-            />
-            Actualizar
-          </Button>
-        </div>
-      </div>
-
-      {error && (
-        <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
-          <div className="flex-shrink-0 flex items-center">
-            <TriangleAlert className="w-10 h-full text-red-700" />
+    <div>
+      <div className="w-full mx-auto mb-2 border rounded-xl shadow-md bg-white p-5 flex flex-col gap-4 -mt-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 rounded-lg border border-gray-app-200 shadow-sm bg-white mb-4">
+          <div className="flex items-center gap-2 flex-1">
+            <div className="relative max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder={t("User.management.searchPlaceholder")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col justify-center">
-            <h3 className="text-lg md:text-2xl font-bold text-red-700">
-              Ha ocurrido un error
-            </h3>
-            <p className="text-sm md:text-base text-red-app">{error}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="border border-border rounded-lg bg-gray-app-100 overflow-hidden">
-        <Table className="w-full text-sm">
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              {visibleColumns
-                .filter((col) => col.visible)
-                .map((column) => (
-                  <TableHead
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Settings2 className="w-4 h-4 mr-2" />
+                  {t("User.management.columns")}
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>
+                  {t("User.management.showColumns")}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {visibleColumns.map((column) => (
+                  <DropdownMenuCheckboxItem
                     key={column.key}
-                    className="font-semibold cursor-pointer select-none px-4 py-2"
-                    onClick={() =>
-                      handleSortUsers(
+                    checked={column.visible}
+                    onCheckedChange={() =>
+                      toggleColumnUsers(
                         column.key,
-                        sortField,
-                        setSortField,
-                        sortOrder,
-                        setSortOrder
+                        visibleColumns,
+                        setVisibleColumns
                       )
                     }
                   >
-                    <div className="flex items-center gap-1">
-                      {column.label}
-                      {sortField === column.key &&
-                        (sortOrder === "asc" ? (
-                          <ChevronUp className="w-3 h-3" />
-                        ) : (
-                          <ChevronDown className="w-3 h-3" />
-                        ))}
-                    </div>
-                  </TableHead>
+                    {t(column.label)}
+                  </DropdownMenuCheckboxItem>
                 ))}
-            </TableRow>
-          </TableHeader>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={visibleColumns.filter((col) => col.visible).length}
-                  className="text-center py-8"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Cargando usuarios...
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : users.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={visibleColumns.filter((col) => col.visible).length}
-                  className="text-center py-8 text-muted-foreground"
-                >
-                  No se encontraron usuarios.
-                </TableCell>
-              </TableRow>
-            ) : (
-              users.map((user, idx) => {
-                const isUserJunior = user.category === "JUNIOR";
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleRefreshUsers(
+                  fetchUsers,
+                  pagination,
+                  searchTerm,
+                  sortField,
+                  sortOrder as "desc" | "asc"
+                )
+              }
+              disabled={loading}
+            >
+              <RefreshCw
+                className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+              />
+              {t("User.management.refresh")}
+            </Button>
+          </div>
+        </div>
 
-                return (
-                  <TableRow
-                    key={user.id}
-                    className={`hover:bg-muted/40 focus-within:bg-muted/50 ${
-                      idx % 2 === 0 ? "even:bg-muted/30" : ""
-                    }`}
+        {error && (
+          <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
+            <div className="flex-shrink-0 flex items-center">
+              <TriangleAlert className="w-10 h-full text-red-700" />
+            </div>
+
+            <div className="flex flex-col justify-center">
+              <h3 className="text-lg md:text-2xl font-bold text-red-700">
+                {t("User.management.error")}
+              </h3>
+              <p className="text-sm md:text-base text-red-app">{error}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="border border-border rounded-lg overflow-hidden">
+          <Table className="w-full text-sm">
+            <TableHeader className="bg-muted/50">
+              <TableRow>
+                {visibleColumns
+                  .filter((col) => col.visible)
+                  .map((column) => (
+                    <TableHead
+                      key={column.key}
+                      className="font-semibold cursor-pointer select-none px-4 py-2"
+                      onClick={() =>
+                        handleSortUsers(
+                          column.key,
+                          sortField,
+                          setSortField,
+                          sortOrder,
+                          setSortOrder
+                        )
+                      }
+                    >
+                      <div className="flex items-center gap-1">
+                        {t(column.label)}
+                        {sortField === column.key &&
+                          (sortOrder === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
+                    </TableHead>
+                  ))}
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={visibleColumns.filter((col) => col.visible).length}
+                    className="text-center py-8"
                   >
-                    {visibleColumns
-                      .filter((col) => col.visible)
-                      .map((column) => {
-                        let content: React.ReactNode;
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {t("User.management.loading")}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : users.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={visibleColumns.filter((col) => col.visible).length}
+                    className="text-center py-8 text-muted-foreground"
+                  >
+                    {t("User.management.noUsersFound")}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                users.map((user, idx) => {
+                  return (
+                    <TableRow
+                      key={user.id}
+                      className={`hover:bg-muted/40 focus-within:bg-muted/50 ${
+                        idx % 2 === 0 ? "even:bg-muted/30" : ""
+                      }`}
+                    >
+                      {visibleColumns
+                        .filter((col) => col.visible)
+                        .map((column) => {
+                          let content: React.ReactNode;
 
-                        if (column.key === "servers") {
-                          content = getServerBadge(user.servers);
-                        } else if (column.key === "category") {
-                          content = getCategoryTypeBadge(user.category);
-                        } else if (column.key === "status") {
-                          content = getStatusTypeBadge(user.isActive);
-                        } else if (column.key === "actions") {
-                          content = (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <MoreVertical className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                {((isAdmin.hasCategory &&
-                                  (user.category === "RESEARCHER" ||
-                                    user.category === "JUNIOR")) ||
-                                  (isResearcher.hasCategory &&
-                                    user.category === "JUNIOR")) && (
-                                  <DropdownMenuItem asChild>
-                                    <AssignServersDialog
-                                      userId={user.id}
-                                      editorId={isAdmin.userId || ""}
-                                      onAssigned={() =>
-                                        handleRefreshUsers(
-                                          fetchUsers,
-                                          pagination,
-                                          searchTerm,
-                                          sortField,
-                                          sortOrder as "desc" | "asc"
-                                        )
-                                      }
-                                    />
-                                  </DropdownMenuItem>
-                                )}
+                          if (column.key === "servers") {
+                            content = getServerBadge(user.servers);
+                          } else if (column.key === "category") {
+                            content = getCategoryTypeBadge(
+                              user.category,
+                              language
+                            );
+                          } else if (column.key === "status") {
+                            content = getStatusTypeBadge(
+                              user.isActive,
+                              language
+                            );
+                          } else if (column.key === "actions") {
+                            content = (
+                              <UserActionsDialog
+                                user={user}
+                                isAdmin={isAdmin.hasCategory}
+                                isResearcher={isResearcher.hasCategory}
+                                fetchUsers={fetchUsers}
+                                pagination={pagination}
+                                searchTerm={searchTerm}
+                                sortField={sortField}
+                                sortOrder={sortOrder}
+                                openConfirmDialog={openConfirmDialog}
+                              />
+                            );
+                          } else {
+                            content = toDisplay(
+                              getNestedValue(user, column.key)
+                            );
+                          }
 
-                                {isUserJunior && isAdmin.hasCategory && (
-                                  <DropdownMenuItem asChild>
-                                    <AssignResearcherDialog
-                                      userId={user.id}
-                                      researcherId={
-                                        user.assignedToId ?? undefined
-                                      }
-                                      onAssigned={() =>
-                                        handleRefreshUsers(
-                                          fetchUsers,
-                                          pagination,
-                                          searchTerm,
-                                          sortField,
-                                          sortOrder as "desc" | "asc"
-                                        )
-                                      }
-                                    />
-                                  </DropdownMenuItem>
-                                )}
-
-                                {user.category !== "ADMIN" && (
-                                  <DropdownMenuItem
-                                    onClick={() =>
-                                      openConfirmDialog(
-                                        () =>
-                                          handleToggleActive(user.id).then(() =>
-                                            handleRefreshUsers(
-                                              fetchUsers,
-                                              pagination,
-                                              searchTerm,
-                                              sortField,
-                                              sortOrder as "desc" | "asc"
-                                            )
-                                          ),
-                                        "activate_user",
-                                        {
-                                          userName: user.userFullName,
-                                          active: !user.isActive,
-                                        }
-                                      )
-                                    }
-                                    className="text-sm rounded-sm cursor-pointer select-none focus:text-accent-foreground focus:bg-green-100"
-                                  >
-                                    {user.isActive ? (
-                                      <>
-                                        <UserRoundMinus className="w-4 h-4 mr-2" />
-                                        Desactivar
-                                      </>
-                                    ) : (
-                                      <>
-                                        <UserRoundCheck className="w-4 h-4 mr-2" />
-                                        Activar
-                                      </>
-                                    )}
-                                  </DropdownMenuItem>
-                                )}
-
-                                {isAdmin.hasCategory && (
-                                  <>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                      className="text-red-600 focus:bg-red-100"
-                                      onClick={() =>
-                                        openConfirmDialog(
-                                          async () => {
-                                            try {
-                                              await handleDeleteUser(user.id);
-                                              handleRefreshUsers(
-                                                fetchUsers,
-                                                pagination,
-                                                searchTerm,
-                                                sortField,
-                                                sortOrder as "desc" | "asc"
-                                              );
-                                            } catch (error) {
-                                              console.error(
-                                                "Error deleting user:",
-                                                error
-                                              );
-                                              toast.error(
-                                                "Error al eliminar usuario"
-                                              );
-                                            }
-                                          },
-                                          "delete_user",
-                                          {
-                                            userName: user.userFullName,
-                                          }
-                                        )
-                                      }
-                                    >
-                                      <Trash2 className="w-4 h-4 mr-2" />
-                                      Borrar
-                                    </DropdownMenuItem>
-                                  </>
-                                )}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                          return (
+                            <TableCell key={column.key} className="px-4 py-2">
+                              {content}
+                            </TableCell>
                           );
-                        } else {
-                          content = toDisplay(getNestedValue(user, column.key));
-                        }
+                        })}
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
-                        return (
-                          <TableCell key={column.key} className="px-4 py-2">
-                            {content}
-                          </TableCell>
-                        );
-                      })}
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+        {confirmParams && (
+          <ConfirmDialog
+            onClose={() => setConfirmDialogOpen(false)}
+            open={confirmDialogOpen}
+            onConfirm={() => {
+              setConfirmDialogOpen(false);
+              confirmAction();
+            }}
+            messageKey={confirmParams.messageKey}
+            params={confirmParams.params}
+          />
+        )}
       </div>
-
-      <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-b-lg gap-2">
+      <div className="flex flex-wrap border rounded-xl shadow-md bg-white sm:flex-row items-center justify-between p-4 rounded-b-lg gap-2">
         <div className="text-sm text-muted-foreground">
-          Mostrando del{" "}
+          {t("EventLog.logsTable.paginationShowing")}{" "}
           <span className="font-medium">
-            {(pagination.page - 1) * pagination.limit + 1} al{" "}
+            {(pagination.page - 1) * pagination.limit + 1}
+          </span>{" "}
+          {t("EventLog.logsTable.paginationTo")}{" "}
+          <span className="font-medium">
             {Math.min(pagination.page * pagination.limit, pagination.total)}
           </span>{" "}
-          de <span className="font-medium">{pagination.total}</span>
+          {t("EventLog.logsTable.paginationOf")}{" "}
+          <span className="font-medium">{pagination.total}</span>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Mostrar:</span>
+            <span className="text-sm text-muted-foreground">
+              {t("EventLog.logsTable.paginationShowing")}
+            </span>
             <Select
               value={pagination.limit.toString()}
               onValueChange={(val) =>
@@ -535,19 +439,6 @@ export function UsersTable({
           </div>
         </div>
       </div>
-
-      {confirmParams && (
-        <ConfirmDialog
-          onClose={() => setConfirmDialogOpen(false)}
-          open={confirmDialogOpen}
-          onConfirm={() => {
-            setConfirmDialogOpen(false);
-            confirmAction();
-          }}
-          messageKey={confirmParams.messageKey}
-          params={confirmParams.params}
-        />
-      )}
     </div>
   );
 }

@@ -3,14 +3,17 @@ import { cancelGpuReservation, getGpuNameById, getReservationByIdAndUser } from 
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { createEventLog } from "@/features/eventLog/data";
 import { getServersNameById } from "@/features/server/data";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function PUT(req: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { userId } = await hasCategory();
 
     if (!userId || typeof userId !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: "No se pudo obtener el ID del usuario" },
+        { success: false, data: null, error: t("Gpu.Route.unauthorized") },
         { status: 401 }
       );
     }
@@ -19,7 +22,7 @@ export async function PUT(req: Request) {
 
     if (!reservationId || typeof reservationId !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: "El ID de la reserva es obligatorio" },
+        { success: false, data: null, error: t("Gpu.Route.missingReservationId") },
         { status: 400 }
       );
     }
@@ -28,14 +31,14 @@ export async function PUT(req: Request) {
 
     if (!reservation || !reservation.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Reserva no encontrada" },
+        { success: false, data: null, error: t("Gpu.Route.reservationNotFound") },
         { status: 404 }
       );
     }
 
     if (reservation.data.status === "CANCELLED") {
       return NextResponse.json(
-        { success: false, data: null, error: "La reserva ya está cancelada" },
+        { success: false, data: null, error: t("Gpu.Route.reservationAlreadyCancelled") },
         { status: 409 }
       );
     }
@@ -44,7 +47,7 @@ export async function PUT(req: Request) {
 
     if (!canceled || !canceled.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al cancelar la reserva" },
+        { success: false, data: null, error: t("Gpu.Route.cancelationError") },
         { status: 500 }
       );
     }
@@ -53,7 +56,7 @@ export async function PUT(req: Request) {
 
     if (!gpuName || !gpuName.success || !gpuName.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "GPU no encontrada" },
+        { success: false, data: null, error: t("Gpu.Route.gpuNotFound") },
         { status: 404 }
       );
     }
@@ -62,14 +65,14 @@ export async function PUT(req: Request) {
 
     if (!serverName || !serverName.success || !serverName.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Servidor no encontrado" },
+        { success: false, data: null, error: t("Gpu.Route.serverNotFound") },
         { status: 404 }
       );
     }
 
     const log = await createEventLog({
       eventType: "RESERVATION_CANCELLED",
-      message: `La reserva de la gráfica ${gpuName.data.name} del servidor ${serverName.data[0].name} ha sido cancelada.`,
+      message: `EventLog.logMessage.reservation_cancelled|${gpuName.data.name}|${serverName.data[0].name}`,
       reservationId: reservationId,
       userId: userId,
       serverId: reservation.data.serverId,
@@ -77,7 +80,7 @@ export async function PUT(req: Request) {
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("Gpu.Route.eventLogError") },
         { status: 500 }
       );
     }
@@ -87,9 +90,9 @@ export async function PUT(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error al cancelar la reserva:", error);
+    console.error("Error in PUT /api/gpu/cancelation:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

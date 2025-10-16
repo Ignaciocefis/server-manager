@@ -2,10 +2,13 @@ import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
 import { createEventLog } from "@/features/eventLog/data";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 // import { sendEmailAvailabilityChange } from "@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange";
 
 export async function PUT(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { isCategory } = await hasCategory("ADMIN");
 
     if (!isCategory) {
@@ -13,7 +16,7 @@ export async function PUT(request: Request) {
         {
           success: false,
           data: null,
-          error: "No tienes permisos para cambiar la disponibilidad de servidores",
+          error: t("Server.Route.unauthorized"),
         },
         { status: 403 }
       );
@@ -24,7 +27,7 @@ export async function PUT(request: Request) {
 
     if (!serverId || typeof serverId !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: "ID del servidor requerido" },
+        { success: false, data: null, error: t("Server.Route.serverIdRequired") },
         { status: 400 }
       );
     }
@@ -36,7 +39,7 @@ export async function PUT(request: Request) {
         {
           success: false,
           data: null,
-          error: updated?.error || "No se pudo actualizar el servidor",
+          error: updated?.error || t("Server.Route.updateServerError"),
         },
         { status: 500 }
       );
@@ -46,20 +49,20 @@ export async function PUT(request: Request) {
 
     if (!updatedServer || updatedServer.error || !updatedServer.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Servidor no encontrado" },
+        { success: false, data: null, error: t("Server.Route.serverNotFound") },
         { status: 404 }
       );
     }
 
     const log = await createEventLog({
       eventType: `${updated.data ? "SERVER_AVAILABLE" : "SERVER_UNAVAILABLE"}`,
-      message: `El estado de disponibilidad del servidor ${updatedServer.data.name} ha sido cambiada a ${updated.data ? "disponible" : "no disponible"}.`,
+      message: `EventLog.logMessage.server_${updated.data ? "available" : "unavailable"}|${updatedServer.data.name}`,
       serverId: serverId,
     });
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("Server.Route.eventLogError") },
         { status: 500 }
       );
     }
@@ -99,9 +102,9 @@ export async function PUT(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en PUT /api/server/availability:", error);
+    console.error("Error in PUT /api/server/availability:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

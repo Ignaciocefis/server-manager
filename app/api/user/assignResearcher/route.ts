@@ -3,18 +3,21 @@ import { assignJuniorToResearcher, getUserNameById, userExistsById } from "@/fea
 import { assignResearcherFormSchema } from "@/features/user/schemas";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const body = await request.json();
-    const data = assignResearcherFormSchema.parse(body);
+    const data = assignResearcherFormSchema(t).parse(body);
     const { userId, researcherId } = data;
 
     const { isCategory } = await hasCategory("ADMIN");
     if (!isCategory) {
       return NextResponse.json(
-        { data: null, success: false, error: "No tienes permisos para editar usuarios" },
+        { data: null, success: false, error: t("User.Route.unauthorized") },
         { status: 403 }
       );
     }
@@ -24,7 +27,7 @@ export async function PUT(request: Request) {
 
     if (!junior || !researcher) {
       return NextResponse.json(
-        { data: null, success: false, error: "Usuario o investigador no encontrado" },
+        { data: null, success: false, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -33,7 +36,7 @@ export async function PUT(request: Request) {
 
     if (!isAssigned || isAssigned.error || !isAssigned.success) {
       return NextResponse.json(
-        { data: null, success: false, error: "Error al asignar investigador" },
+        { data: null, success: false, error: t("User.Route.unassignedToResearcher") },
         { status: 500 }
       );
     }
@@ -43,7 +46,7 @@ export async function PUT(request: Request) {
 
     if (userName.error || !userName.success || !userName.data || !researcherName.success || researcherName.error || !researcherName.data) {
       return NextResponse.json(
-        { data: null, success: false, error: "Usuario no encontrado" },
+        { data: null, success: false, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -61,7 +64,7 @@ export async function PUT(request: Request) {
 
     if (!userName || !researcherName || userName.error || researcherName.error) {
       return NextResponse.json(
-        { data: null, success: false, error: "Error al obtener nombres de usuario" },
+        { data: null, success: false, error: t("User.Route.userNotFound") },
         { status: 500 }
       );
     }
@@ -69,12 +72,12 @@ export async function PUT(request: Request) {
     const log = await createEventLog({
       eventType: "USER_ASSIGNED_MENTOR",
       userId,
-      message: `Usuario ${userFullName} asignado al investigador ${researcherFullName}`,
+      message: `EventLog.logMessage.user_assigned_mentor|${userFullName}|${researcherFullName}`,
     });
 
     if (!log || log.error) {
       return NextResponse.json(
-        { data: null, success: false, error: "Error al crear el registro de evento" },
+        { data: null, success: false, error: t("User.Route.createEventLogError") },
         { status: 500 }
       );
     }
@@ -84,9 +87,9 @@ export async function PUT(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en PUT /api/user/assignResearcher:", error);
+    console.error("Error in PUT /api/user/assignResearcher:", error);
     return NextResponse.json(
-      { data: null, success: false, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

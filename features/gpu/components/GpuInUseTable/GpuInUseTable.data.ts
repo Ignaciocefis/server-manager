@@ -22,35 +22,53 @@ export const mapReservationsFromServer = (
   return rows;
 };
 
-export const gpuInUseColumns: ColumnDef<GpuInUseTableRow>[] = [
-  {
-    accessorKey: "gpuName",
-    header: "Tarjeta gráfica",
-  },
-  {
-    accessorKey: "userFullName",
-    header: "Usuario",
-  },
-  {
-    accessorKey: "startDate",
-    header: "Inicio",
-    cell: ({ getValue }) =>
-      new Date(getValue<string>()).toLocaleString("es-ES"),
-  },
-  {
-    accessorKey: "endDate",
-    header: "Fin",
-    cell: ({ getValue }) => {
-      const val = getValue<string | null>();
-      return val ? new Date(val).toLocaleString("es-ES") : "-";
+export const gpuInUseColumns = (language: "es" | "en"): ColumnDef<GpuInUseTableRow>[] => {
+  const translations = {
+    es: {
+      status: {
+        ACTIVE: "Activo",
+        EXTENDED: "Extendido",
+      },
     },
-  },
-  {
-    accessorKey: "status",
-    header: "Estado",
-    cell: ({ getValue }) => {
-      const val = getValue<string>();
-      return val === "EXTENDED" ? "Extendida" : "Activa";
+    en: {
+      status: {
+        ACTIVE: "Active",
+        EXTENDED: "Extended",
+      },
     },
-  },
-];
+  };
+
+  return [
+    {
+      accessorKey: "gpuName",
+      header: "Server.details.gpuName",
+    },
+    {
+      accessorKey: "userFullName",
+      header: "Server.details.userFullName",
+    },
+    {
+      accessorKey: "startDate",
+      header: "Server.details.startDate",
+      cell: ({ getValue }) => new Date(getValue<string>()).toLocaleString(language === "es" ? "es-ES" : "en-GB"),
+    },
+    {
+      accessorKey: "endDate",
+      header: "Server.details.endDate",
+      cell: ({ getValue }) => {
+        const val = getValue<string | null>();
+        return val
+          ? new Date(val).toLocaleString(language === "es" ? "es-ES" : "en-GB")
+          : "-";
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Server.details.status",
+      cell: ({ getValue }) => {
+        const val = getValue<"ACTIVE" | "EXTENDED">();
+        return translations[language].status[val] ?? val;
+      },
+    },
+  ];
+};

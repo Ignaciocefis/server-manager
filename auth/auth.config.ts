@@ -3,13 +3,15 @@ import Credentials from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
 import { getUserByEmailWithPassword } from "@/features/user/data";
 import { loginFormSchema } from "@/features/auth/schemas";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export default {
   providers: [
     Credentials({
       async authorize(credentials) {
+        const { t } = await getServerLanguage();
 
-        const validatedFields = loginFormSchema.safeParse(credentials);
+        const validatedFields = loginFormSchema(t).safeParse(credentials);
 
         if (!validatedFields.success) {
           return null;

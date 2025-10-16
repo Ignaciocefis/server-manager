@@ -1,83 +1,93 @@
+import React from "react";
 import {
   ConfirmMessageParams,
   ConfirmMessageKey,
   IconType,
 } from "./ConfirmDialog.types";
 
-export const confirmMessages: {
+export const confirmMessages = (
+  t: (path: string, params?: Array<string | number>) => string
+): {
   [K in ConfirmMessageKey]: (params: ConfirmMessageParams[K]) => {
     title: string;
     description: string | React.ReactNode;
     confirmLabel: string;
     iconType: IconType;
   };
-} = {
+} => ({
   delete_user: ({ userName }) => ({
-    title: `Eliminar usuario`,
+    title: t("Shared.ConfirmDialog.delete_user.title"),
     description: (
       <>
-        ¿Seguro que deseas eliminar al usuario{" "}
-        <strong className="font-semibold">{userName}</strong>? Esta acción no se
-        puede deshacer.
+        {t("Shared.ConfirmDialog.delete_user.description_part1")}
+        <strong className="font-semibold">{userName}</strong>
+        {t("Shared.ConfirmDialog.delete_user.description_part2")}
       </>
     ),
-    confirmLabel: "Eliminar usuario",
+    confirmLabel: t("Shared.ConfirmDialog.delete_user.confirmLabel"),
     iconType: "error",
   }),
 
   activate_user: ({ userName, active }) => ({
-    title: `Cambiar estado del usuario`,
+    title: t("Shared.ConfirmDialog.activate_user.title"),
     description: (
       <>
-        ¿Seguro que deseas cambiar al usuario{" "}
-        <strong className="font-semibold">{userName}</strong> a un estado{" "}
+        {t("Shared.ConfirmDialog.activate_user.description_part1")}
+        <strong className="font-semibold">{userName}</strong>
+        {t("Shared.ConfirmDialog.activate_user.description_part2")}
         <strong className="font-semibold">
-          {active ? "activo" : "inactivo"}
+          {active
+            ? t("Shared.ConfirmDialog.activate_user.active")
+            : t("Shared.ConfirmDialog.activate_user.inactive")}
         </strong>
         ?
       </>
     ),
-    confirmLabel: "Activar usuario",
+    confirmLabel: t("Shared.ConfirmDialog.activate_user.confirmLabel"),
     iconType: "warning",
   }),
 
   update_server: ({ name }) => ({
-    title: `Actualizar servidor`,
+    title: t("Shared.ConfirmDialog.update_server.title"),
     description: (
       <>
-        ¿Seguro que deseas modificar el servidor{" "}
-        <strong className="font-semibold">{name}</strong>?
+        {t("Shared.ConfirmDialog.update_server.description_part1")}
+        <strong className="font-semibold">{name}</strong>
+        {t("Shared.ConfirmDialog.update_server.description_part2")}
       </>
     ),
-    confirmLabel: "Actualizar servidor",
+    confirmLabel: t("Shared.ConfirmDialog.update_server.confirmLabel"),
     iconType: "warning",
   }),
 
   server_availability: ({ name, available }) => ({
-    title: `Cambiar disponibilidad del servidor`,
+    title: t("Shared.ConfirmDialog.server_availability.title"),
     description: (
       <>
-        ¿Seguro que deseas{" "}
+        {t("Shared.ConfirmDialog.server_availability.description_part1")}
         <strong className="font-semibold">
-          {available ? "habilitar" : "deshabilitar"}
-        </strong>{" "}
-        el servidor <strong className="font-semibold">{name}</strong>?
+          {available
+            ? t("Shared.ConfirmDialog.server_availability.enable")
+            : t("Shared.ConfirmDialog.server_availability.disable")}
+        </strong>
+        {t("Shared.ConfirmDialog.server_availability.description_part2")}
+        <strong className="font-semibold">{name}</strong>?
       </>
     ),
-    confirmLabel: "Cambiar disponibilidad",
+    confirmLabel: t("Shared.ConfirmDialog.server_availability.confirmLabel"),
     iconType: "warning",
   }),
 
   delete_server: ({ name }) => ({
-    title: `Eliminar servidor`,
+    title: t("Shared.ConfirmDialog.delete_server.title"),
     description: (
       <>
-        ¿Seguro que deseas eliminar el servidor{" "}
-        <strong className="font-semibold">{name}</strong>? Esta acción no se
-        puede deshacer.
+        {t("Shared.ConfirmDialog.delete_server.description_part1")}
+        <strong className="font-semibold">{name}</strong>
+        {t("Shared.ConfirmDialog.delete_server.description_part2")}
       </>
     ),
-    confirmLabel: "Eliminar servidor",
+    confirmLabel: t("Shared.ConfirmDialog.delete_server.confirmLabel"),
     iconType: "error",
   }),
 
@@ -85,45 +95,58 @@ export const confirmMessages: {
     title: `Cancelar la reserva de GPU`,
     description: (
       <>
-        ¿Seguro que deseas cancelar la reserva de la GPU{" "}
-        <strong className="font-semibold">{gpu}</strong> en el servidor{" "}
-        <strong className="font-semibold">{server}</strong> para la fecha{" "}
-        <strong className="font-semibold">{date}</strong>?
+        {t("Shared.ConfirmDialog.cancel_reservation.description_part1")}
+        <strong className="font-semibold">{gpu}</strong>
+        {t("Shared.ConfirmDialog.cancel_reservation.description_part2")}
+        <strong className="font-semibold">{server}</strong>
+        {t("Shared.ConfirmDialog.cancel_reservation.description_part3")}
+        <strong className="font-semibold">{date}</strong>
+        {t("Shared.ConfirmDialog.cancel_reservation.description_part4")}
       </>
     ),
-    confirmLabel: "Cancelar reserva",
+    confirmLabel: t("Shared.ConfirmDialog.cancel_reservation.confirmLabel"),
     iconType: "error",
   }),
 
   confirm_reservation: ({ gpus, dateRange }) => ({
-    title: `Confirmar reserva de GPUs`,
+    title: t("Shared.ConfirmDialog.confirm_reservation.title"),
     description: (
       <>
-        ¿Confirmas la reserva de las GPU(s) [
-        <strong className="font-semibold">{gpus.join(", ")}</strong>] para{" "}
+        {t("Shared.ConfirmDialog.confirm_reservation.description_part1")}
+        <strong className="font-semibold">{gpus.join(", ")}</strong>
+        {t("Shared.ConfirmDialog.confirm_reservation.description_part2")}
         <strong className="font-semibold">{dateRange}</strong>?
       </>
     ),
-    confirmLabel: "Confirmar reserva",
+    confirmLabel: t("Shared.ConfirmDialog.confirm_reservation.confirmLabel"),
     iconType: "info",
   }),
 
   extend_reservation: ({ hours }) => ({
-    title: `Extender reserva de GPU`,
+    title: t("Shared.ConfirmDialog.extend_reservation.title"),
     description: (
       <>
-        ¿Seguro que deseas extender la reserva de la GPU durante{" "}
-        <strong className="font-semibold">{hours} hora(s)</strong> más?
+        {t("Shared.ConfirmDialog.extend_reservation.description_part1")}
+        <strong className="font-semibold">{hours}</strong>
+        {t("Shared.ConfirmDialog.extend_reservation.description_part2")}
+        {t("Shared.ConfirmDialog.extend_reservation.description_part3")}
       </>
     ),
-    confirmLabel: "Extender reserva",
+    confirmLabel: t("Shared.ConfirmDialog.extend_reservation.confirmLabel"),
     iconType: "info",
   }),
 
-  markAllNotificationsRead: () => ({
-    title: `Marcar todas las notificaciones como leídas`,
-    description: `¿Seguro que deseas marcar todas las notificaciones como leídas?`,
-    confirmLabel: "Marcar como leídas",
+  markAllNotificationsRead: ({ none }) => ({
+    title: t("Shared.ConfirmDialog.markAllNotificationsRead.title"),
+    description: (
+      <>
+        {t("Shared.ConfirmDialog.markAllNotificationsRead.description")}
+        {none}
+      </>
+    ),
+    confirmLabel: t(
+      "Shared.ConfirmDialog.markAllNotificationsRead.confirmLabel"
+    ),
     iconType: "info",
   }),
-};
+});

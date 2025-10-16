@@ -1,4 +1,3 @@
-export * from "./AppImage/AppImage";
 export * from "./AppSidebar/AppSidebar";
 export * from "./ConfirmDialog/ConfirmDialog";
 export * from "./ErrorPage/ErrorPage";
@@ -9,4 +8,3 @@ export * from "./FormItems/TimePickerField/TimePickerField";
 export * from "./LanguageSwitcher/LanguageSwitcher";
 export * from "./Navbar/Navbar";
 export * from "./NotificationButton/NotificationButton";
-export * from "./PageTitle/PageTitle";

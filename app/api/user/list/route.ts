@@ -1,21 +1,24 @@
 import { NextResponse } from "next/server";
 import { getAssignedUsers, getUserById } from "@/features/user/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function GET(request: Request) {
   try {
     const { userId, isCategory } = await hasCategory(["ADMIN", "RESEARCHER"]);
 
+    const { t } = await getServerLanguage();
+
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "No autenticado" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 401 }
       );
     }
 
     if (!isCategory) {
       return NextResponse.json(
-        { success: false, data: null, error: "No tiene permisos" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 403 }
       );
     }
@@ -31,7 +34,7 @@ export async function GET(request: Request) {
 
     if (!user.success || !user.data) {
       return NextResponse.json(
-        { success: false, data: null, error: user.error || "Error al obtener usuario" },
+        { success: false, data: null, error: user.error || t("User.Route.userNotFound") },
         { status: 500 }
       );
     }
@@ -62,14 +65,14 @@ export async function GET(request: Request) {
       );
     } else {
       return NextResponse.json(
-        { success: false, data: null, error: "Acceso prohibido" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 403 }
       );
     }
   } catch (error) {
-    console.error("Error en GET /api/user/list:", error);
+    console.error("Error in GET /api/user/list:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,25 +10,34 @@ import { toast } from "sonner";
 import { loginFormSchema } from "../../schemas";
 import { z } from "zod";
 import { handleApiError } from "@/lib/services/errors/errors";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function useLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const { t } = useLanguage();
 
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
+  type LoginFormValues = {
+    email: string;
+    password: string;
+  };
+
+  const schema = loginFormSchema(t);
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(schema as z.ZodType<LoginFormValues>),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-    const result = loginFormSchema.safeParse(values);
+  const onSubmit = async (values: z.infer<typeof schema>) => {
+    const result = schema.safeParse(values);
 
     if (!result.success) {
-      toast.error("Valores inválidos");
+      toast.error(t("app.auth.invalidValues"));
       return;
     }
 
@@ -36,7 +47,7 @@ export function useLoginForm() {
       params: { email },
     }).then(async (result) => {
       if (!result?.data?.data?.isActive) {
-        toast.error("Usuario inactivo, habla con un administrador para solicitar el alta de tu cuenta");
+        toast.error(t("app.auth.userInactive"));
         return;
       }
       const res = await signIn("credentials", {
@@ -46,9 +57,9 @@ export function useLoginForm() {
         callbackUrl,
       });
       if (res?.error) {
-        toast.error("Email o contraseña incorrectos");
+        toast.error(t("app.auth.invalidCredentials"));
       } else {
-        toast.success("Inicio de sesión exitoso");
+        toast.success(t("app.auth.successLogin"));
         router.push(res.url || "/");
       }
     }).catch((error) => {

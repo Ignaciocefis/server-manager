@@ -9,6 +9,7 @@ import {
   CALENDAR_ES,
   CustomToolbar,
   formats,
+  RESERVATION_STATUS_EN,
   RESERVATION_STATUS_ES,
   statusColors,
 } from "./ReservationCalendar.utils";
@@ -16,6 +17,7 @@ import { useReservationCalendar } from "./useReservationCalendar";
 import { ReservationDialog } from "..";
 import { ReservationCalendarSkeleton } from "./ReservationCalendar.skeleton";
 import { TriangleAlert } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const locales = { es };
 const localizer = dateFnsLocalizer({
@@ -27,6 +29,8 @@ const localizer = dateFnsLocalizer({
 });
 
 export default function ReservationCalendar() {
+  const { t, language } = useLanguage();
+
   const {
     events,
     loading,
@@ -50,19 +54,19 @@ export default function ReservationCalendar() {
 
         <div className="flex flex-col justify-center">
           <h3 className="text-lg md:text-2xl font-bold text-red-700">
-            Ha ocurrido un error
+            {t("Gpu.calendar.error")}
           </h3>
           <p className="text-sm md:text-base text-red-app">{error}</p>
         </div>
       </div>
-    );  
+    );
 
   return (
     <div className="space-y-4-center">
       <div className="h-[680px] border rounded-xl shadow-md bg-white p-5">
         <Calendar<CalendarEvent>
           localizer={localizer}
-          culture="es"
+          culture={language}
           events={events}
           startAccessor="start"
           endAccessor="end"
@@ -111,7 +115,9 @@ export default function ReservationCalendar() {
               style={{ backgroundColor: color }}
             />
             <span className="text-sm font-medium">
-              {RESERVATION_STATUS_ES[status]}
+              {language === "es"
+                ? RESERVATION_STATUS_ES[status]
+                : RESERVATION_STATUS_EN[status]}
             </span>
           </div>
         ))}

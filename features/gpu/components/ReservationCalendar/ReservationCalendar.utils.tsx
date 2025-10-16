@@ -6,6 +6,7 @@ import {
 import { ArrowLeft, ArrowRight, Calendar1, CalendarDays } from "lucide-react";
 import { reservationForCalendar } from "@/features/gpu/types";
 import { handleReservationCalendar } from "./ReservationCalendar.handlers";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export const statusColors: Record<reservationForCalendar["status"], string> = {
   PENDING: "var(--color-blue-app-transparent)",
@@ -40,6 +41,14 @@ export const RESERVATION_STATUS_ES: Record<string, string> = {
   CANCELLED: "Cancelada",
 };
 
+export const RESERVATION_STATUS_EN: Record<string, string> = {
+  PENDING: "Pending",
+  ACTIVE: "Active",
+  EXTENDED: "Extended",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
 export const formats = {
   dayFormat: "eeee",
   weekdayFormat: "eeeeee",
@@ -58,6 +67,8 @@ export const CustomToolbar: React.FC<ControlledToolbarProps> = ({
   date,
   onNavigateChange,
 }) => {
+  const { t, language } = useLanguage();
+
   const handleNavigate = (action: NavigateAction) => {
     const newDate = handleReservationCalendar(action, date, view);
     onNavigateChange(newDate);
@@ -81,7 +92,7 @@ export const CustomToolbar: React.FC<ControlledToolbarProps> = ({
           onClick={() => handleNavigate("TODAY")}
         >
           <Calendar1 className="w-4 h-4 mr-1" />
-          Hoy
+          {t("Gpu.calendar.today")}
         </Button>
         <Button
           variant="outline"
@@ -107,13 +118,21 @@ export const CustomToolbar: React.FC<ControlledToolbarProps> = ({
             className={`px-3 py-1 text-sm shadow-md ${view === v ? "bg-blue-app-transparent text-white hover:bg-blue-app" : "bg-gray-app-100 hover:bg-gray-app-200"}`}
             onClick={() => onViewChange(v)}
           >
-            {v === "month"
-              ? "Mes"
-              : v === "week"
-                ? "Semana"
-                : v === "day"
-                  ? "Día"
-                  : "Agenda"}
+            {language === "es"
+              ? v === "month"
+                ? "Mes"
+                : v === "week"
+                  ? "Semana"
+                  : v === "day"
+                    ? "Día"
+                    : "Agenda"
+              : v === "month"
+                ? "Month"
+                : v === "week"
+                  ? "Week"
+                  : v === "day"
+                    ? "Day"
+                    : "Agenda"}
           </Button>
         ))}
       </div>

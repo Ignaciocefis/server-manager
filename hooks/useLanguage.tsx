@@ -16,7 +16,8 @@ type Translations = typeof es;
 
 interface LanguageContextProps {
   language: Language;
-  t: Translations;
+  t: (path: string, params?: Array<string | number>) => string;
+  tLog: (message: string) => string;
   changeLanguage: (lang: Language) => void;
 }
 
@@ -24,9 +25,24 @@ const LanguageContext = createContext<LanguageContextProps | undefined>(
   undefined
 );
 
+/**
+ *
+ * t("logs.server_created", ["Servidor01"])
+ * → "Se ha creado un nuevo servidor: Servidor01"
+ *
+ * tLog("logs.server_created|Servidor01")
+ * → "Se ha creado un nuevo servidor: Servidor01"
+ *
+ */
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getTranslation(obj: any, path: string): string {
+  return path.split(".").reduce((acc, key) => acc?.[key], obj) ?? path;
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("es");
-  const [t, setT] = useState<Translations>(es);
+  const [translations, setTranslations] = useState<Translations>(es);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -34,22 +50,43 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("language") as Language | null;
     if (saved && (saved === "es" || saved === "en")) {
       setLanguage(saved);
-      setT(saved === "es" ? es : en);
+      setTranslations(saved === "es" ? es : en);
     }
   }, []);
 
   const changeLanguage = useCallback((lang: Language) => {
     setLanguage(lang);
-    setT(lang === "es" ? es : en);
+    setTranslations(lang === "es" ? es : en);
     localStorage.setItem("language", lang);
+    document.cookie = `language=${lang}; path=/; max-age=31536000`;
   }, []);
 
-  if (!isMounted) {
-    return null;
-  }
+  const t = useCallback(
+    (path: string, params?: Array<string | number>) => {
+      let template = getTranslation(translations, path);
+      if (params && params.length > 0) {
+        template = template.replace(/\{(\d+)\}/g, (_, index) => {
+          return params[Number(index)]?.toString() ?? "";
+        });
+      }
+      return template;
+    },
+    [translations]
+  );
+
+  const tLog = useCallback(
+    (msg: string) => {
+      if (!msg.includes("|")) return msg;
+      const [key, ...params] = msg.split("|");
+      return t(key, params);
+    },
+    [t]
+  );
+
+  if (!isMounted) return null;
 
   return (
-    <LanguageContext.Provider value={{ language, t, changeLanguage }}>
+    <LanguageContext.Provider value={{ language, t, tLog, changeLanguage }}>
       {children}
     </LanguageContext.Provider>
   );

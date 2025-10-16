@@ -9,28 +9,33 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus, Server } from "lucide-react";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { CreateServerForm } from "../CreateServerForm/CreateServerForm";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function CreateServerDialog() {
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex gap-2 items-center">
+        <Button className="bg-gray-app-100 text-gray-app-600 font-bold hover:bg-gray-app-200 shadow-md cursor-pointer">
           <Plus />
-          Añadir nuevo servidor
+          {t("Server.CreateServer.addServer")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="md:col-span-2 flex justify-end pr-6 gap-2 items-center">
-            <Server className="w-6 h-6" />
-            <span className="text-2xl font-semibold text-right">
-              Añadir nuevo servidor
-            </span>
-          </DialogTitle>
+        <DialogHeader className="mb-4">
+          <div className="flex items-center gap-4">
+            <Server className="w-8 h-8 text-blue-app" />
+            <DialogTitle className="text-2xl font-bold">
+              {t("Server.CreateServer.addServer")}
+            </DialogTitle>
+          </div>
+          <DialogDescription className="md:ml-12 -ml-7">
+            {t("Server.CreateServer.description")}
+          </DialogDescription>
         </DialogHeader>
         <CreateServerForm closeDialog={() => setOpen(false)} />
       </DialogContent>

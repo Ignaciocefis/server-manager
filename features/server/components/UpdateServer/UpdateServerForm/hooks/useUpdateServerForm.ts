@@ -10,7 +10,7 @@ type UpdateServerOptions = Pick<UpdateServerFormProps, "onUpdate" | "closeDialog
 
 export const useUpdateServerForm = ({ onUpdate, closeDialog }: UpdateServerOptions) => {
   const update = useCallback(
-    (data: z.infer<typeof updateServerFormSchema>) => {
+    (data: z.infer<ReturnType<typeof updateServerFormSchema>>) => {
       return axios
         .put("/api/server/update", data)
         .then((res) => {

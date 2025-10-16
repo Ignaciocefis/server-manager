@@ -9,10 +9,13 @@ import { getCategory, getFullName } from "@/features/user/utils";
 import { useCurrentUser } from "./useProfileSummary";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function ProfileSummary() {
   const [open, setOpen] = useState(false);
   const { user, loading } = useCurrentUser(open);
+
+  const { t } = useLanguage();
 
   if (loading || !user)
     return (
@@ -31,13 +34,13 @@ export function ProfileSummary() {
     secondSurname ?? undefined,
     name ?? undefined
   );
-  const userCategory = getCategory(category);
+  const userCategory = t(getCategory(category));
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
-          className="hidden md:flex items-center gap-3 w-auto px-3 py-2"
+          className="hidden md:flex items-center gap-3 w-auto px-3 py-2 cursor-pointer"
           variant="ghost"
         >
           <div className="flex flex-col text-right leading-tight">
@@ -46,7 +49,7 @@ export function ProfileSummary() {
               {userCategory}
             </span>
           </div>
-          <UserIcon className="w-6 h-6 text-gray-app-700" />
+          <UserIcon className="w-8 h-8 text-blue-app" />
         </Button>
       </SheetTrigger>
 

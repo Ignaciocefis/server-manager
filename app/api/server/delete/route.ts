@@ -1,10 +1,13 @@
 import { createEventLog } from "@/features/eventLog/data";
 import { deleteServer, existsServerById, getServersNameById } from "@/features/server/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function DELETE(req: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { serverId } = await req.json();
 
     const isAdmin = await hasCategory("ADMIN");
@@ -13,7 +16,7 @@ export async function DELETE(req: Request) {
         {
           success: false,
           data: null,
-          error: "No tienes permisos para eliminar servidores",
+          error: t("Server.Route.unauthorized"),
         },
         { status: 403 }
       );
@@ -24,7 +27,7 @@ export async function DELETE(req: Request) {
         {
           success: false,
           data: null,
-          error: "ID del servidor requerido",
+          error: t("Server.Route.serverIdRequired"),
         },
         { status: 400 }
       );
@@ -36,7 +39,7 @@ export async function DELETE(req: Request) {
         {
           success: false,
           data: null,
-          error: "No existe un servidor con ese ID",
+          error: t("Server.Route.serverNotFound"),
         },
         { status: 404 }
       );
@@ -46,20 +49,20 @@ export async function DELETE(req: Request) {
 
     if (!serverName || serverName.error || !serverName.success || !serverName.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al obtener el nombre del servidor" },
+        { success: false, data: null, error: t("Server.Route.getServerNameError") },
         { status: 500 }
       );
     }
 
     const log = await createEventLog({
       eventType: "SERVER_DELETED",
-      message: `El servidor ${serverName.data[0].name} ha sido eliminado.`,
+      message: `EventLog.logMessage.server_deleted|${serverName.data[0].name}`,
       serverId: serverId,
     });
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("Server.Route.eventLogError") },
         { status: 500 }
       );
     }
@@ -71,7 +74,7 @@ export async function DELETE(req: Request) {
         {
           success: false,
           data: null,
-          error: deleted?.error || "No se pudo eliminar el servidor",
+          error: deleted?.error || t("Server.Route.deleteServerError"),
         },
         { status: 500 }
       );
@@ -87,13 +90,9 @@ export async function DELETE(req: Request) {
     );
 
   } catch (error) {
-    console.error("Error eliminando servidor:", error);
+    console.error("Error in DELETE /api/server/delete:", error);
     return NextResponse.json(
-      {
-        success: false,
-        data: null,
-        error: "Error eliminando servidor",
-      },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

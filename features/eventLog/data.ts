@@ -114,7 +114,6 @@ export const getAllLogs = async (
   }
 };
 
-// 🔹 Logs con restricción de accesos
 export const getAccessibleLogs = async (
   userId: string,
   serverId?: string,
@@ -226,23 +225,28 @@ export const getAllUnreadNotifications = async (userId: string): Promise<ApiResp
   }
 };
 
-export const markNotificationAsRead = async (userNotificationId: string, userId: string): Promise<ApiResponse<null>> => {
+export const markNotificationAsRead = async (
+  userNotificationId: string,
+  userId: string
+): Promise<ApiResponse<null>> => {
   try {
     if (userNotificationId === "all") {
-      await db.userNotification.updateMany({
+      await db.userNotification.deleteMany({
         where: { userId },
-        data: { isRead: true },
       });
-      return { success: true, data: null, error: null };
     } else {
-      await db.userNotification.update({
+      await db.userNotification.delete({
         where: { id: userNotificationId, userId },
-        data: { isRead: true },
       });
     }
+
     return { success: true, data: null, error: null };
   } catch (error) {
-    console.error("Error al marcar notificación como leída:", error);
-    return { success: false, data: null, error: "Error al marcar notificación como leída" };
+    console.error("Error al eliminar notificación:", error);
+    return {
+      success: false,
+      data: null,
+      error: "Error al eliminar notificación",
+    };
   }
 };

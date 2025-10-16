@@ -14,6 +14,9 @@ import {
   ConfirmMessageKey,
   ConfirmMessageParams,
 } from "@/components/Shared/ConfirmDialog/ConfirmDialog.types";
+import { useLanguage } from "@/hooks/useLanguage";
+import GpuUsageHeatmap from "@/features/gpu/components/GpuUsageHeatmap/GpuUsageHeatmap";
+import ServerDetailsContainerSkeleton from "./ServerDetailsContainer.skeleton";
 
 export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   const router = useRouter();
@@ -33,12 +36,9 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
     params: {} as ConfirmMessageParams[ConfirmMessageKey],
   });
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-full min-h-[300px]">
-        <p className="text-2xl">Cargando servidor...</p>
-      </div>
-    );
+  const { t } = useLanguage();
+
+  if (loading) return <ServerDetailsContainerSkeleton />;
 
   if (error)
     return (
@@ -49,7 +49,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
 
         <div className="flex flex-col justify-center">
           <h3 className="text-lg md:text-2xl font-bold text-red-700">
-            Ha ocurrido un error
+            {t("Server.details.error")}
           </h3>
           <p className="text-sm md:text-base text-red-app">{error}</p>
         </div>
@@ -59,7 +59,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   if (!server)
     return (
       <div className="flex justify-center items-center h-full min-h-[300px]">
-        <p className="text-2xl">Servidor no encontrado</p>
+        <p className="text-2xl">{t("Server.details.not_found")}</p>
       </div>
     );
 
@@ -104,7 +104,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   };
 
   return (
-    <>
+    <div>
       <ServerDetailsInfo
         server={server}
         isAdmin={isAdmin}
@@ -114,19 +114,25 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
         onReservationSuccess={triggerRefresh}
       />
 
-      <div className="flex flex-col items-center mt-8">
-        <GpuDonutChart
-          installedGpus={server.installedGpus}
-          availableGpus={server.availableGpus}
-          size="md"
-        />
+      <div className="flex flex-col 2xl:flex-row items-center justify-between w-11/12 mx-auto">
+        <div className="w-full md:w-auto">
+          <GpuUsageHeatmap serverId={server.id} />
+        </div>
+
+        <div className="flex md:w-auto h-max-[316px] justify-center">
+          <GpuDonutChart
+            installedGpus={server.installedGpus}
+            availableGpus={server.availableGpus}
+            size="md"
+          />
+        </div>
       </div>
 
-      <div className="flex flex-col items-center my-8">
+      <div className="flex flex-col items-center mt-4">
         <GpuInUseTable data={server} />
       </div>
 
-      <div>
+      <div className="mt-8 w-11/12 mx-auto">
         <LogsTable serverId={server.id} limit={10} />
       </div>
 
@@ -137,6 +143,6 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
         messageKey={confirmParams.messageKey}
         params={confirmParams.params}
       />
-    </>
+    </div>
   );
 };

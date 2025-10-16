@@ -18,6 +18,7 @@ import { useAvailableGpus } from "./hooks/useAvailableGpus";
 import { GpuReservationFormHandler } from "./GpuReservationForm.handlers";
 import { useGpuReservationForm } from "./hooks/useGpuReservationForm";
 import { format } from "date-fns";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function GpuReservationForm({
   serverId,
@@ -28,6 +29,8 @@ export function GpuReservationForm({
   const today = new Date();
   const maxDate = new Date(today);
   maxDate.setDate(today.getDate() + 30);
+
+  const { t } = useLanguage();
 
   const { form } = useGpuReservationForm(serverId);
   useDynamicTimeDefaults(form);
@@ -77,10 +80,14 @@ export function GpuReservationForm({
           <div className="flex gap-4">
             <TimePickerField
               name="startHour"
-              label="Hora inicio"
+              label={t("Gpu.createReservation.startHour")}
               selectedHour=""
             />
-            <TimePickerField name="endHour" label="Hora fin" selectedHour="" />
+            <TimePickerField
+              name="endHour"
+              label={t("Gpu.createReservation.endHour")}
+              selectedHour=""
+            />
           </div>
           <GpuSelector name="selectedGpuIds" availableGpus={availableGpus} />
           <div className="flex gap-4 justify-center">
@@ -88,14 +95,14 @@ export function GpuReservationForm({
               type="submit"
               className="bg-green-app hover:bg-green-app-transparent w-40 max-w-xs"
             >
-              Reservar
+              {t("Gpu.createReservation.reserve")}
             </Button>
             <Button
               type="button"
               onClick={closeDialog}
               className="bg-red-app hover:bg-red-app-transparent w-40 max-w-xs"
             >
-              Cancelar
+              {t("Gpu.createReservation.cancel")}
             </Button>
           </div>
         </form>

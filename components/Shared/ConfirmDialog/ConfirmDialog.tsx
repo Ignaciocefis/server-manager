@@ -10,18 +10,23 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Info, XCircle } from "lucide-react";
-import { ConfirmDialogProps } from "./ConfirmDialog.types";
+import { ConfirmDialogProps, ConfirmMessageKey } from "./ConfirmDialog.types";
 import { confirmMessages } from "./ConfirmDialog.utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
-export function ConfirmDialog<K extends keyof typeof confirmMessages>({
+export function ConfirmDialog<K extends ConfirmMessageKey>({
   open,
   onClose,
   onConfirm,
   messageKey,
   params,
 }: ConfirmDialogProps<K>) {
+  const { t } = useLanguage();
+
+  const messages = confirmMessages(t);
+
   const { title, description, confirmLabel, iconType } =
-    confirmMessages[messageKey](params);
+    messages[messageKey](params);
 
   const iconMap = {
     warning: { component: AlertTriangle, color: "text-yellow-app" },
@@ -45,7 +50,7 @@ export function ConfirmDialog<K extends keyof typeof confirmMessages>({
             <div className="flex flex-col gap-2 text-gray-600 text-base leading-relaxed">
               <p className="text-gray-app-500">{description}</p>
               <p className="text-sm text-gray-500">
-                Por favor, confirma antes de continuar.
+                {t("Shared.ConfirmDialog.confirm")}
               </p>
             </div>
           </DialogDescription>
@@ -69,7 +74,7 @@ export function ConfirmDialog<K extends keyof typeof confirmMessages>({
             onClick={onClose}
             className="px-5 py-2.5 rounded-lg font-semibold cursor-pointer"
           >
-            Cancelar
+            {t("Shared.ConfirmDialog.cancel")}
           </Button>
         </DialogFooter>
       </DialogContent>

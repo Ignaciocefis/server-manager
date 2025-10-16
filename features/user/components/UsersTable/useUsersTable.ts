@@ -6,13 +6,13 @@ import { handleApiError } from "@/lib/services/errors/errors";
 import { UsersTableColumn, UsersTableDataProps } from "./UserTable.type";
 
 export const INITIAL_COLUMNS: UsersTableColumn[] = [
-  { key: "userFullName", label: "Nombre", visible: true },
-  { key: "email", label: "Correo", visible: true },
-  { key: "assignedToFullName", label: "Asignado", visible: true },
-  { key: "servers", label: "Servidores", visible: true },
-  { key: "category", label: "Categoría", visible: true },
-  { key: "status", label: "Estado", visible: true },
-  { key: "actions", label: "Acciones", visible: true },
+  { key: "userFullName", label: "User.management.name", visible: true },
+  { key: "email", label: "User.management.email", visible: true },
+  { key: "assignedToFullName", label: "User.management.assignedTo", visible: true },
+  { key: "servers", label: "User.management.servers", visible: true },
+  { key: "category", label: "User.management.category", visible: true },
+  { key: "status", label: "User.management.status", visible: true },
+  { key: "actions", label: "User.management.actions", visible: true },
 ];
 
 export function useUsersTable(limit?: number) {

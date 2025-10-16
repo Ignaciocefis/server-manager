@@ -1,6 +1,11 @@
 "use client";
 
-import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,6 +13,7 @@ import {
   FormItem,
   FormLabel,
   FormControl,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -17,10 +23,14 @@ import { useProfileForm } from "./hooks/useProfileForm";
 import { handleProfileUpdate } from "./ProfileSheet.handlers";
 import { useAssignedResearcher } from "./hooks/useAssignedResearcher";
 import { UserSummary } from "@/features/user/types";
+import { useLanguage } from "@/hooks/useLanguage";
+import { UserIcon } from "lucide-react";
 
 export function ProfileSheet({ user }: { user: UserSummary }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+
+  const { t } = useLanguage();
 
   const form = useProfileForm(user);
   const { handleSubmit, reset, watch } = form;
@@ -51,7 +61,15 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
   return (
     <SheetContent side="right" className="w-[80vw] max-w-lg">
       <SheetHeader>
-        <SheetTitle>Mi perfil</SheetTitle>
+        <div className="flex items-center gap-2">
+          <UserIcon className="w-8 h-8 text-blue-app" />
+          <SheetTitle className="text-2xl font-bold">
+            {t("User.ProfileSheet.title")}
+          </SheetTitle>
+        </div>
+        <SheetDescription className="ml-10">
+          {t("User.ProfileSheet.description")}
+        </SheetDescription>
       </SheetHeader>
 
       <Form {...form}>
@@ -76,14 +94,15 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {
-                        {
-                          name: "Nombre",
-                          firstSurname: "Primer Apellido",
-                          secondSurname: "Segundo Apellido",
-                          email: "Email",
-                        }[fieldName]
-                      }
+                      {t(
+                        fieldName === "name"
+                          ? "User.ProfileSheet.name"
+                          : fieldName === "firstSurname"
+                            ? "User.ProfileSheet.firstSurname"
+                            : fieldName === "secondSurname"
+                              ? "User.ProfileSheet.secondSurname"
+                              : "User.ProfileSheet.email"
+                      )}
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -99,6 +118,7 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
                         }`}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -111,16 +131,22 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Categoría</FormLabel>
+                  <FormLabel>{t("User.ProfileSheet.category")}</FormLabel>
                   <FormControl>
                     <select
                       {...field}
                       disabled
                       className="w-full bg-gray-app-100 text-gray-app-400 px-3 py-2 rounded text-sm border border-transparent"
                     >
-                      <option value="ADMIN">Administrador</option>
-                      <option value="RESEARCHER">Investigador</option>
-                      <option value="JUNIOR">Junior</option>
+                      <option value="ADMIN">
+                        {t("User.ProfileSheet.admin")}
+                      </option>
+                      <option value="RESEARCHER">
+                        {t("User.ProfileSheet.researcher")}
+                      </option>
+                      <option value="JUNIOR">
+                        {t("User.ProfileSheet.junior")}
+                      </option>
                     </select>
                   </FormControl>
                 </FormItem>
@@ -131,15 +157,17 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
           {category === "JUNIOR" && researcherName && (
             <div className="w-11/12">
               <FormItem>
-                <FormLabel>Investigador asignado</FormLabel>
-                <div className="px-3 py-2 text-sm rounded bg-gray-app-100 text-gray-app-500 border border-gray-200">
+                <FormLabel>
+                  {t("User.ProfileSheet.researcherAssigned")}
+                </FormLabel>
+                <div className="w-full bg-gray-app-100 text-gray-app-400 px-3 py-2 rounded text-sm border border-transparent">
                   {researcherName}
                 </div>
               </FormItem>
             </div>
           )}
 
-          <div className="w-11/12 mt-6 flex flex-col gap-4">
+          <div className="w-11/12 mt-16 flex flex-col gap-4">
             {isEditing ? (
               <>
                 <Button
@@ -148,43 +176,43 @@ export function ProfileSheet({ user }: { user: UserSummary }) {
                     e.preventDefault();
                     onSubmit(e);
                   }}
-                  className="w-full bg-green-app text-white"
+                  className="w-full bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md cursor-pointer"
                 >
-                  Guardar cambios
+                  {t("User.ProfileSheet.saveChanges")}
                 </Button>
                 <Button
                   type="button"
-                  className="w-full bg-red-app text-white"
+                  className="w-full bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer"
                   onClick={(e) => {
                     reset();
                     setIsEditing(false);
                     e.preventDefault();
                   }}
                 >
-                  Cancelar
+                  {t("User.ProfileSheet.cancel")}
                 </Button>
               </>
             ) : (
               <>
                 <Button
                   type="button"
-                  className="w-full bg-gray-app-600 text-white"
+                  className="w-full bg-gray-app-100 text-gray-app-600 font-bold hover:bg-gray-app-200 shadow-md cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsEditing(true);
                   }}
                 >
-                  Editar Perfil
+                  {t("User.ProfileSheet.editProfile")}
                 </Button>
                 <Button
                   type="button"
-                  className="w-full bg-gray-app-600 text-white"
+                  className="w-full bg-gray-app-100 text-gray-app-600 font-bold hover:bg-gray-app-200 shadow-md cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsPasswordDialogOpen(true);
                   }}
                 >
-                  Cambiar contraseña
+                  {t("User.ProfileSheet.changePassword")}
                 </Button>
               </>
             )}

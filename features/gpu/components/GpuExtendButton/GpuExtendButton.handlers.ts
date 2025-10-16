@@ -25,6 +25,7 @@ export async function handleExtendReservation(
   await axios.put("/api/gpu/extend", {
     reservationId,
     extendedUntil: extendedUntil.toISOString(),
+    hoursToExtend,
   }).then(() => {
     toast.success(`Reserva extendida ${hoursToExtend} hora(s) correctamente`);
     setShowPopover(false);

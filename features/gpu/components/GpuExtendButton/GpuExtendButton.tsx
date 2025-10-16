@@ -11,6 +11,8 @@ import { CircleMinus, CirclePlus } from "lucide-react";
 import { handleExtendReservation } from "./GpuExtendButton.handlers";
 import { GpuExtendButtonProps } from "./GpuExtendButton.types";
 import { ConfirmDialog } from "@/components/Shared";
+import { useLanguage } from "@/hooks/useLanguage";
+import { Input } from "@/components/ui/input";
 
 export default function GpuExtendButton({
   reservationId,
@@ -23,6 +25,8 @@ export default function GpuExtendButton({
   const [error, setError] = useState<string | null>(null);
   const [hoursToExtend, setHoursToExtend] = useState<number>(1);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const { t } = useLanguage();
 
   const openConfirmDialog = () => {
     setConfirmOpen(true);
@@ -47,30 +51,37 @@ export default function GpuExtendButton({
         <PopoverTrigger asChild>
           <Button
             disabled={isExtended}
-            className={`w-full text-gray-app-100 ${
+            className={`w-full text-gray-app-600 font-bold shadow-md ${
               isExtended
-                ? "bg-gray-app-400 hover:bg-gray-app-600"
-                : "bg-yellow-500 hover:bg-yellow-600"
+                ? "bg-gray-app-100 cursor-not-allowed"
+                : "bg-yellow-app-100 hover:bg-yellow-app cursor-pointer"
             }`}
           >
             <CirclePlus size={16} className="inline mr-1" />
-            Prórroga
+            {t("Gpu.reservationsList.extend")}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80">
           <p className="text-sm mb-2">
-            ¿Cuántas horas quieres extender? (1-12)
+            {t("Gpu.reservationsList.extendForHours")}
           </p>
-          <input
+          <Input
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min={1}
             max={12}
             step={1}
             value={hoursToExtend}
-            onChange={(e) => setHoursToExtend(Number(e.target.value))}
+            onChange={(e) => {
+              let val = e.target.valueAsNumber;
+              if (isNaN(val)) return;
+              if (val > 12) val = 12;
+              if (val < 1) val = 1;
+              setHoursToExtend(Math.floor(val));
+            }}
             className="w-full border rounded px-2 py-1 text-sm mb-2"
           />
-
           {error && (
             <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
               <div className="flex-shrink-0 flex items-center">
@@ -79,13 +90,12 @@ export default function GpuExtendButton({
 
               <div className="flex flex-col justify-center">
                 <h3 className="text-lg md:text-2xl font-bold text-red-700">
-                  Ha ocurrido un error
+                  {t("Gpu.reservationsList.errorExtending")}
                 </h3>
                 <p className="text-sm md:text-base text-red-app">{error}</p>
               </div>
             </div>
           )}
-
           <div className="flex gap-2 w-full">
             <Button
               onClick={openConfirmDialog}
@@ -93,14 +103,16 @@ export default function GpuExtendButton({
               className="flex-1 bg-green-app hover:bg-green-app-transparent"
             >
               <CirclePlus size={16} className="inline mr-1" />
-              {loading ? "Extendiendo..." : "Confirmar"}
+              {loading
+                ? t("Gpu.reservationsList.extending")
+                : t("Gpu.reservationsList.confirm")}
             </Button>
             <Button
               onClick={() => setShowPopover(false)}
               className="flex-1 bg-red-app hover:bg-red-app-transparent"
             >
               <CircleMinus size={16} className="inline mr-1" />
-              Cancelar
+              {t("Gpu.reservationsList.cancel")}
             </Button>
           </div>
         </PopoverContent>

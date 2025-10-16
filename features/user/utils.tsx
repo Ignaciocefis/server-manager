@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Category } from "@prisma/client";
-import { CATEGORY_TRANSLATIONS } from "./helpers";
+import { CATEGORY_TRANSLATIONS_EN, CATEGORY_TRANSLATIONS_ES } from "./helpers";
 
 export function getFullName(
   firstSurname?: string,
@@ -12,9 +12,9 @@ export function getFullName(
 
 export function getCategory(category: Category) {
   const categoryMap: Record<Category, string> = {
-    ADMIN: "Administrador",
-    RESEARCHER: "Investigador",
-    JUNIOR: "Júnior",
+    ADMIN: "User.ProfileSheet.admin",
+    RESEARCHER: "User.ProfileSheet.researcher",
+    JUNIOR: "User.ProfileSheet.junior",
   };
   return categoryMap[category] ?? category;
 }
@@ -52,8 +52,11 @@ export const getServerBadge = (servers?: string[]) => {
   );
 };
 
-export const getCategoryTypeBadge = (type: Category) => {
-  const label = CATEGORY_TRANSLATIONS[type] ?? "Júnior";
+export const getCategoryTypeBadge = (type: Category, language: string) => {
+  const label =
+    (language === "en" ? CATEGORY_TRANSLATIONS_EN : CATEGORY_TRANSLATIONS_ES)[
+      type
+    ] ?? "Júnior";
 
   const colorMap = {
     ADMIN: "--color-red-app",
@@ -77,8 +80,15 @@ export const getCategoryTypeBadge = (type: Category) => {
   );
 };
 
-export const getStatusTypeBadge = (status: boolean) => {
-  const label = status ? "Activo" : "Inactivo";
+export const getStatusTypeBadge = (status: boolean, language: string) => {
+  const label =
+    language === "en"
+      ? status
+        ? "Active"
+        : "Inactive"
+      : status
+        ? "Activo"
+        : "Inactivo";
 
   const colorMap = {
     true: "--color-green-app",

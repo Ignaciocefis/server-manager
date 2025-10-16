@@ -3,24 +3,27 @@ import { updateUser } from "@/features/user/data";
 import { updateUserSchema } from "@/features/user/schemas";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { userId } = await hasCategory();
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "No autorizado" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 401 }
       );
     }
 
     const body = await request.json();
-    const parsed = updateUserSchema.safeParse(body);
+    const parsed = updateUserSchema(t).safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Datos inválidos" },
+        { success: false, data: null, error: t("User.Route.invalidValues") },
         { status: 400 }
       );
     }
@@ -34,7 +37,7 @@ export async function PUT(request: Request) {
 
     if (!result || !result.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al actualizar el perfil" },
+        { success: false, data: null, error: t("User.Route.updateProfileError") },
         { status: 500 }
       );
     }
@@ -48,12 +51,12 @@ export async function PUT(request: Request) {
     const log = await createEventLog({
       eventType: "USER_UPDATED",
       userId,
-      message: `Usuario ${userFullName} actualizado su perfil`,
+      message: `EventLog.logMessage.user_updated|${userFullName}`,
     });
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("User.Route.createEventLogError") },
         { status: 500 }
       );
     }
@@ -63,9 +66,9 @@ export async function PUT(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en PUT /api/user/update/profile:", error);
+    console.error("Error in PUT /api/user/update/profile:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error al actualizar el perfil" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

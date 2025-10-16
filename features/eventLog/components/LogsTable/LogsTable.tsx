@@ -12,6 +12,7 @@ import {
   ChevronRight,
   ChevronsRight,
   TriangleAlert,
+  Logs,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,13 +40,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { TYPE_TRANSLATIONS, TYPE_VARIANTS } from "../../helpers";
-import {
-  exportLogsToCSV,
-  getNestedValue,
-  getTypeBadge,
-  toDisplay,
-} from "../../utils";
+import { TYPE_VARIANTS } from "../../helpers";
+import { exportLogsToCSV, getNestedValue, toDisplay } from "../../utils";
 import { useLogsTable } from "./useLogsTable";
 import {
   handleSort,
@@ -55,6 +51,8 @@ import {
   handleLimitChange,
 } from "./LogsTable.helpers";
 import { useImperativeHandle, forwardRef } from "react";
+import { TypeBadge } from "..";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export type LogsTableHandle = {
   exportFilteredLogs: () => void;
@@ -64,6 +62,8 @@ export const LogsTable = forwardRef<
   LogsTableHandle,
   { serverId?: string; limit?: number }
 >(({ serverId, limit }, ref) => {
+  const { t, tLog } = useLanguage();
+
   const {
     logs,
     loading,
@@ -84,221 +84,254 @@ export const LogsTable = forwardRef<
 
   useImperativeHandle(ref, () => ({
     exportFilteredLogs: () => {
-      exportLogsToCSV(logs);
+      exportLogsToCSV(logs, tLog);
     },
   }));
 
   return (
-    <div className="space-y-4 w-full mx-auto mb-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 flex-1">
-          <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Buscar en logs..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-52">
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              {Object.keys(TYPE_VARIANTS).map((key) => (
-                <SelectItem key={key} value={key}>
-                  {TYPE_TRANSLATIONS[key] ?? key.replace(/_/g, " ")}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Settings2 className="w-4 h-4 mr-2" />
-                Columnas
-                <ChevronDown className="w-4 h-4 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Mostrar columnas</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {visibleColumns.map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.key}
-                  checked={column.visible}
-                  onCheckedChange={() =>
-                    toggleColumn(column.key, visibleColumns, setVisibleColumns)
-                  }
-                >
-                  {column.label}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              handleRefresh(
-                fetchLogs,
-                pagination,
-                searchTerm,
-                typeFilter,
-                sortField,
-                sortOrder
-              )
-            }
-            disabled={loading}
+    <div>
+      <div className="w-full border rounded-xl shadow-md bg-white p-5 flex flex-col gap-4 -mt-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 rounded-lg border border-gray-app-200 shadow-sm bg-white mb-4">
+          {serverId && (
+            <div className="flex items-center gap-3">
+              <Logs className="w-6 h-6 text-blue-app" />
+              <h2 className="text-xl md:text-2xl font-bold text-gray-app-700">
+                {t("EventLog.logsTable.title")}
+              </h2>
+            </div>
+          )}
+          <div
+            className={`flex items-center gap-2 ${
+              serverId ? "ml-auto" : "flex-1"
+            }`}
           >
-            <RefreshCw
-              className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-            />
-            Actualizar
-          </Button>
-        </div>
-      </div>
+            <div className="relative max-w-sm">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder={t("EventLog.logsTable.searchPlaceholder")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
 
-      {error && (
-        <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
-          <div className="flex-shrink-0 flex items-center">
-            <TriangleAlert className="w-10 h-full text-red-700" />
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-52">
+                <SelectValue placeholder={t("EventLog.logsTable.filterType")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  {t("EventLog.logsTable.filterAll")}
+                </SelectItem>
+                {Object.keys(TYPE_VARIANTS).map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {t(`EventLog.logType.${key.toLowerCase()}`)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="flex flex-col justify-center">
-            <h3 className="text-lg md:text-2xl font-bold text-red-700">
-              Ha ocurrido un error
-            </h3>
-            <p className="text-sm md:text-base text-red-app">{error}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="border border-border rounded-lg bg-gray-app-100 overflow-hidden">
-        <Table className="w-full text-sm">
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              {visibleColumns
-                .filter((col) => col.visible)
-                .map((column) => (
-                  <TableHead
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Settings2 className="w-4 h-4 mr-2" />
+                  {t("EventLog.logsTable.filterColumns")}
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>
+                  {t("EventLog.logsTable.showColumns")}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {visibleColumns.map((column) => (
+                  <DropdownMenuCheckboxItem
                     key={column.key}
-                    className="font-semibold cursor-pointer select-none px-4 py-2"
-                    onClick={() =>
-                      handleSort(
+                    checked={column.visible}
+                    onCheckedChange={() =>
+                      toggleColumn(
                         column.key,
-                        sortField,
-                        setSortField,
-                        sortOrder,
-                        setSortOrder
+                        visibleColumns,
+                        setVisibleColumns
                       )
                     }
                   >
-                    <div className="flex items-center gap-1">
-                      {column.label}
-                      {sortField === column.key &&
-                        (sortOrder === "asc" ? (
-                          <ChevronUp className="w-3 h-3" />
-                        ) : (
-                          <ChevronDown className="w-3 h-3" />
-                        ))}
-                    </div>
-                  </TableHead>
+                    {t(column.label)}
+                  </DropdownMenuCheckboxItem>
                 ))}
-            </TableRow>
-          </TableHeader>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={visibleColumns.filter((col) => col.visible).length}
-                  className="text-center py-8"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Cargando logs...
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : logs.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={visibleColumns.filter((col) => col.visible).length}
-                  className="text-center py-8 text-muted-foreground"
-                >
-                  No se encontraron logs
-                </TableCell>
-              </TableRow>
-            ) : (
-              logs.map((log, idx) => (
-                <TableRow
-                  key={log.id}
-                  className={`hover:bg-muted/40 focus-within:bg-muted/50 ${
-                    idx % 2 === 0 ? "even:bg-muted/30" : ""
-                  }`}
-                >
-                  {visibleColumns
-                    .filter((col) => col.visible)
-                    .map((column) => {
-                      let content: React.ReactNode;
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleRefresh(
+                  fetchLogs,
+                  pagination,
+                  searchTerm,
+                  typeFilter,
+                  sortField,
+                  sortOrder
+                )
+              }
+              disabled={loading}
+            >
+              <RefreshCw
+                className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+              />
+              {t("EventLog.logsTable.refresh")}
+            </Button>
+          </div>
+        </div>
 
-                      if (column.key === "eventType") {
-                        content = getTypeBadge(log.eventType);
-                      } else if (column.key === "createdAt") {
-                        content = (
-                          <time
-                            dateTime={log.createdAt}
-                            className="font-mono text-xs"
-                          >
-                            {log.createdAt}
-                          </time>
-                        );
-                      } else if (column.key === "message") {
-                        content = (
-                          <span
-                            className="max-w-xs truncate block"
-                            title={log.message}
-                          >
-                            {log.message}
-                          </span>
-                        );
-                      } else {
-                        content = toDisplay(getNestedValue(log, column.key));
+        {error && (
+          <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
+            <div className="flex-shrink-0 flex items-center">
+              <TriangleAlert className="w-10 h-full text-red-700" />
+            </div>
+
+            <div className="flex flex-col justify-center">
+              <h3 className="text-lg md:text-2xl font-bold text-red-700">
+                {t("EventLog.logsTable.errorLoading")}
+              </h3>
+              <p className="text-sm md:text-base text-red-app">{error}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="border border-border rounded-lg overflow-hidden">
+          <Table className="w-full text-sm">
+            <TableHeader className="bg-muted/50">
+              <TableRow>
+                {visibleColumns
+                  .filter((col) => col.visible)
+                  .map((column) => (
+                    <TableHead
+                      key={column.key}
+                      className="font-semibold cursor-pointer select-none px-4 py-2"
+                      onClick={() =>
+                        handleSort(
+                          column.key,
+                          sortField,
+                          setSortField,
+                          sortOrder,
+                          setSortOrder
+                        )
                       }
+                    >
+                      <div className="flex items-center gap-1">
+                        {t(column.label)}
+                        {sortField === column.key &&
+                          (sortOrder === "asc" ? (
+                            <ChevronUp className="w-3 h-3" />
+                          ) : (
+                            <ChevronDown className="w-3 h-3" />
+                          ))}
+                      </div>
+                    </TableHead>
+                  ))}
+              </TableRow>
+            </TableHeader>
 
-                      return (
-                        <TableCell key={column.key} className="px-4 py-2">
-                          {content}
-                        </TableCell>
-                      );
-                    })}
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={visibleColumns.filter((col) => col.visible).length}
+                    className="text-center py-8"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {t("EventLog.logsTable.loading")}
+                    </div>
+                  </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : logs.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={visibleColumns.filter((col) => col.visible).length}
+                    className="text-center py-8 text-muted-foreground"
+                  >
+                    {t("EventLog.logsTable.noLogs")}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                logs.map((log, idx) => (
+                  <TableRow
+                    key={log.id}
+                    className={`hover:bg-muted/40 focus-within:bg-muted/50 ${
+                      idx % 2 === 0 ? "even:bg-muted/30" : ""
+                    }`}
+                  >
+                    {visibleColumns
+                      .filter((col) => col.visible)
+                      .map((column) => {
+                        let content: React.ReactNode;
+
+                        if (column.key === "eventType") {
+                          content = <TypeBadge type={log.eventType} />;
+                        } else if (column.key === "createdAt") {
+                          content = (
+                            <time
+                              dateTime={log.createdAt}
+                              className="font-mono text-xs"
+                            >
+                              {log.createdAt}
+                            </time>
+                          );
+                        } else if (column.key === "message") {
+                          const translatedMessage = tLog(log.message);
+
+                          content = (
+                            <span
+                              className="max-w-xs truncate block"
+                              title={translatedMessage}
+                            >
+                              {translatedMessage}
+                            </span>
+                          );
+                        } else {
+                          const value = toDisplay(
+                            getNestedValue(log, column.key)
+                          );
+                          content = value || <span>-</span>;
+                        }
+
+                        return (
+                          <TableCell key={column.key} className="px-4 py-2">
+                            {content}
+                          </TableCell>
+                        );
+                      })}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-      <div className="flex flex-col sm:flex-row items-center justify-between p-4 rounded-b-lg gap-2">
+      <div className="flex flex-wrap mt-2 border rounded-xl shadow-md bg-white sm:flex-row items-center justify-between p-4 rounded-b-lg gap-2">
         <div className="text-sm text-muted-foreground">
-          Mostrando del{" "}
+          {t("EventLog.logsTable.paginationShowing")}{" "}
           <span className="font-medium">
-            {(pagination.page - 1) * pagination.limit + 1} al{" "}
+            {(pagination.page - 1) * pagination.limit + 1}
+          </span>{" "}
+          {t("EventLog.logsTable.paginationTo")}{" "}
+          <span className="font-medium">
             {Math.min(pagination.page * pagination.limit, pagination.total)}
           </span>{" "}
-          de <span className="font-medium">{pagination.total}</span>
+          {t("EventLog.logsTable.paginationOf")}{" "}
+          <span className="font-medium">{pagination.total}</span>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Mostrar:</span>
+            <span className="text-sm text-muted-foreground">
+              {t("EventLog.logsTable.paginationShowing")}
+            </span>
             <Select
               value={pagination.limit.toString()}
               onValueChange={(val) =>

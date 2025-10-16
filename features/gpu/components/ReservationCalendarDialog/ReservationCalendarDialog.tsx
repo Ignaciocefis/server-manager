@@ -19,7 +19,11 @@ import {
   Timer,
 } from "lucide-react";
 import { CalendarEvent } from "../ReservationCalendar/ReservationCalendar.types";
-import { RESERVATION_STATUS_ES } from "../ReservationCalendar/ReservationCalendar.utils";
+import {
+  RESERVATION_STATUS_EN,
+  RESERVATION_STATUS_ES,
+} from "../ReservationCalendar/ReservationCalendar.utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ReservationDialogProps {
   event: CalendarEvent | null;
@@ -27,65 +31,70 @@ interface ReservationDialogProps {
 }
 
 export function ReservationDialog({ event, onClose }: ReservationDialogProps) {
+  const { t, language } = useLanguage();
+
   return (
     <Dialog open={!!event} onOpenChange={onClose}>
       <DialogContent className="max-w-lg rounded-2xl shadow-xl">
         {event && (
           <>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-xl font-bold">
-                <CalendarDays className="text-blue-app" />
-                Detalles de la reserva
-              </DialogTitle>
-              <DialogDescription>
-                Información sobre la GPU y el servidor reservado
+            <DialogHeader className="mb-4">
+              <div className="flex items-center gap-4">
+                <CalendarDays className="w-8 h-8 text-blue-app" />
+                <DialogTitle className="text-2xl font-bold">
+                  {t("Gpu.calendar.reservationDetailsTitle")}
+                </DialogTitle>
+              </div>
+              <DialogDescription className="md:ml-12 -ml-4">
+                {t("Gpu.calendar.reservationDetailsDescription")}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid gap-3 mt-4 text-sm">
-              <div className="flex items-center gap-2">
-                <User className="text-gray-app-500 w-4 h-4" />
-                <span>
-                  <strong>Usuario:</strong> {event.resource.userName}
+            <div className="grid gap-3 ml-8 text-sm">
+              <div className="flex items-center gap-2 text-gray-700">
+                <User size={16} className="text-gray-500" />
+                <span className="font-medium">{t("Gpu.calendar.user")}</span>
+                <span className="text-gray-600">{event.resource.userName}</span>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-700">
+                <Cpu size={16} className="text-gray-500" />
+                <span className="font-medium">{t("Gpu.calendar.gpu")}</span>
+                <span className="text-gray-600">{event.resource.gpuName}</span>
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-700">
+                <Server size={16} className="text-gray-500" />
+                <span className="font-medium">{t("Gpu.calendar.server")}</span>
+                <span className="text-gray-600">
+                  {event.resource.serverName}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Cpu className="text-green-app w-4 h-4" />
-                <span>
-                  <strong>GPU:</strong> {event.resource.gpuName}
+              <div className="flex items-center gap-2 text-gray-700">
+                <BadgeCheck size={16} className="text-gray-500" />
+                <span className="font-medium">{t("Gpu.calendar.status")}</span>
+                <span className="text-gray-600">
+                  {language === "es"
+                    ? RESERVATION_STATUS_ES[event.resource.status]
+                    : RESERVATION_STATUS_EN[event.resource.status]}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Server className="text-purple-app w-4 h-4" />
-                <span>
-                  <strong>Servidor:</strong> {event.resource.serverName}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <BadgeCheck className="text-yellow-500 w-4 h-4" />
-                <span>
-                  <strong>Estado:</strong>{" "}
-                  {RESERVATION_STATUS_ES[event.resource.status]}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Clock className="text-blue-app w-4 h-4" />
-                <span>
-                  <strong>Inicio:</strong>{" "}
+              <div className="flex items-center gap-2 text-gray-700">
+                <Clock size={16} className="text-gray-500" />
+                <span className="font-medium">{t("Gpu.calendar.start")}</span>
+                <span className="text-gray-600">
                   {event.resource.startDate.toLocaleString("es-ES", {
                     timeZone: "Europe/Madrid",
                   })}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Timer className="text-red-app w-4 h-4" />
-                <span>
-                  <strong>Fin:</strong>{" "}
+              <div className="flex items-center gap-2 text-gray-700">
+                <Timer size={16} className="text-gray-500" />
+                <span className="font-medium">{t("Gpu.calendar.end")}</span>
+                <span className="text-gray-600">
                   {event.resource.endDate.toLocaleString("es-ES", {
                     timeZone: "Europe/Madrid",
                   })}
@@ -98,7 +107,7 @@ export function ReservationDialog({ event, onClose }: ReservationDialogProps) {
                 onClick={onClose}
                 className="bg-gray-800 text-white hover:bg-gray-700"
               >
-                Cerrar
+                {t("Gpu.calendar.close")}
               </Button>
             </div>
           </>

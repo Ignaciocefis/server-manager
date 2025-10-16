@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
 import { userIsActive } from "@/features/user/data";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function GET(req: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { searchParams } = new URL(req.url);
     const email = searchParams.get("email");
 
     if (!email || typeof email !== "string") {
       return NextResponse.json(
-        { data: null, success: false, error: "Email inválido" },
+        { data: null, success: false, error: t("Auth.Route.invalidEmail") },
         { status: 400 }
       );
     }
@@ -17,7 +20,7 @@ export async function GET(req: Request) {
 
     if (!result?.success || result.data == null) {
       return NextResponse.json(
-        { data: { exists: false }, success: false, error: "Usuario no encontrado" },
+        { data: { exists: false }, success: false, error: t("Auth.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -34,9 +37,9 @@ export async function GET(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en isActive:", error);
+    console.error("Error in GET /api/auth/isActive:", error);
     return NextResponse.json(
-      { data: null, success: false, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

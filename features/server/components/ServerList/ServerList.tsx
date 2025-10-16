@@ -5,6 +5,7 @@ import ServerCard from "../ServerCard/ServerCard";
 import { useServerList } from "./useServerList";
 import { ServerListSkeleton } from "./ServerList.skeleton";
 import { TriangleAlert } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function ServerList({
   onReservationSuccess,
@@ -14,6 +15,8 @@ export function ServerList({
   searchTerm: string;
 }): JSX.Element {
   const { servers, loading, error } = useServerList();
+
+  const { t } = useLanguage();
 
   if (loading) {
     return <ServerListSkeleton />;
@@ -28,7 +31,7 @@ export function ServerList({
 
         <div className="flex flex-col justify-center">
           <h3 className="text-lg md:text-2xl font-bold text-red-700">
-            Ha ocurrido un error
+            {t("Server.serverList.errorLoadingServers")}
           </h3>
           <p className="text-sm md:text-base text-red-app">{error}</p>
         </div>
@@ -38,7 +41,7 @@ export function ServerList({
   if (servers.length === 0) {
     return (
       <p className="col-span-full text-center">
-        No tienes servidores asignados.
+        {t("Server.serverList.noAssignedServers")}
       </p>
     );
   }
@@ -50,13 +53,17 @@ export function ServerList({
   if (filteredServers.length === 0) {
     return (
       <p className="col-span-full text-center">
-        No se encontraron resultados para la búsqueda.
+        {t("Server.serverList.noSearchResults")}
       </p>
     );
   }
 
   return (
-    <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-center place-items-center">
+    <div
+      className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] 
+                md:grid-cols-[repeat(auto-fit,minmax(380px,1fr))] 
+                justify-items-center w-full mb-4"
+    >
       {filteredServers.map((server) => (
         <ServerCard
           key={server.id}

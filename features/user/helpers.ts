@@ -2,10 +2,16 @@ import { UsersTableDataProps, UsersWithRelations } from "./components/UsersTable
 import { GetUsersParams } from "./types";
 import { getFullName } from "./utils";
 
-export const CATEGORY_TRANSLATIONS: Record<string, string> = {
+export const CATEGORY_TRANSLATIONS_ES: Record<string, string> = {
   ADMIN: "Administrador",
   RESEARCHER: "Investigador",
   JUNIOR: "Júnior",
+};
+
+export const CATEGORY_TRANSLATIONS_EN: Record<string, string> = {
+  ADMIN: "Administrator",
+  RESEARCHER: "Researcher",
+  JUNIOR: "Junior",
 };
 
 export const getPaginationAndSortUsers = (params?: GetUsersParams) => {

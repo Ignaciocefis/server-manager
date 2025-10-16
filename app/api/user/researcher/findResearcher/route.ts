@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
 import { getUserNameById } from "@/features/user/data";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function GET(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
     if (!id) {
       return NextResponse.json(
-        { success: false, data: null, error: "El id es obligatorio" },
+        { success: false, data: null, error: t("User.Route.userNotFound") },
         { status: 400 }
       );
     }
@@ -17,14 +20,14 @@ export async function GET(request: Request) {
 
     if (!result.success) {
       return NextResponse.json(
-        { success: false, data: null, error: result.error || "Error al consultar el usuario" },
+        { success: false, data: null, error: result.error || t("User.Route.userNotFound") },
         { status: 500 }
       );
     }
 
     if (!result.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Usuario no encontrado" },
+        { success: false, data: null, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -34,9 +37,9 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en GET /api/user/researcher/findResearcher:", error);
+    console.error("Error in GET /api/user/researcher/findResearcher:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

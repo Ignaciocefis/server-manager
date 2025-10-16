@@ -32,7 +32,7 @@ export async function updateGpuReservationStatuses() {
       data: {
         reservationId: reservation.id,
         eventType: "RESERVATION_AVAILABLE",
-        message: `La reserva de GPU ${reservation.gpu.name} del servidor ${reservation.server.name} está ahora disponible.`,
+        message: `EventLog.logMessage.reservation_available|${reservation.gpu.name}|${reservation.server.name}`,
         userId: reservation.userId,
         serverId: reservation.serverId,
         createdAt: reservation.startDate,
@@ -83,7 +83,7 @@ export async function updateGpuReservationStatuses() {
       data: {
         reservationId: reservation.id,
         eventType: "RESERVATION_COMPLETED",
-        message: `La reserva de GPU ${reservation.gpu.name} del servidor ${reservation.server.name} ha sido completada.`,
+        message: `EventLog.logMessage.reservation_completed|${reservation.gpu.name}|${reservation.server.name}`,
         userId: reservation.userId,
         serverId: reservation.serverId,
         createdAt: reservation.endDate,

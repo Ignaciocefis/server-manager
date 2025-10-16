@@ -11,7 +11,8 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { PlusCircle, XCircle } from "lucide-react";
+import { Gpu, PlusCircle, XCircle } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function GpuForm() {
   const { control } = useFormContext();
@@ -20,17 +21,24 @@ export function GpuForm() {
     name: "gpus",
   });
 
+  const { t } = useLanguage();
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Tarjetas gráficas</h3>
+        <div className="flex items-center gap-2">
+          <Gpu className="w-6 h-6 text-blue-app" />
+          <h3 className="text-lg font-semibold">
+            {t("Server.CreateServer.gpuTitle")}
+          </h3>
+        </div>
         <Button
           type="button"
           onClick={() => append({ name: "", type: "", ramGB: 1 })}
-          variant="outline"
+          className="bg-gray-app-100 text-gray-app-600 font-bold hover:bg-gray-app-200 shadow-md cursor-pointer w-40"
         >
           <PlusCircle className="mr-2 h-4 w-4" />
-          Añadir GPU
+          {t("Server.CreateServer.addGpu")}
         </Button>
       </div>
 
@@ -42,7 +50,7 @@ export function GpuForm() {
                 name={`gpus.${index}.name`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nombre</FormLabel>
+                    <FormLabel>{t("Server.CreateServer.gpuName")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -59,6 +67,7 @@ export function GpuForm() {
                       <FormControl>
                         <Input
                           type="number"
+                          min="1"
                           {...field}
                           value={field.value ?? 1}
                         />
@@ -71,7 +80,7 @@ export function GpuForm() {
                   name={`gpus.${index}.type`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tipo</FormLabel>
+                      <FormLabel>{t("Server.CreateServer.gpuType")}</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -90,12 +99,12 @@ export function GpuForm() {
                   disabled={fields.length === 1}
                   className={`w-40 ${
                     fields.length === 1
-                      ? "opacity-50 cursor-not-allowed"
-                      : "bg-red-app hover:bg-red-app-transparent"
+                      ? "bg-gray-app-100 text-gray-app-600 font-bold shadow-md cursor-not-allowed w-40"
+                      : "bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-40"
                   }`}
                 >
                   <XCircle className="mr-2 h-4 w-4" />
-                  Eliminar
+                  {t("Server.CreateServer.removeGPU")}
                 </Button>
               </div>
             </CardContent>

@@ -2,15 +2,18 @@ import { createEventLog } from "@/features/eventLog/data";
 import { getUserNameById, toggleUserActiveStatus } from "@/features/user/data";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PATCH(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { isCategory } = await hasCategory("ADMIN");
 
     if (!isCategory) {
       return NextResponse.json(
-        { success: false, data: null, error: "No tienes permisos para modificar usuarios" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 403 }
       );
     }
@@ -20,7 +23,7 @@ export async function PATCH(request: Request) {
 
     if (!userId || typeof userId !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: "ID de usuario no proporcionado o inválido" },
+        { success: false, data: null, error: t("User.Route.userNotFound") },
         { status: 400 }
       );
     }
@@ -29,7 +32,7 @@ export async function PATCH(request: Request) {
 
     if (!result.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "No se pudo actualizar el estado del usuario" },
+        { success: false, data: null, error: t("User.Route.toggleUserStatusError") },
         { status: 500 }
       );
     }
@@ -38,7 +41,7 @@ export async function PATCH(request: Request) {
 
     if (userName.error || !userName.success || !userName.data) {
       return NextResponse.json(
-        { data: null, success: false, error: "Usuario no encontrado" },
+        { data: null, success: false, error: t("User.Route.userNotFound") },
         { status: 404 }
       );
     }
@@ -52,12 +55,12 @@ export async function PATCH(request: Request) {
     const log = await createEventLog({
       eventType: `${result.data ? "USER_REACTIVATED" : "USER_DEACTIVATED"}`,
       userId,
-      message: `Usuario ${userFullName} ${result.data ? "activado" : "desactivado"}`,
+      message: `EventLog.logMessage.user_${result.data ? "reactivated" : "deactivated"}|${userFullName}`,
     });
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("User.Route.createEventLogError") },
         { status: 500 }
       );
     }
@@ -71,9 +74,9 @@ export async function PATCH(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error en PATCH /api/user/researcher/toggleActive:", error);
+    console.error("Error in PATCH /api/user/toggleActive:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno del servidor" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

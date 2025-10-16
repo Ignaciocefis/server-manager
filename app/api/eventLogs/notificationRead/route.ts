@@ -1,14 +1,17 @@
 import { markNotificationAsRead } from "@/features/eventLog/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
 export async function PATCH(request: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { userId } = await hasCategory();
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "Usuario no autorizado" },
+        { success: false, data: null, error: t("EventLogs.Route.unauthorized") },
         { status: 401 }
       );
     }
@@ -17,7 +20,7 @@ export async function PATCH(request: Request) {
 
     if (!id || typeof id !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: "Faltan datos de la notificación" },
+        { success: false, data: null, error: t("EventLogs.Route.missingNotificationData") },
         { status: 400 }
       );
     }
@@ -26,7 +29,7 @@ export async function PATCH(request: Request) {
 
     if (!markNotificationsAsRead || !markNotificationsAsRead.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al marcar notificación como leída" },
+        { success: false, data: null, error: t("EventLogs.Route.markNotificationError") },
         { status: 500 }
       );
     }
@@ -36,9 +39,9 @@ export async function PATCH(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error al marcar notificación como leída:", error);
+    console.error("Error in PATCH /api/eventLogs/notificationRead:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error al marcar notificación como leída" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

@@ -11,6 +11,7 @@ import {
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { DateRangePickerProps } from "./DateRangePicker.types";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function DateRangePicker({
   name,
@@ -19,13 +20,15 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const { control } = useFormContext();
 
+  const { t } = useLanguage();
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
         <FormItem className="space-y-2">
-          <FormLabel>Selecciona un rango de fechas</FormLabel>
+          <FormLabel>{t("Gpu.createReservation.dateRange")}</FormLabel>
           <FormControl>
             <DayPicker
               mode="range"

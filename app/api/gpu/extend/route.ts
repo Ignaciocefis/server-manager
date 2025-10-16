@@ -8,24 +8,27 @@ import {
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { createEventLog } from "@/features/eventLog/data";
 import { getServersNameById } from "@/features/server/data";
+import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
 export async function PUT(req: Request) {
   try {
+    const { t } = await getServerLanguage();
+
     const { userId } = await hasCategory();
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: "Usuario no autenticado" },
+        { success: false, data: null, error: t("User.Route.unauthorized") },
         { status: 401 }
       );
     }
 
     const body = await req.json();
-    const { extendedUntil, reservationId } = body;
+    const { extendedUntil, reservationId, hoursToExtend } = body;
 
     if (!reservationId || typeof reservationId !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: "ID de reserva requerido" },
+        { success: false, data: null, error: t("Gpu.Route.missingReservationId") },
         { status: 400 }
       );
     }
@@ -35,7 +38,7 @@ export async function PUT(req: Request) {
         {
           success: false,
           data: null,
-          error: "La fecha de extensión es obligatoria y debe ser válida",
+          error: t("Gpu.Route.invalidExtendedUntil"),
         },
         { status: 400 }
       );
@@ -47,7 +50,7 @@ export async function PUT(req: Request) {
 
     if (!reservationResponse.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error verificando la reserva" },
+        { success: false, data: null, error: t("Gpu.Route.errorFetchingReservation") },
         { status: 500 }
       );
     }
@@ -56,7 +59,7 @@ export async function PUT(req: Request) {
 
     if (!reservation) {
       return NextResponse.json(
-        { success: false, data: null, error: "Reserva no encontrada" },
+        { success: false, data: null, error: t("Gpu.Route.reservationNotFound") },
         { status: 404 }
       );
     }
@@ -66,8 +69,7 @@ export async function PUT(req: Request) {
         {
           success: false,
           data: null,
-          error:
-            "No se puede extender una reserva prorrogada, finalizada o cancelada",
+          error: t("Gpu.Route.cannotExtendCancelledCompletedOrExtended"),
         },
         { status: 400 }
       );
@@ -80,7 +82,7 @@ export async function PUT(req: Request) {
         {
           success: false,
           data: null,
-          error: "La nueva fecha de finalización debe ser posterior a la actual",
+          error: t("Gpu.Route.extendedUntilMustBeAfterCurrentEnd"),
         },
         { status: 400 }
       );
@@ -97,7 +99,7 @@ export async function PUT(req: Request) {
         {
           success: false,
           data: null,
-          error: "La prórroga se superpone con otra reserva existente",
+          error: t("Gpu.Route.extensionOverlapsWithAnotherReservation"),
         },
         { status: 400 }
       );
@@ -107,7 +109,7 @@ export async function PUT(req: Request) {
 
     if (!updated || !updated.success) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al extender la reserva" },
+        { success: false, data: null, error: t("Gpu.Route.errorExtendingReservation") },
         { status: 500 }
       );
     }
@@ -116,7 +118,7 @@ export async function PUT(req: Request) {
 
     if (!gpuName || !gpuName.success || !gpuName.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "GPU no encontrada" },
+        { success: false, data: null, error: t("Gpu.Route.gpuNotFound") },
         { status: 404 }
       );
     }
@@ -125,14 +127,14 @@ export async function PUT(req: Request) {
 
     if (!serverName || !serverName.success || !serverName.data) {
       return NextResponse.json(
-        { success: false, data: null, error: "Servidor no encontrado" },
+        { success: false, data: null, error: t("Gpu.Route.serverNotFound") },
         { status: 404 }
       );
     }
 
     const log = await createEventLog({
       eventType: "RESERVATION_EXTENDED",
-      message: `La reserva de la gráfica ${gpuName.data.name} del servidor ${serverName.data[0].name} ha sido extendida hasta ${extendedUntilDate.toISOString()}.`,
+      message: `EventLog.logMessage.reservation_extended|${gpuName.data.name}|${serverName.data[0].name}|${hoursToExtend}|${new Date(extendedUntilDate).toLocaleString()}`,
       reservationId: reservationId,
       userId: userId,
       serverId: reservation.serverId,
@@ -140,7 +142,7 @@ export async function PUT(req: Request) {
 
     if (!log || log.error) {
       return NextResponse.json(
-        { success: false, data: null, error: "Error al crear el registro de evento" },
+        { success: false, data: null, error: t("Gpu.Route.errorCreatingEventLog") },
         { status: 500 }
       );
     }
@@ -150,9 +152,9 @@ export async function PUT(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error al extender reserva:", error);
+    console.error("Error in PUT /api/gpu/extend:", error);
     return NextResponse.json(
-      { success: false, data: null, error: "Error interno al extender la reserva" },
+      { data: null, success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }
