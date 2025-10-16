@@ -136,9 +136,14 @@ export const confirmMessages = (
     iconType: "info",
   }),
 
-  markAllNotificationsRead: () => ({
+  markAllNotificationsRead: ({ none }) => ({
     title: t("Shared.ConfirmDialog.markAllNotificationsRead.title"),
-    description: t("Shared.ConfirmDialog.markAllNotificationsRead.description"),
+    description: (
+      <>
+        {t("Shared.ConfirmDialog.markAllNotificationsRead.description")}
+        {none}
+      </>
+    ),
     confirmLabel: t(
       "Shared.ConfirmDialog.markAllNotificationsRead.confirmLabel"
     ),

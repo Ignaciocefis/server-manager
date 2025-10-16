@@ -18,7 +18,7 @@ export type ConfirmMessageParams = {
   cancel_reservation: { gpu: string; server: string; date: string };
   confirm_reservation: { gpus: string[]; dateRange: string };
   extend_reservation: { hours: number };
-  markAllNotificationsRead: undefined;
+  markAllNotificationsRead: { none: string };
 };
 
 export type IconType = "warning" | "error" | "info";
@@ -28,5 +28,5 @@ export interface ConfirmDialogProps<K extends ConfirmMessageKey = ConfirmMessage
   onClose: () => void;
   onConfirm: () => void;
   messageKey: K;
-  params?: ConfirmMessageParams[K];
+  params: ConfirmMessageParams[K];
 }

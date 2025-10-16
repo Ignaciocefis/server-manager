@@ -157,7 +157,7 @@ export function NotificationButton() {
         onClose={() => setConfirmOpen(false)}
         onConfirm={onConfirmMarkAll}
         messageKey="markAllNotificationsRead"
-        params={undefined}
+        params={{ none: "" }}
       />
     </>
   );
