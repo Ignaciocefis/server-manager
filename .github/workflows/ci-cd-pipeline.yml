@@ -22,8 +22,6 @@ jobs:
 
   codacy:
     needs: tests
-    # TODO: Cambiar cuando implemente los tests
-    if: false 
     uses: ./.github/workflows/codacy.yml
     secrets:
       CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
