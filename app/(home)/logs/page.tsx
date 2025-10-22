@@ -1,7 +1,7 @@
 import { LogsContainer } from "@/features/eventLog/components";
-import { hasCategory } from "@/lib/auth/hasCategory";
+import { useHasCategory } from "@/hooks/useHasCategory";
 
-export default async function Page() {
-  const { isCategory } = await hasCategory("ADMIN");
-  return <LogsContainer isAdmin={isCategory} />;
+export default function Page() {
+  const { hasCategory } = useHasCategory(["ADMIN"]);
+  return <LogsContainer isAdmin={hasCategory} />;
 }
