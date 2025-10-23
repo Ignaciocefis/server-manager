@@ -23,6 +23,11 @@ const config: Config = {
   collectCoverage: true,
 
   coverageDirectory: "coverage",
+
+  coveragePathIgnorePatterns: [
+    "components/ui",
+    "node_modules",
+  ],
 }
 
 export default createJestConfig(config)
