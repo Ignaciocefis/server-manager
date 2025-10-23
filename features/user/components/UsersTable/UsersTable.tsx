@@ -173,7 +173,7 @@ export function UsersTable({
 
         {error && (
           <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
-            <div className="flex-shrink-0 flex items-center">
+            <div className="shrink-0 flex items-center">
               <TriangleAlert className="w-10 h-full text-red-700" />
             </div>
 
