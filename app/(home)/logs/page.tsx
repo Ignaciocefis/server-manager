@@ -1,3 +1,5 @@
+"use client";
+
 import { LogsContainer } from "@/features/eventLog/components";
 import { useHasCategory } from "@/hooks/useHasCategory";
 

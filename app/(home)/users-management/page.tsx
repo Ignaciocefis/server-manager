@@ -1,3 +1,5 @@
+"use client";
+
 import { UserManagementContainer } from "@/features/user/components";
 import { useHasCategory } from "@/hooks/useHasCategory";
 

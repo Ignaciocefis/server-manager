@@ -160,7 +160,7 @@ export async function POST(req: Request) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { success: false, data: null, error: error.errors },
+        { success: false, data: null, error: error },
         { status: 400 }
       );
     }

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { updateServerFormSchema } from "@/features/server/shemas";
@@ -11,8 +11,10 @@ export const useUpdateServerFormSchema = (server: ServerListItem) => {
 
   const schema = updateServerFormSchema(t);
 
-  return useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
+  type FormValues = z.infer<typeof schema>;
+
+  return useForm<FormValues>({
+    resolver: zodResolver(schema) as unknown as Resolver<FormValues>,
     defaultValues: {
       serverId: server.id,
       name: server.name,
