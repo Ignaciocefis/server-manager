@@ -28,3 +28,8 @@ jest.mock("next-auth/react", () => ({
 jest.mock("@/hooks/useLanguage", () => ({
   useLanguage: () => ({ t: (key: string) => key }),
 }));
+
+const handleApiErrorMock = jest.fn();
+jest.mock("@/lib/services/errors/errors", () => ({
+  handleApiError: handleApiErrorMock,
+}));
