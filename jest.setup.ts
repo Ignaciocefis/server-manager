@@ -60,3 +60,12 @@ jest.mock('@auth/prisma-adapter', () => ({
 
 jest.mock('@auth/core', () => ({}));
 jest.mock('@auth/core/providers/credentials', () => ({}));
+
+jest.mock("resend", () => ({
+  __esModule: true,
+  Resend: jest.fn().mockImplementation(() => ({
+    emails: {
+      send: jest.fn().mockResolvedValue({ error: null }),
+    },
+  })),
+}));
