@@ -10,7 +10,7 @@ on:
 
 jobs:
   commits-syntax-checker:
-    if: github.ref != 'refs/heads/main'
+    if: ${{ github.ref != 'refs/heads/main' && (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Merge')) }}
     uses: ./.github/workflows/commits.yml
 
   lint:
@@ -22,8 +22,6 @@ jobs:
 
   codacy:
     needs: tests
-    # TODO: Cambiar cuando implemente los tests
-    if: false 
     uses: ./.github/workflows/codacy.yml
     secrets:
       CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}

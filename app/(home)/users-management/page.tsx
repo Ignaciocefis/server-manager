@@ -1,7 +1,9 @@
-import { UserManagementContainer } from "@/features/user/components";
-import { hasCategory } from "@/lib/auth/hasCategory";
+"use client";
 
-export default async function Page() {
-  const { isCategory } = await hasCategory("ADMIN");
-  return <UserManagementContainer isAdmin={isCategory} />;
+import { UserManagementContainer } from "@/features/user/components";
+import { useHasCategory } from "@/hooks/useHasCategory";
+
+export default function Page() {
+  const { hasCategory } = useHasCategory(["ADMIN"]);
+  return <UserManagementContainer isAdmin={hasCategory} />;
 }

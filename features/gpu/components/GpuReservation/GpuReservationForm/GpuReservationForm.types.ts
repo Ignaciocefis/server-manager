@@ -14,8 +14,8 @@ export interface GpuReservationFormProps {
 export type RawGpuReservationFormData = {
   serverId: string;
   range: {
-    from?: unknown;
-    to?: unknown;
+    from: unknown;
+    to: unknown;
   };
   startHour: string;
   endHour: string;
