@@ -33,3 +33,30 @@ const handleApiErrorMock = jest.fn();
 jest.mock("@/lib/services/errors/errors", () => ({
   handleApiError: handleApiErrorMock,
 }));
+
+jest.mock('next-auth', () => {
+  const mockFn = jest.fn(() => ({
+    handlers: {},
+    auth: jest.fn(),
+    signIn: jest.fn(),
+    signOut: jest.fn(),
+  }));
+
+  return {
+    __esModule: true,
+    default: mockFn,
+    getServerSession: jest.fn(() => Promise.resolve({ user: { id: 'mockUser' } })),
+  };
+});
+
+jest.mock('next-auth/providers/credentials', () => ({
+  __esModule: true,
+  default: () => ({}),
+}));
+
+jest.mock('@auth/prisma-adapter', () => ({
+  PrismaAdapter: jest.fn(() => ({})),
+}));
+
+jest.mock('@auth/core', () => ({}));
+jest.mock('@auth/core/providers/credentials', () => ({}));

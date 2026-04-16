@@ -25,8 +25,16 @@ const config: Config = {
   coverageDirectory: "coverage",
 
   coveragePathIgnorePatterns: [
-    "components/ui",
+    "components",
+    "features",
+    "hooks",
+    "auth",
+    "lib",
     "node_modules",
+  ],
+
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@auth|next-auth|lucide-react|@babel|nanoid|uuid)/)',
   ],
 }
 
