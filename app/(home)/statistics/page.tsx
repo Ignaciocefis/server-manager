@@ -23,12 +23,15 @@ import {
   Users,
   WifiOff,
 } from "lucide-react";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-type StatisticsSearchParams = {
-  startDate?: string;
-  endDate?: string;
+type StatisticsPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+const getSearchParamValue = (value?: string | string[]) => {
+  if (Array.isArray(value)) return value[0];
+  return value;
 };
 
 const parseDateInput = (value?: string) => {
@@ -107,16 +110,16 @@ function SummaryCard({
   );
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: Promise<StatisticsSearchParams>;
-}) {
+export default async function Page({ searchParams }: StatisticsPageProps) {
   const { t, language } = await getServerLanguage();
 
-  const resolvedSearchParams = await searchParams;
-  const selectedStartDate = parseDateInput(resolvedSearchParams?.startDate);
-  const selectedEndDate = parseDateInput(resolvedSearchParams?.endDate);
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const selectedStartDate = parseDateInput(
+    getSearchParamValue(resolvedSearchParams.startDate),
+  );
+  const selectedEndDate = parseDateInput(
+    getSearchParamValue(resolvedSearchParams.endDate),
+  );
   const hasDateFilter = Boolean(selectedStartDate || selectedEndDate);
   const normalizedStartDate =
     selectedStartDate && selectedEndDate && selectedStartDate > selectedEndDate
@@ -127,22 +130,10 @@ export default async function Page({
       ? selectedStartDate
       : selectedEndDate;
 
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
-  const cookie = requestHeaders.get("cookie") ?? undefined;
+  let payload: StatisticsOverviewApiResponse | undefined;
 
-  if (!host) {
-    throw new Error("Missing host header for statistics request.");
-  }
-
-  const endpoint = `${protocol}://${host}/api/statistics/overview`;
-
-  let payload: StatisticsOverviewApiResponse;
-
-  try {
-    const response = await axios.get<StatisticsOverviewApiResponse>(endpoint, {
+  await axios
+    .get<StatisticsOverviewApiResponse>("/api/statistics/overview", {
       params: {
         startDate: normalizedStartDate
           ? formatDateInput(normalizedStartDate)
@@ -151,24 +142,31 @@ export default async function Page({
           ? formatDateInput(normalizedEndDate)
           : undefined,
       },
-      headers: cookie ? { cookie } : undefined,
+    })
+    .then((response) => {
+      payload = response.data;
+    })
+    .catch((error) => {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        redirect("/unauthorized");
+      }
+
+      const errorMessage =
+        axios.isAxiosError(error) &&
+        typeof error.response?.data?.error === "string"
+          ? error.response.data.error
+          : error instanceof Error
+            ? error.message
+            : "Unable to load statistics overview.";
+
+      throw new Error(errorMessage);
+    })
+    .finally(() => {
+      // No local loading state in this server component.
     });
 
-    payload = response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      redirect("/unauthorized");
-    }
-
-    const errorMessage =
-      axios.isAxiosError(error) &&
-      typeof error.response?.data?.error === "string"
-        ? error.response.data.error
-        : error instanceof Error
-          ? error.message
-          : "Unable to load statistics overview.";
-
-    throw new Error(errorMessage);
+  if (!payload) {
+    throw new Error("Unable to load statistics overview.");
   }
 
   if (!payload.success || !payload.data) {

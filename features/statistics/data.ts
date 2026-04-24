@@ -60,6 +60,14 @@ export interface StatisticsOverview {
   recentEvents: StatisticsEventItem[];
 }
 
+const RESERVATION_STATUS_ORDER = [
+  "PENDING",
+  "ACTIVE",
+  "EXTENDED",
+  "COMPLETED",
+  "CANCELLED",
+] satisfies readonly ReservationStatus[];
+
 export interface StatisticsDateRange {
   startDate?: Date;
   endDate?: Date;
@@ -104,11 +112,11 @@ export async function getStatisticsOverview(
   const accessibleServerIds = isAdmin
     ? []
     : (
-        await db.userServerAccess.findMany({
-          where: { userId },
-          select: { serverId: true },
-        })
-      ).map((access) => access.serverId);
+      await db.userServerAccess.findMany({
+        where: { userId },
+        select: { serverId: true },
+      })
+    ).map((access) => access.serverId);
 
   const serverWhere: Prisma.ServerWhereInput = isAdmin
     ? {}
@@ -312,12 +320,10 @@ export async function getStatisticsOverview(
     completedReservations: reservationCounts.get("COMPLETED") ?? 0,
     cancelledReservations: reservationCounts.get("CANCELLED") ?? 0,
     usersByCategory,
-    reservationStatus: ["PENDING", "ACTIVE", "EXTENDED", "COMPLETED", "CANCELLED"].map(
-      (status) => ({
-        status,
-        count: reservationCounts.get(status as ReservationStatus) ?? 0,
-      })
-    ),
+    reservationStatus: RESERVATION_STATUS_ORDER.map((status) => ({
+      status,
+      count: reservationCounts.get(status) ?? 0,
+    })),
     activitySeries,
     topServers,
     topUsers,
