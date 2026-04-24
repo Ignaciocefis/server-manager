@@ -110,7 +110,7 @@ function SummaryCard({
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: StatisticsSearchParams | Promise<StatisticsSearchParams>;
+  searchParams?: Promise<StatisticsSearchParams>;
 }) {
   const { t, language } = await getServerLanguage();
 
