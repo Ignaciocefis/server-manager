@@ -24,6 +24,7 @@ import {
   WifiOff,
 } from "lucide-react";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 type StatisticsPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -132,8 +133,19 @@ export default async function Page({ searchParams }: StatisticsPageProps) {
 
   let payload: StatisticsOverviewApiResponse | undefined;
 
+  const baseUrl =
+    process.env.NEXTAUTH_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    "http://localhost:3000";
+
+  const headersList = await headers();
+  const cookieHeader = headersList.get("cookie") || "";
+
   await axios
-    .get<StatisticsOverviewApiResponse>("/api/statistics/overview", {
+    .get(`${baseUrl}/api/statistics/overview`, {
+      headers: {
+        cookie: cookieHeader,
+      },
       params: {
         startDate: normalizedStartDate
           ? formatDateInput(normalizedStartDate)
@@ -159,6 +171,11 @@ export default async function Page({ searchParams }: StatisticsPageProps) {
             ? error.message
             : "Unable to load statistics overview.";
 
+      console.error("Error fetching statistics overview:", error);
+      console.error(
+        "Full error details:",
+        error instanceof Error ? error.stack : error,
+      );
       throw new Error(errorMessage);
     })
     .finally(() => {
