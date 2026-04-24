@@ -22,7 +22,7 @@ interface LanguageContextProps {
 }
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 /**
@@ -51,6 +51,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (saved && (saved === "es" || saved === "en")) {
       setLanguage(saved);
       setTranslations(saved === "es" ? es : en);
+      document.cookie = `language=${saved}; path=/; max-age=31536000`;
     }
   }, []);
 
@@ -71,7 +72,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
       return template;
     },
-    [translations]
+    [translations],
   );
 
   const tLog = useCallback(
@@ -80,7 +81,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       const [key, ...params] = msg.split("|");
       return t(key, params);
     },
-    [t]
+    [t],
   );
 
   if (!isMounted) return null;
