@@ -21,6 +21,7 @@ jobs:
     uses: ./.github/workflows/tests.yml
 
   codacy:
+    if: ${{ github.ref != 'refs/heads/main' }}
     needs: tests
     uses: ./.github/workflows/codacy.yml
     secrets:
