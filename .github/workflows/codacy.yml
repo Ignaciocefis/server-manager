@@ -13,11 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Debug Enviroment Variable
-      run: echo "Token- $CODACY_PROJECT_TOKEN"
-      env:
-        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
     - name: Checkout Code
       uses: actions/checkout@v2
 
