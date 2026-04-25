@@ -13,11 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Debug Enviroment Variable
-      run: echo "Token- $CODACY_PROJECT_TOKEN"
-      env:
-        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
     - name: Checkout Code
       uses: actions/checkout@v2
 
@@ -38,7 +33,7 @@ jobs:
       run: pnpm jest --coverage
 
     - name: Upload coverage to Codacy
-      run: |
-        bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
-      env:
-        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      uses: codacy/codacy-coverage-reporter-action@v1
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: coverage/lcov.info
