@@ -17,13 +17,13 @@
     - [/public](#public)
     - [/__tests__](#tests)
   - [Flujo de datos típico](#flujo-de-datos-típico)
+  - [Swagger UI para documentación de API](#swagger-ui-para-documentación-de-api)
   - [Buenas prácticas en funciones de acceso a datos](#buenas-prácticas-en-funciones-de-acceso-a-datos)
   - [Buenas prácticas para API Routes](#buenas-prácticas-para-api-routes)
     - [Ejemplo de una API Route](#ejemplo-de-una-api-route)
   - [Buenas prácticas en hooks](#buenas-prácticas-en-hooks)
     - [Ejemplo de un hook para listar servidores](#ejemplo-de-un-hook-para-listar-servidores)
   - [Buenas prácticas](#buenas-prácticas)
-
 ---
 
 ## Visión General
@@ -256,6 +256,16 @@ Tests organizados por dominio.
 2. La API Route (en `/app/api/gpu/list/route.ts`) llama a la función de acceso a datos (por ejemplo, `/features/gpu/data.ts`).
 3. La función de datos obtiene la información de la base de datos usando Prisma, aplicando caché si está configurada.
 4. El componente utiliza los tipos y helpers importados de su feature correspondiente.
+
+---
+
+## Swagger UI para documentación de API
+
+El Swagger UI se encuentra en la ruta `/swagger` y proporciona una interfaz gráfica para explorar y interactuar con la API. Está protegido para que solo sea accesible en desarrollo. La especificación OpenAPI se genera dinámicamente a partir de las API Routes usando `lib/openapi.ts`.
+
+Para acceder al Swagger UI, simplemente navega a `http://localhost:3000/swagger` durante el desarrollo. Allí podrás ver todos los endpoints disponibles, sus métodos, parámetros y respuestas esperadas, lo que facilita la documentación y pruebas de la API.
+
+En cada endpoint de la API, asegúrate de incluir descripciones claras y ejemplos de request/response para que el Swagger UI sea lo más útil posible para los desarrolladores que interactúan con la API.
 
 ---
 

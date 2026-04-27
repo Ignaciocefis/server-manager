@@ -6,17 +6,37 @@
 
 ## Tabla de Contenidos
 
-1. [Características Principales](#características-principales)
-2. [Stack Tecnológico](#stack-tecnológico)
-3. [Requisitos Previos](#requisitos-previos)
-4. [Instalación y Configuración](#instalación-y-configuración)
-5. [Variables de Entorno](#variables-de-entorno)
-6. [Credenciales de Prueba](#credenciales-de-prueba)
-7. [Scripts Disponibles](#scripts-disponibles)
-8. [Despliegue con Docker](#despliegue-con-docker)
-9. [Documentación Adicional](#documentación-adicional)
-10. [Contribución](#contribución)
-11. [Licencia](#licencia)
+- [Server Manager](#server-manager)
+  - [Tabla de Contenidos](#tabla-de-contenidos)
+  - [Características Principales](#características-principales)
+    - [Gestión de Usuarios](#gestión-de-usuarios)
+    - [Gestión de Servidores](#gestión-de-servidores)
+    - [Sistema de Reservas de GPUs](#sistema-de-reservas-de-gpus)
+    - [Tracking de Eventos](#tracking-de-eventos)
+    - [Experiencia de Usuario](#experiencia-de-usuario)
+  - [Stack Tecnológico](#stack-tecnológico)
+  - [Requisitos Previos](#requisitos-previos)
+    - [Instalación de Requisitos](#instalación-de-requisitos)
+      - [Node.js](#nodejs)
+      - [PostgreSQL](#postgresql)
+      - [pnpm](#pnpm)
+  - [Instalación y Configuración](#instalación-y-configuración)
+    - [1. Obtener el Código](#1-obtener-el-código)
+    - [2. Instalar Dependencias](#2-instalar-dependencias)
+    - [3. Configurar Variables de Entorno](#3-configurar-variables-de-entorno)
+    - [4. Configurar la Base de Datos](#4-configurar-la-base-de-datos)
+  - [Variables de Entorno](#variables-de-entorno)
+  - [Credenciales de Prueba](#credenciales-de-prueba)
+  - [Scripts Disponibles](#scripts-disponibles)
+    - [Desarrollo](#desarrollo)
+    - [Gestión de Base de Datos](#gestión-de-base-de-datos)
+    - [Testing](#testing)
+    - [Calidad de Código](#calidad-de-código)
+  - [Despliegue con Docker](#despliegue-con-docker)
+    - [Docker Compose (Método Recomendado)](#docker-compose-método-recomendado)
+    - [Docker Individual](#docker-individual)
+  - [Swagger API Documentation](#swagger-api-documentation)
+  - [Documentación Adicional](#documentación-adicional)
 
 ---
 
@@ -324,6 +344,21 @@ docker run -p 3000:3000 --env-file .env server-manager
 ```
 
 **Nota**: El Dockerfile actual está configurado para desarrollo. Para producción, considera modificar el `docker-entrypoint.sh` para usar `pnpm build` y `pnpm start` en lugar de `pnpm dev`.
+
+---
+
+## Swagger API Documentation
+
+La documentación de la API de la aplicación se encuentra disponible en:
+```
+http://localhost:3000/swagger
+```
+
+El swagger se genera dinámicamente a partir de los archivos de rutas API, proporcionando una referencia completa y actualizada de todos los endpoints disponibles, sus métodos HTTP, parámetros de entrada y respuestas esperadas.
+
+El swagger permite iniciar sesión directamente desde la interfaz para probar los endpoints que requieren autenticación, facilitando la exploración de la API.
+
+Es necesario ejecutar la aplicación en modo desarrollo para acceder a esta documentación, ya que en producción esta ruta no estará disponible por razones de seguridad.
 
 ---
 
