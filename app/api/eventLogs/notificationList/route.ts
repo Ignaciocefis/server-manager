@@ -3,6 +3,17 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns all unread notifications for the authenticated user.",
+ *   "responses": {
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     }
+ *   }
+ * }
+ */
 export async function GET() {
   try {
     const { t } = await getServerLanguage();

@@ -4,6 +4,84 @@ import { getAccessibleLogs, getAllLogs } from "@/features/eventLog/data";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns paginated event logs. Admin users receive all logs; other users receive only accessible logs.",
+ *   "parameters": [
+ *     {
+ *       "name": "page",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "integer",
+ *         "minimum": 1,
+ *         "default": 1
+ *       }
+ *     },
+ *     {
+ *       "name": "limit",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "integer",
+ *         "minimum": 1,
+ *         "default": 20
+ *       }
+ *     },
+ *     {
+ *       "name": "sortField",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string",
+ *         "default": "createdAt"
+ *       }
+ *     },
+ *     {
+ *       "name": "sortOrder",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string",
+ *         "enum": ["asc", "desc"],
+ *         "default": "desc"
+ *       }
+ *     },
+ *     {
+ *       "name": "filterTitle",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string",
+ *         "default": ""
+ *       }
+ *     },
+ *     {
+ *       "name": "type",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string",
+ *         "default": "all"
+ *       }
+ *     },
+ *     {
+ *       "name": "serverId",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string"
+ *       }
+ *     }
+ *   ],
+ *   "responses": {
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     }
+ *   }
+ * }
+ */
 export async function GET(request: Request) {
   try {
     const { t } = await getServerLanguage();
