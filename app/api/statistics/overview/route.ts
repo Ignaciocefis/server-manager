@@ -10,6 +10,39 @@ const parseDateInput = (value?: string | null) => {
   return Number.isNaN(date.getTime()) ? undefined : date;
 };
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns statistics overview for the authenticated user. Admin users can retrieve global overview based on access rules.",
+ *   "parameters": [
+ *     {
+ *       "name": "startDate",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string",
+ *         "format": "date",
+ *         "example": "2026-01-01"
+ *       }
+ *     },
+ *     {
+ *       "name": "endDate",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string",
+ *         "format": "date",
+ *         "example": "2026-12-31"
+ *       }
+ *     }
+ *   ],
+ *   "responses": {
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     }
+ *   }
+ * }
+ */
 export async function GET(request: Request) {
   try {
     const { t } = await getServerLanguage();
