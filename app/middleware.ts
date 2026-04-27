@@ -2,7 +2,7 @@ import { auth } from "@/auth/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/error"];
+const PUBLIC_PATHS = ["/login", "/error", "/swagger"];
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
