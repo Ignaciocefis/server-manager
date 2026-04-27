@@ -1,8 +1,8 @@
-# Estructura del Proyecto
+# Estructura del Proyecto - Server Manager
 
 ## Tabla de Contenidos
 
-- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Estructura del Proyecto - Server Manager](#estructura-del-proyecto---server-manager)
   - [Tabla de Contenidos](#tabla-de-contenidos)
   - [Visión General](#visión-general)
   - [Detalles de la estructura](#detalles-de-la-estructura)

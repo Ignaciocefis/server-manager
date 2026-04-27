@@ -1,4 +1,4 @@
-# Manual de instalación y despliegue
+# Manual de instalación y despliegue - Server Manager
 
 ## Server Manager
 

@@ -187,7 +187,8 @@ La página de detalles muestra:
 - **Gráfico de Uso**: Donut chart mostrando el porcentaje de GPUs en uso vs disponibles
 - **Reservas Activas**: Lista de reservas actuales en este servidor con información de usuario y fechas
 
-![Captura de la información general del servidor](img/accessible_servers.png)
+![Captura de la información general del servidor](img/server_details_1.png)
+![Captura de la información de las GPUs](img/server_details_2.png)
 
 Si eres administrador, puedes editar cualquier información del servidor, incluyendo cambiar su estado entre "Disponible" y "No Disponible":
 
