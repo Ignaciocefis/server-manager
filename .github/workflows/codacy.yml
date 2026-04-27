@@ -34,6 +34,9 @@ jobs:
 
     - name: Upload coverage to Codacy
       run: |
-        bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/lcov.info
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+          --project-token ${{ secrets.CODACY_PROJECT_TOKEN }} \
+          -r coverage/lcov.info \
+          --commit-uuid ${{ github.sha }}
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
