@@ -2,6 +2,24 @@ import { NextResponse } from "next/server";
 import { getUserNameById } from "@/features/user/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Finds a researcher/user by id.",
+ *   "parameters": [
+ *     {
+ *       "name": "id",
+ *       "in": "query",
+ *       "required": true,
+ *       "schema": { "type": "string" }
+ *     }
+ *   ],
+ *   "responses": {
+ *     "400": { "description": "Missing id parameter" },
+ *     "404": { "description": "User not found" }
+ *   }
+ * }
+ */
 export async function GET(request: Request) {
   try {
     const { t } = await getServerLanguage();

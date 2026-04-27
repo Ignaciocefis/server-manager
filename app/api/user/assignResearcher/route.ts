@@ -6,6 +6,31 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Assigns a junior user to a researcher.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["userId", "researcherId"],
+ *           "properties": {
+ *             "userId": { "type": "string" },
+ *             "researcherId": { "type": "string" }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "403": { "description": "Unauthorized" },
+ *     "404": { "description": "User or researcher not found" }
+ *   }
+ * }
+ */
 export async function PUT(request: Request) {
   try {
     const { t } = await getServerLanguage();

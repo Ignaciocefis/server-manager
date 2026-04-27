@@ -3,6 +3,15 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns all researcher users.",
+ *   "responses": {
+ *     "403": { "description": "Unauthorized" }
+ *   }
+ * }
+ */
 export async function GET() {
   try {
     const { t } = await getServerLanguage();

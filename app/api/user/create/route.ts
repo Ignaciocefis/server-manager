@@ -9,6 +9,35 @@ import { getFullName } from "@/features/user/utils";
 import { sendEmailCreateUser } from "@/lib/services/resend/CreateUser/createUser";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Creates a new user and sends initial credentials by email.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["name", "firstSurname", "email", "category"],
+ *           "properties": {
+ *             "name": { "type": "string" },
+ *             "firstSurname": { "type": "string" },
+ *             "secondSurname": { "type": "string" },
+ *             "email": { "type": "string", "format": "email" },
+ *             "category": { "type": "string" }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "201": { "description": "User created successfully" },
+ *     "400": { "description": "Invalid payload or user already exists" },
+ *     "403": { "description": "Unauthorized" }
+ *   }
+ * }
+ */
 export async function POST(request: Request) {
   try {
     const { isCategory } = await hasCategory("ADMIN");

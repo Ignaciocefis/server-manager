@@ -3,6 +3,23 @@ import { getAssignedUsers, getUserById } from "@/features/user/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns paginated users for ADMIN/RESEARCHER roles based on assignment rules.",
+ *   "parameters": [
+ *     { "name": "page", "in": "query", "required": false, "schema": { "type": "integer", "default": 1 } },
+ *     { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "default": 20 } },
+ *     { "name": "sortField", "in": "query", "required": false, "schema": { "type": "string", "default": "createdAt" } },
+ *     { "name": "sortOrder", "in": "query", "required": false, "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } },
+ *     { "name": "filterTitle", "in": "query", "required": false, "schema": { "type": "string", "default": "" } }
+ *   ],
+ *   "responses": {
+ *     "401": { "description": "Unauthorized" },
+ *     "403": { "description": "Forbidden" }
+ *   }
+ * }
+ */
 export async function GET(request: Request) {
   try {
     const { userId, isCategory } = await hasCategory(["ADMIN", "RESEARCHER"]);

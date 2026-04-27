@@ -5,6 +5,32 @@ import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import bcrypt, { compare } from "bcryptjs";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Updates the authenticated user's password.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["currentPassword", "newPassword"],
+ *           "properties": {
+ *             "currentPassword": { "type": "string" },
+ *             "newPassword": { "type": "string" }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": { "description": "Invalid payload" },
+ *     "401": { "description": "Unauthorized or current password invalid" },
+ *     "404": { "description": "User not found" }
+ *   }
+ * }
+ */
 export async function PUT(req: Request) {
   try {
     const { t } = await getServerLanguage();
