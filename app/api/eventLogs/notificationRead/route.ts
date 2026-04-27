@@ -3,6 +3,36 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Marks a single notification as read for the authenticated user.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["id"],
+ *           "properties": {
+ *             "id": {
+ *               "type": "string"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": {
+ *       "description": "Invalid request payload"
+ *     },
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     }
+ *   }
+ * }
+ */
 export async function PATCH(request: Request) {
   try {
     const { t } = await getServerLanguage();

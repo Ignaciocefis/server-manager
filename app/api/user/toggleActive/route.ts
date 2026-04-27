@@ -5,6 +5,31 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Toggles active status for a user.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["userId"],
+ *           "properties": {
+ *             "userId": { "type": "string" }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": { "description": "Invalid request payload" },
+ *     "403": { "description": "Unauthorized" },
+ *     "404": { "description": "User not found" }
+ *   }
+ * }
+ */
 export async function PATCH(request: Request) {
   try {
     const { t } = await getServerLanguage();

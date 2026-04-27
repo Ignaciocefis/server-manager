@@ -6,6 +6,33 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Updates profile information for the authenticated user.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["name", "firstSurname", "email"],
+ *           "properties": {
+ *             "name": { "type": "string" },
+ *             "firstSurname": { "type": "string" },
+ *             "secondSurname": { "type": "string" },
+ *             "email": { "type": "string", "format": "email" }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": { "description": "Invalid payload" },
+ *     "401": { "description": "Unauthorized" }
+ *   }
+ * }
+ */
 export async function PUT(request: Request) {
   try {
     const { t } = await getServerLanguage();

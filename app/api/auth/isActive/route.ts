@@ -2,6 +2,31 @@ import { NextResponse } from "next/server";
 import { userIsActive } from "@/features/user/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Validates if a user account is active by email.",
+ *   "parameters": [
+ *     {
+ *       "name": "email",
+ *       "in": "query",
+ *       "required": true,
+ *       "schema": {
+ *         "type": "string",
+ *         "format": "email"
+ *       }
+ *     }
+ *   ],
+ *   "responses": {
+ *     "400": {
+ *       "description": "Invalid email query parameter"
+ *     },
+ *     "404": {
+ *       "description": "User not found"
+ *     }
+ *   }
+ * }
+ */
 export async function GET(req: Request) {
   try {
     const { t } = await getServerLanguage();

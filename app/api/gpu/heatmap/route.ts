@@ -4,6 +4,39 @@ import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns GPU usage data by month for a given server and year.",
+ *   "parameters": [
+ *     {
+ *       "name": "serverId",
+ *       "in": "query",
+ *       "required": true,
+ *       "schema": {
+ *         "type": "string"
+ *       }
+ *     },
+ *     {
+ *       "name": "year",
+ *       "in": "query",
+ *       "required": true,
+ *       "schema": {
+ *         "type": "integer",
+ *         "minimum": 2000
+ *       }
+ *     }
+ *   ],
+ *   "responses": {
+ *     "400": {
+ *       "description": "Missing required parameters"
+ *     },
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     }
+ *   }
+ * }
+ */
 export async function GET(req: Request) {
   try {
 

@@ -3,6 +3,27 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns servers accessible by the current user. Optional id query can be used to inspect another user's server list.",
+ *   "parameters": [
+ *     {
+ *       "name": "id",
+ *       "in": "query",
+ *       "required": false,
+ *       "schema": {
+ *         "type": "string"
+ *       }
+ *     }
+ *   ],
+ *   "responses": {
+ *     "400": {
+ *       "description": "Missing user context"
+ *     }
+ *   }
+ * }
+ */
 export async function GET(req: Request) {
   try {
     const { t } = await getServerLanguage();

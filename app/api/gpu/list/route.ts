@@ -4,6 +4,17 @@ import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns active or future GPU reservations for the authenticated user.",
+ *   "responses": {
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     }
+ *   }
+ * }
+ */
 export async function GET() {
   try {
     const { t } = await getServerLanguage();
