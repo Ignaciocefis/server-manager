@@ -7,6 +7,36 @@ import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns server details including reservations for an accessible server.",
+ *   "parameters": [
+ *     {
+ *       "name": "serverId",
+ *       "in": "query",
+ *       "required": true,
+ *       "schema": {
+ *         "type": "string"
+ *       }
+ *     }
+ *   ],
+ *   "responses": {
+ *     "400": {
+ *       "description": "Missing or invalid serverId"
+ *     },
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "403": {
+ *       "description": "Access denied"
+ *     },
+ *     "404": {
+ *       "description": "Server not found"
+ *     }
+ *   }
+ * }
+ */
 export async function GET(request: Request) {
   try {
     const { t } = await getServerLanguage();

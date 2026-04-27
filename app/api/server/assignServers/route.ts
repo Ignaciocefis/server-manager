@@ -6,6 +6,45 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Assigns a list of servers to a target user and revokes removed assignments.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["userId", "serverIds"],
+ *           "properties": {
+ *             "userId": {
+ *               "type": "string"
+ *             },
+ *             "serverIds": {
+ *               "type": "array",
+ *               "items": {
+ *                 "type": "string"
+ *               }
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": {
+ *       "description": "Invalid request payload"
+ *     },
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "404": {
+ *       "description": "User or servers not found"
+ *     }
+ *   }
+ * }
+ */
 export async function PUT(request: Request) {
   try {
     const { t } = await getServerLanguage();

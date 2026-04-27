@@ -4,6 +4,39 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Deletes a server by id.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["serverId"],
+ *           "properties": {
+ *             "serverId": {
+ *               "type": "string"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": {
+ *       "description": "Missing or invalid serverId"
+ *     },
+ *     "403": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "404": {
+ *       "description": "Server not found"
+ *     }
+ *   }
+ * }
+ */
 export async function DELETE(req: Request) {
   try {
     const { t } = await getServerLanguage();

@@ -5,6 +5,45 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Updates server data and associated GPU configuration.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["serverId"],
+ *           "properties": {
+ *             "serverId": {
+ *               "type": "string"
+ *             },
+ *             "name": {
+ *               "type": "string"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": {
+ *       "description": "Invalid server id or payload"
+ *     },
+ *     "403": {
+ *       "description": "Access denied"
+ *     },
+ *     "404": {
+ *       "description": "Server not found"
+ *     },
+ *     "409": {
+ *       "description": "Server name already exists"
+ *     }
+ *   }
+ * }
+ */
 export async function PUT(request: Request) {
   try {
     const { t } = await getServerLanguage();

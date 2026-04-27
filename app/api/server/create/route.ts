@@ -5,6 +5,45 @@ import { createServerFormSchema } from "@/features/server/shemas";
 import { createEventLog } from "@/features/eventLog/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Creates a new server and its related GPU configuration.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["name"],
+ *           "properties": {
+ *             "name": {
+ *               "type": "string"
+ *             },
+ *             "ramGB": {
+ *               "type": "number"
+ *             },
+ *             "diskCount": {
+ *               "type": "number"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "201": {
+ *       "description": "Server created successfully"
+ *     },
+ *     "403": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "409": {
+ *       "description": "Server already exists"
+ *     }
+ *   }
+ * }
+ */
 export async function POST(request: Request) {
   try {
     const { t } = await getServerLanguage();

@@ -5,6 +5,39 @@ import { createEventLog } from "@/features/eventLog/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 // import { sendEmailAvailabilityChange } from "@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Toggles server availability status.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["serverId"],
+ *           "properties": {
+ *             "serverId": {
+ *               "type": "string"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": {
+ *       "description": "Missing or invalid serverId"
+ *     },
+ *     "403": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "404": {
+ *       "description": "Server not found"
+ *     }
+ *   }
+ * }
+ */
 export async function PUT(request: Request) {
   try {
     const { t } = await getServerLanguage();
