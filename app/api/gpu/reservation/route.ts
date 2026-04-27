@@ -12,6 +12,73 @@ import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Creates one or more GPU reservations for the authenticated user.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["serverId", "selectedGpuIds", "range", "startHour", "endHour"],
+ *           "properties": {
+ *             "serverId": {
+ *               "type": "string"
+ *             },
+ *             "selectedGpuIds": {
+ *               "type": "array",
+ *               "items": {
+ *                 "type": "string"
+ *               }
+ *             },
+ *             "range": {
+ *               "type": "object",
+ *               "required": ["from", "to"],
+ *               "properties": {
+ *                 "from": {
+ *                   "type": "string",
+ *                   "format": "date-time"
+ *                 },
+ *                 "to": {
+ *                   "type": "string",
+ *                   "format": "date-time"
+ *                 }
+ *               }
+ *             },
+ *             "startHour": {
+ *               "type": "string",
+ *               "example": "09:00"
+ *             },
+ *             "endHour": {
+ *               "type": "string",
+ *               "example": "18:00"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "201": {
+ *       "description": "Reservation created successfully"
+ *     },
+ *     "400": {
+ *       "description": "Invalid payload or invalid reservation range"
+ *     },
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "403": {
+ *       "description": "No access to selected server"
+ *     },
+ *     "409": {
+ *       "description": "One or more GPUs are already reserved in that time range"
+ *     }
+ *   }
+ * }
+ */
 export async function POST(req: Request) {
   try {
     const { t } = await getServerLanguage();

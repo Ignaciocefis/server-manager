@@ -5,6 +5,42 @@ import { createEventLog } from "@/features/eventLog/data";
 import { getServersNameById } from "@/features/server/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Cancels an existing GPU reservation for the authenticated user.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["reservationId"],
+ *           "properties": {
+ *             "reservationId": {
+ *               "type": "string"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": {
+ *       "description": "Invalid request payload"
+ *     },
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "404": {
+ *       "description": "Reservation not found"
+ *     },
+ *     "409": {
+ *       "description": "Reservation already cancelled"
+ *     }
+ *   }
+ * }
+ */
 export async function PUT(req: Request) {
   try {
     const { t } = await getServerLanguage();

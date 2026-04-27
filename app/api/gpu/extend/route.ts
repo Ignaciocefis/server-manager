@@ -10,6 +10,46 @@ import { createEventLog } from "@/features/eventLog/data";
 import { getServersNameById } from "@/features/server/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Extends an existing GPU reservation end date if no overlap exists.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["reservationId", "extendedUntil"],
+ *           "properties": {
+ *             "reservationId": {
+ *               "type": "string"
+ *             },
+ *             "extendedUntil": {
+ *               "type": "string",
+ *               "format": "date-time"
+ *             },
+ *             "hoursToExtend": {
+ *               "type": "number"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "400": {
+ *       "description": "Invalid extension request"
+ *     },
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "404": {
+ *       "description": "Reservation not found"
+ *     }
+ *   }
+ * }
+ */
 export async function PUT(req: Request) {
   try {
     const { t } = await getServerLanguage();
