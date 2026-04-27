@@ -6,6 +6,40 @@ import { getFullName } from "@/features/user/utils";
 import { createEventLog } from "@/features/eventLog/data";
 import { sendEmailRecoverPassword } from "@/lib/services/resend/recoverPassword/recoverPassword";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Generates a new password for a user and sends it by email.",
+ *   "requestBody": {
+ *     "required": true,
+ *     "content": {
+ *       "application/json": {
+ *         "schema": {
+ *           "type": "object",
+ *           "required": ["email"],
+ *           "properties": {
+ *             "email": {
+ *               "type": "string",
+ *               "format": "email"
+ *             }
+ *           }
+ *         }
+ *       }
+ *     }
+ *   },
+ *   "responses": {
+ *     "201": {
+ *       "description": "Password reset request processed successfully"
+ *     },
+ *     "400": {
+ *       "description": "Invalid request payload"
+ *     },
+ *     "404": {
+ *       "description": "User not found"
+ *     }
+ *   }
+ * }
+ */
 export async function POST(request: Request) {
   try {
     const { t } = await getServerLanguage();

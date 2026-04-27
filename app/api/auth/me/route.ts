@@ -3,6 +3,20 @@ import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Returns the authenticated user profile based on the current session.",
+ *   "responses": {
+ *     "401": {
+ *       "description": "Unauthorized"
+ *     },
+ *     "404": {
+ *       "description": "User not found"
+ *     }
+ *   }
+ * }
+ */
 export async function GET() {
   try {
     const { userId } = await hasCategory();
