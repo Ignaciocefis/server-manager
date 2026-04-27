@@ -1,6 +1,20 @@
 import { updateGpuReservationStatuses } from "@/lib/services/reservations/updateStatus";
 import { NextResponse } from "next/server";
 
+/**
+ * @openapi
+ * {
+ *   "description": "Triggers reservation status synchronization for GPU reservations.",
+ *   "responses": {
+ *     "200": {
+ *       "description": "Reservation statuses updated successfully"
+ *     },
+ *     "500": {
+ *       "description": "Failed to update reservation statuses"
+ *     }
+ *   }
+ * }
+ */
 export async function GET() {
   try {
     const result = await updateGpuReservationStatuses();
