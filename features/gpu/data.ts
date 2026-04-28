@@ -225,7 +225,11 @@ export const getAccessibleReservationsByUser = async (
     if (userId !== "admin") {
       whereClause.OR = [
         { userId },
-        { assignedTo: userId }
+        {
+          user: {
+            assignedToId: userId
+          }
+        }
       ];
     }
 
