@@ -210,7 +210,8 @@
       "currentPasswordIncorrect": "Contraseña actual incorrecta",
       "updatePasswordError": "Error al actualizar la contraseña",
       "updateProfileError": "Error al actualizar el perfil",
-      "categoryUpdateFailed": "No se pudo actualizar la categoría del usuario"
+      "categoryUpdateFailed": "No se pudo actualizar la categoría del usuario",
+      "atLeastOneAdmin": "Debe haber al menos un usuario con categoría ADMIN"
     },
     "ProfileSheet": {
       "title": "Mi perfil",

@@ -210,7 +210,8 @@
       "currentPasswordIncorrect": "Current password incorrect",
       "updatePasswordError": "Error updating password",
       "updateProfileError": "Error updating profile",
-      "categoryUpdateFailed": "Could not update user category"
+      "categoryUpdateFailed": "Could not update user category",
+      "atLeastOneAdmin": "There must be at least one administrator"
     },
     "ProfileSheet": {
       "title": "My Profile",

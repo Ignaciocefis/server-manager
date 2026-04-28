@@ -35,7 +35,7 @@ export function ChangeCategoryDialog({
 }: ChangeCategoryDialogProps) {
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState<"ADMIN" | "RESEARCHER" | "JUNIOR">(
-    currentCategory
+    currentCategory,
   );
   const [loading, setLoading] = useState(false);
 
@@ -51,14 +51,17 @@ export function ChangeCategoryDialog({
 
       const categoryName = t(`User.management.${category.toLowerCase()}`);
       toast.success(
-        tLog(`User.management.categoryUpdatedSuccess|${categoryName}`)
+        tLog(`User.management.categoryUpdatedSuccess|${categoryName}`),
       );
 
       onUpdated(category);
       setOpen(false);
     } catch (error) {
       console.error("Error updating category:", error);
-      toast.error(t("User.management.categoryUpdatedError"));
+      toast.error(
+        error.response?.data?.error ||
+          t("User.management.categoryUpdatedError"),
+      );
     } finally {
       setLoading(false);
     }
