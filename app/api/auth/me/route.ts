@@ -35,7 +35,7 @@ export async function GET() {
     if (!result?.success || result.data == null) {
       return NextResponse.json(
         { data: { exists: false }, success: false, error: t("Auth.Route.userNotFound") },
-        { status: 404 }
+        { status: 401 }
       );
     }
 
