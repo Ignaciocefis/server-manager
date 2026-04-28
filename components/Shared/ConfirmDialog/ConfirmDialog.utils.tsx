@@ -6,7 +6,7 @@ import {
 } from "./ConfirmDialog.types";
 
 export const confirmMessages = (
-  t: (path: string, params?: Array<string | number>) => string
+  t: (path: string, params?: Array<string | number>) => string,
 ): {
   [K in ConfirmMessageKey]: (params: ConfirmMessageParams[K]) => {
     title: string;
@@ -64,7 +64,7 @@ export const confirmMessages = (
     title: t("Shared.ConfirmDialog.server_availability.title"),
     description: (
       <>
-        {t("Shared.ConfirmDialog.server_availability.description_part1")}
+        {t("Shared.ConfirmDialog.server_availability.description_part1")}{" "}
         <strong className="font-semibold">
           {available
             ? t("Shared.ConfirmDialog.server_availability.enable")
@@ -145,7 +145,7 @@ export const confirmMessages = (
       </>
     ),
     confirmLabel: t(
-      "Shared.ConfirmDialog.markAllNotificationsRead.confirmLabel"
+      "Shared.ConfirmDialog.markAllNotificationsRead.confirmLabel",
     ),
     iconType: "info",
   }),
