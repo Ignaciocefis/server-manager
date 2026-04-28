@@ -305,11 +305,13 @@
       "diskCountInvalid": "La cantidad de discos debe ser un número",
       "diskCountInt": "Debe ser un número entero",
       "diskCountMin": "Debe tener al menos un disco",
+      "diskCountMax": "No puede tener más de 20 discos",
       "gpuNameMin": "El nombre de la GPU es obligatorio",
       "gpuTypeMin": "El tipo de GPU es obligatorio",
       "gpuRamGBInvalid": "La RAM de la GPU debe ser un número",
       "gpuRamGBInt": "La RAM de la GPU debe ser un número entero",
       "gpuRamGBMin": "La GPU debe tener al menos 1 GB de RAM",
+      "gpuRamGBMax": "La RAM de la GPU no puede exceder los 2048 GB",
       "gpuMin": "Debe haber al menos una GPU"
     },
     "Route":{
