@@ -1,6 +1,7 @@
 [![CI](https://github.com/Ignaciocefis/server-manager/actions/workflows/ci-cd-pipeline.yml/badge.svg)](https://github.com/Ignaciocefis/server-manager/actions/workflows/ci-cd-pipeline.yml)
 ![Vercel Deploy](https://deploy-badge.vercel.app/vercel/server-manager-tau)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/36e0cc2524f4413695098292fc678aa6)](https://app.codacy.com/gh/Ignaciocefis/server-manager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/36e0cc2524f4413695098292fc678aa6)](https://app.codacy.com/gh/Ignaciocefis/server-manager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
 # Server Manager
 

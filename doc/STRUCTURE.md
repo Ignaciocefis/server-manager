@@ -17,8 +17,8 @@
     - [/public](#public)
     - [/__tests__](#tests)
   - [Flujo de datos típico](#flujo-de-datos-típico)
-  - [Swagger UI para documentación de API](#swagger-ui-para-documentación-de-api)
   - [Buenas prácticas en funciones de acceso a datos](#buenas-prácticas-en-funciones-de-acceso-a-datos)
+  - [Swagger UI para documentación de API](#swagger-ui-para-documentación-de-api)
   - [Buenas prácticas para API Routes](#buenas-prácticas-para-api-routes)
     - [Ejemplo de una API Route](#ejemplo-de-una-api-route)
   - [Buenas prácticas en hooks](#buenas-prácticas-en-hooks)
@@ -259,16 +259,6 @@ Tests organizados por dominio.
 
 ---
 
-## Swagger UI para documentación de API
-
-El Swagger UI se encuentra en la ruta `/swagger` y proporciona una interfaz gráfica para explorar y interactuar con la API. Está protegido para que solo sea accesible en desarrollo. La especificación OpenAPI se genera dinámicamente a partir de las API Routes usando `lib/openapi.ts`.
-
-Para acceder al Swagger UI, simplemente navega a `http://localhost:3000/swagger` durante el desarrollo. Allí podrás ver todos los endpoints disponibles, sus métodos, parámetros y respuestas esperadas, lo que facilita la documentación y pruebas de la API.
-
-En cada endpoint de la API, asegúrate de incluir descripciones claras y ejemplos de request/response para que el Swagger UI sea lo más útil posible para los desarrolladores que interactúan con la API.
-
----
-
 ## Buenas prácticas en funciones de acceso a datos
 
 1. **Extraer lógica repetida en helpers para evitar duplicación.**  
@@ -278,6 +268,16 @@ En cada endpoint de la API, asegúrate de incluir descripciones claras y ejemplo
    ```ts
     return { success: true, data: result, error: null };
    ```
+
+---
+
+## Swagger UI para documentación de API
+
+El Swagger UI se encuentra en la ruta `/swagger` y proporciona una interfaz gráfica para explorar y interactuar con la API. Está protegido para que solo sea accesible en desarrollo. La especificación OpenAPI se genera dinámicamente a partir de las API Routes usando `lib/openapi.ts`.
+
+Para acceder al Swagger UI, simplemente navega a `http://localhost:3000/swagger` durante el desarrollo. Allí podrás ver todos los endpoints disponibles, sus métodos, parámetros y respuestas esperadas, lo que facilita la documentación y pruebas de la API.
+
+En cada endpoint de la API, asegúrate de incluir descripciones claras y ejemplos de request/response para que el Swagger UI sea lo más útil posible para los desarrolladores que interactúan con la API.
 
 ---
 
@@ -292,6 +292,7 @@ En cada endpoint de la API, asegúrate de incluir descripciones claras y ejemplo
   ```ts
   return NextResponse.json({ data, success: true, error: null }, { status: 200 });
   ```
+7. **Documenta el endpoint con comentarios claros sobre su funcionalidad, parámetros esperados y posibles respuestas**.
 
 ### Ejemplo de una API Route
 
