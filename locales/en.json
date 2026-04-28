@@ -174,7 +174,7 @@
       "exampleEmail": "example@alumn.us.es",
       "sending": "Sending...",
       "sendRecoveryEmail": "Send recovery email",
-      "recoverySuccess": "Recovery email sent. Check your inbox.",
+      "recoverySuccess": "If the account exists, we have sent you an email. Check your inbox.",
       "recoveryError": "Error sending recovery email."
     }
   },
