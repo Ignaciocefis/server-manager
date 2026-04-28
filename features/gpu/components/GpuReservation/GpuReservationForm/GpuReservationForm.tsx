@@ -56,13 +56,15 @@ export function GpuReservationForm({
     setPendingData(null);
   };
 
+  const watchedRange = form.watch("range");
+  const watchedEndHour = form.watch("endHour");
+
   const dateRangeLabel =
-    pendingData?.range?.from instanceof Date &&
-    pendingData?.range?.to instanceof Date
-      ? `${format(pendingData.range.from, "dd/MM/yyyy HH:mm")} - ${format(
-          pendingData.range.to,
-          "dd/MM/yyyy HH:mm"
-        )}`
+    watchedRange?.from instanceof Date && watchedRange?.to instanceof Date
+      ? `${format(watchedRange.from, "dd/MM/yyyy HH:mm")} - ${format(
+          watchedRange.to,
+          "dd/MM/yyyy",
+        )} ${watchedEndHour || "23:59"}`
       : "Sin fecha";
 
   const selectedGpuNames = availableGpus
