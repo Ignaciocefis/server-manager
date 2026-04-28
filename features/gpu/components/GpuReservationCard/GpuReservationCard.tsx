@@ -34,16 +34,16 @@ export default function GpuReservationCard({
 
   const start = useMemo(
     () => (startDate ? new Date(startDate) : null),
-    [startDate]
+    [startDate],
   );
   const end = useMemo(() => (endDate ? new Date(endDate) : null), [endDate]);
   const extended = useMemo(
     () => (extendedAt ? new Date(extendedAt) : null),
-    [extendedAt]
+    [extendedAt],
   );
   const extendedUntilDate = useMemo(
     () => (extendedUntil ? new Date(extendedUntil) : null),
-    [extendedUntil]
+    [extendedUntil],
   );
 
   const { countdown, finalEnd } = useGpuCountdown({
@@ -69,7 +69,7 @@ export default function GpuReservationCard({
 
   return (
     <>
-      <Card className="bg-white text-gray-900 rounded-2xl p-4 w-auto md:w-[380px] md:h-[290px] shadow-md border border-gray-200">
+      <Card className="bg-white text-gray-900 rounded-2xl p-4 w-full max-w-[380px] min-h-[290px] shadow-md border border-gray-200 overflow-hidden">
         <CardHeader>
           <div className="flex items-center gap-3 -ml-5">
             <Zap className="w-6 h-6 text-blue-app" />
@@ -83,7 +83,7 @@ export default function GpuReservationCard({
               <Cpu size={16} className="text-blue-600" />
               {t("Gpu.reservationsList.gpuDetails")}
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 text-sm">
               <div className="flex items-center gap-2 text-gray-700">
                 <MemoryStick size={16} className="text-gray-500" />
                 <span className="font-medium">RAM:</span>
@@ -107,7 +107,7 @@ export default function GpuReservationCard({
               {t("Gpu.reservationsList.serverDetails")}{" "}
               <span className="text-gray-600 font-normal">{server.name}</span>
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 text-sm">
               <div className="flex items-center gap-2 text-gray-700">
                 <MemoryStick size={16} className="text-gray-500" />
                 <span className="font-medium">RAM:</span>
@@ -124,15 +124,15 @@ export default function GpuReservationCard({
           </div>
         </CardContent>
 
-        <div className="border-t border-gray-200 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex justify-center items-center w-full sm:w-auto">
+        <div className="border-t border-gray-200 pt-4 px-2 flex flex-col gap-4">
+          <div className="flex justify-center">
             {countdown && (
               <Button
-                className={`flex flex-col items-center justify-center text-center px-4 py-2 min-h-[3.5rem] whitespace-nowrap
+                className={`flex flex-col items-center justify-center text-center px-4 py-2 min-h-[3rem] whitespace-nowrap
               ${
                 isPending
-                  ? "bg-gray-app-100 hover:bg-gray-app-100 text-gray-app-600 font-bold shadow-md cursor-not-allowed w-40"
-                  : "bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md w-40"
+                  ? "bg-gray-app-100 hover:bg-gray-app-100 text-gray-app-600 font-bold shadow-md cursor-not-allowed w-full max-w-[160px]"
+                  : "bg-green-app-100 text-gray-app-600 font-bold hover:bg-green-app shadow-md w-full max-w-[160px]"
               }`}
               >
                 <span className="text-sm font-semibold tracking-wide -mb-2">
@@ -147,25 +147,29 @@ export default function GpuReservationCard({
             )}
           </div>
 
-          <div className="flex flex-col gap-2 w-full max-w-xs sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
             {!isPending && end && (
-              <GpuExtendButton
-                reservationId={reservationId}
-                currentendDate={finalEnd ?? end}
-                isExtended={isExtended}
-                onSuccess={onRefresh ?? (() => {})}
-              />
+              <div className="flex-1">
+                <GpuExtendButton
+                  reservationId={reservationId}
+                  currentendDate={finalEnd ?? end}
+                  isExtended={isExtended}
+                  onSuccess={onRefresh ?? (() => {})}
+                />
+              </div>
             )}
-            <Button
-              onClick={() => setShowConfirm(true)}
-              disabled={cancelling}
-              className="bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-auto sm:w-40"
-            >
-              <MinusCircle size={16} className="inline mr-1" />
-              {cancelling
-                ? t("Gpu.reservationsList.canceling")
-                : t("Gpu.reservationsList.cancelUsage")}
-            </Button>
+            <div className="flex-1">
+              <Button
+                onClick={() => setShowConfirm(true)}
+                disabled={cancelling}
+                className="bg-red-app-100 text-gray-app-600 font-bold hover:bg-red-app shadow-md cursor-pointer w-full"
+              >
+                <MinusCircle size={16} className="inline mr-1" />
+                {cancelling
+                  ? t("Gpu.reservationsList.canceling")
+                  : t("Gpu.reservationsList.cancelUsage")}
+              </Button>
+            </div>
           </div>
         </div>
       </Card>
