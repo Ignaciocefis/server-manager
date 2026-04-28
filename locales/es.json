@@ -385,7 +385,7 @@
       "status.extended": "Extendida"
     },
     "Edit":{
-      "button": "Editar servidor",
+      "button": "Actualizar servidor",
       "title": "Editar servidor",
       "description": "Aquí puedes editar la información de tu servidor.",
       "name": "Nombre del servidor",
