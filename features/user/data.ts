@@ -493,3 +493,13 @@ export const userRecoverPassword = async (
     return { success: false, data: null, error };
   }
 };
+
+export const hasMoreThanOneAdmin = async (): Promise<ApiResponse<boolean>> => {
+  try {
+    const adminCount = await db.user.count({ where: { category: "ADMIN" } });
+    return { success: true, data: adminCount > 1, error: null };
+  } catch (error) {
+    console.error("Error checking admin count:", error);
+    return { success: false, data: false, error };
+  }
+};

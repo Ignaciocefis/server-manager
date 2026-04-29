@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
+import { changeServerAvailability, getAllUsersWithAccessToServer, getServerByIdWithReservations } from "@/features/server/data";
 import { createEventLog } from "@/features/eventLog/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
-// import { sendEmailAvailabilityChange } from "@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange";
+import { sendEmailAvailabilityChange } from "@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange";
 
 /**
  * @openapi
@@ -65,6 +65,15 @@ export async function PUT(request: Request) {
       );
     }
 
+    const usersWithAccessBefore = await getAllUsersWithAccessToServer(serverId);
+    if (!usersWithAccessBefore || usersWithAccessBefore.error) {
+      return NextResponse.json(
+        { success: false, data: null, error: t("Server.Route.usersWithAccessError") },
+        { status: 500 }
+      );
+    }
+    const usersBefore = usersWithAccessBefore.data?.map(user => ({ ...user })) ?? [];
+
     const updated = await changeServerAvailability(serverId);
 
     if (!updated.success || updated.error) {
@@ -100,31 +109,20 @@ export async function PUT(request: Request) {
       );
     }
 
-    /**
-
-    const usersWithAccess = await getAllUsersWithAccessToServer(serverId);
-
-    if (!usersWithAccess || usersWithAccess.error) {
-      return NextResponse.json(
-        { success: false, data: null, error: "Error al obtener usuarios con acceso al servidor" },
-        { status: 500 }
-      );
-    }
-    
-    for (const user of usersWithAccess.data) {
+    for (const user of usersBefore) {
       try {
-        await sendEmailAvailabilityChange(
-          user.email,
-          user.gpus,
-          updatedServer.data?.name ?? "Servidor",
-          updatedServer.data?.available ? "disponible" : "no disponible"
-        );
+        if (user.gpus && Array.isArray(user.gpus) && user.gpus.length > 0) {
+          await sendEmailAvailabilityChange(
+            user.email,
+            user.gpus,
+            updatedServer.data?.name ?? "Servidor",
+            updatedServer.data?.available ? "disponible" : "no disponible"
+          );
+        }
       } catch (error) {
         console.error("Error al enviar correo de cambio de disponibilidad:", error);
       }
     }
-
-    */
 
     return NextResponse.json(
       {

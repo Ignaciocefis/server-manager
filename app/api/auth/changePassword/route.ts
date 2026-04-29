@@ -55,52 +55,36 @@ export async function POST(request: Request) {
     }
 
     const newPassword = generateRandomPassword();
-
-    const emailSent = await sendEmailRecoverPassword(email, newPassword);
-
-    if (!emailSent) {
-      return NextResponse.json(
-        { success: false, data: null, error: t("Auth.Route.emailSendError") },
-        { status: 500 }
-      );
+    let userId: string | null = null;
+    try {
+      const user = await userRecoverPassword(email, newPassword);
+      if (user.success && user.data) {
+        userId = user.data;
+      }
+    } catch {
     }
 
-    const user = await userRecoverPassword(email, newPassword);
-
-    if (!user.success || user.error || !user.data) {
-      return NextResponse.json(
-        { success: false, data: null, error: user.error || t("User.Route.userChangePasswordError") },
-        { status: 500 }
-      );
+    if (userId) {
+      const emailSent = await sendEmailRecoverPassword(email, newPassword);
+      if (emailSent) {
+        try {
+          const userName = await getUserNameById(userId);
+          if (userName.success && userName.data) {
+            const userFullName = getFullName(
+              userName.data.firstSurname ?? undefined,
+              userName.data.secondSurname ?? undefined,
+              userName.data.name ?? undefined
+            );
+            await createEventLog({
+              eventType: "USER_UPDATED",
+              userId: userId,
+              message: `EventLog.logMessage.changePassword|${userFullName}`,
+            });
+          }
+        } catch {
+        }
+      }
     }
-
-    const userName = await getUserNameById(user.data);
-    if (userName.error || !userName.success || !userName.data) {
-      return NextResponse.json(
-        { data: null, success: false, error: t("User.Route.userNotFound") },
-        { status: 404 }
-      );
-    }
-
-    const userFullName = getFullName(
-      userName.data.firstSurname ?? undefined,
-      userName.data.secondSurname ?? undefined,
-      userName.data.name ?? undefined
-    );
-
-    const log = await createEventLog({
-      eventType: "USER_UPDATED",
-      userId: user.data,
-      message: `EventLog.logMessage.changePassword|${userFullName}`,
-    });
-
-    if (!log || log.error) {
-      return NextResponse.json(
-        { success: false, data: null, error: t("User.Route.createEventLogError") },
-        { status: 500 }
-      );
-    }
-
     return NextResponse.json(
       {
         success: true,

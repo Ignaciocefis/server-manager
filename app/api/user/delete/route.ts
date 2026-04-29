@@ -1,5 +1,5 @@
 import { createEventLog } from "@/features/eventLog/data";
-import { deleteUserById, getUserNameById } from "@/features/user/data";
+import { deleteUserById, getUserNameById, hasMoreThanOneAdmin } from "@/features/user/data";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
@@ -51,6 +51,15 @@ export async function DELETE(request: Request) {
         { status: 403 }
       );
     }
+
+    const isMoreThanOneAdmin = await hasMoreThanOneAdmin();
+    if (isCategory && !isMoreThanOneAdmin.data) {
+      return NextResponse.json(
+        { data: null, success: false, error: t("User.Route.atLeastOneAdmin") },
+        { status: 400 }
+      );
+    }
+
     const userName = await getUserNameById(userId);
 
     if (userName.error || !userName.success || !userName.data) {

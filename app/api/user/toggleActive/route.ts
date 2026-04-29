@@ -1,5 +1,5 @@
 import { createEventLog } from "@/features/eventLog/data";
-import { getUserNameById, toggleUserActiveStatus } from "@/features/user/data";
+import { getUserNameById, hasMoreThanOneAdmin, toggleUserActiveStatus } from "@/features/user/data";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
@@ -45,6 +45,14 @@ export async function PATCH(request: Request) {
 
     const body = await request.json();
     const { userId } = body;
+
+    const isMoreThanOneAdmin = await hasMoreThanOneAdmin();
+    if (isCategory && !isMoreThanOneAdmin.data) {
+      return NextResponse.json(
+        { data: null, success: false, error: t("User.Route.atLeastOneAdmin") },
+        { status: 400 }
+      );
+    }
 
     if (!userId || typeof userId !== "string") {
       return NextResponse.json(

@@ -174,7 +174,7 @@
       "exampleEmail": "example@alumn.us.es",
       "sending": "Sending...",
       "sendRecoveryEmail": "Send recovery email",
-      "recoverySuccess": "Recovery email sent. Check your inbox.",
+      "recoverySuccess": "If the account exists, we have sent you an email. Check your inbox.",
       "recoveryError": "Error sending recovery email."
     }
   },
@@ -210,7 +210,8 @@
       "currentPasswordIncorrect": "Current password incorrect",
       "updatePasswordError": "Error updating password",
       "updateProfileError": "Error updating profile",
-      "categoryUpdateFailed": "Could not update user category"
+      "categoryUpdateFailed": "Could not update user category",
+      "atLeastOneAdmin": "There must be at least one administrator"
     },
     "ProfileSheet": {
       "title": "My Profile",
@@ -305,11 +306,13 @@
       "diskCountInvalid": "Disk count must be a number",
       "diskCountInt": "Disk count must be an integer",
       "diskCountMin": "Disk count must be at least 1",
+      "diskCountMax": "Disk count cannot exceed 20",
       "gpuNameMin": "GPU name is required",
       "gpuTypeMin": "GPU type is required",
       "gpuRamGBInvalid": "GPU RAM must be a number",
       "gpuRamGBInt": "GPU RAM must be an integer",
       "gpuRamGBMin": "GPU must have at least 1 GB of RAM",
+      "gpuRamGBMax": "GPU RAM cannot exceed 2048 GB",
       "gpuMin": "At least one GPU is required"
     },
     "Route": {
@@ -383,7 +386,7 @@
       "status.extended": "Extended"
         },
         "Edit": {
-      "button": "Edit Server",
+      "button": "Update Server",
       "title": "Edit Server",
       "description": "Here you can edit your server information.",
       "name": "Server Name",
@@ -449,8 +452,8 @@
       "title": "Create GPU Reservation",
       "description": "Here you can request the use of a GPU on one of your assigned servers.",
       "dateRange": "Select Date Range",
-      "startHour": "Start Date",
-      "endHour": "End Date",
+      "startHour": "Start Hour",
+      "endHour": "End Hour",
       "availableGpus": "Select Available GPUs",
       "noAvailableGpus": "No available GPUs in the selected range.",
       "reserve": "Reserve",

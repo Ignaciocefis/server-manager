@@ -1,5 +1,5 @@
 import { createEventLog } from "@/features/eventLog/data";
-import { getUserNameById, updateUserCategory } from "@/features/user/data";
+import { getUserNameById, hasMoreThanOneAdmin, updateUserCategory } from "@/features/user/data";
 import { updateUserCategorySchema } from "@/features/user/schemas";
 import { getFullName } from "@/features/user/utils";
 import { hasCategory } from "@/lib/auth/hasCategory";
@@ -44,6 +44,14 @@ export async function PUT(request: Request) {
       return NextResponse.json(
         { data: null, success: false, error: t("User.Route.unauthorized") },
         { status: 403 }
+      );
+    }
+
+    const isMoreThanOneAdmin = await hasMoreThanOneAdmin();
+    if (!isMoreThanOneAdmin.data) {
+      return NextResponse.json(
+        { data: null, success: false, error: t("User.Route.atLeastOneAdmin") },
+        { status: 400 }
       );
     }
 

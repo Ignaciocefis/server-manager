@@ -73,12 +73,15 @@ describe("POST /api/gpu/reservation", () => {
   });
 
   it("returns 400 if reservation is in the past", async () => {
-    const past = new Date();
-    past.setDate(past.getDate() - 1);
+    const pastFrom = new Date();
+    pastFrom.setDate(pastFrom.getDate() - 1);
+    pastFrom.setHours(10, 0, 0, 0);
+    const pastTo = new Date(pastFrom);
+    pastTo.setHours(12, 0, 0, 0);
     const req = {
       json: jest.fn().mockResolvedValue({
         ...baseData,
-        range: { from: past, to: past },
+        range: { from: pastFrom, to: pastTo },
       }),
     } as unknown as Request;
 

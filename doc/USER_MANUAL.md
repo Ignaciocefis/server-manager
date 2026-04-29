@@ -13,6 +13,8 @@
 9. [Logs de Eventos (Solo Administradores)](#logs-de-eventos-solo-administradores)
 10. [Estadísticas](#estadísticas)
 11. [Perfil de Usuario](#perfil-de-usuario)
+12. [Cerrar Sesión](#cerrar-sesión)
+13. [Envio de Correos](#envio-de-correos)
 
 ---
 
@@ -82,10 +84,11 @@ Si estás utilizando el entorno de desarrollo, las siguientes credenciales está
 
 ### Recuperación de Contraseña
 
+
 Si olvidaste tu contraseña:
 1. Haz clic en el enlace "¿Olvidaste tu contraseña?" debajo del campo de contraseña
 2. Ingresa tu correo electrónico
-3. Recibirá un email con instrucciones para restablecer tu contraseña en la cuenta indicada en la aplicación
+3. Recibirás un email con instrucciones para restablecer tu contraseña en la cuenta indicada en la aplicación
 
 ![Captura del formulario de recuperación de contraseña](img/password_forget.png)
 
@@ -360,3 +363,20 @@ Para cerrar sesión:
 1. En la barra lateral, haz clic en el botón "Cerrar Sesión" en la parte inferior
 2. Serás redirigido a la página de login
 ![Captura del botón de cerrar sesión](img/close_session.png)
+
+---
+
+## Envio de Correos
+
+La aplicación envía correos electrónicos automáticos para diferentes eventos relacionados con el registro, bienvenida y recuperación de contraseña. Estos correos sirven para notificar a los usuarios sobre su proceso de registro, bienvenida y recuperación de contraseña además de informar de la disponibilidad de los servidores.
+
+- **Bienvenida:**
+   ![Correo de bienvenida](img/mail_welcome.png)
+- **Recuperación de contraseña:**
+   ![Correo de recuperación de contraseña](img/mail_reset_pass.png)
+- **Inicio de una reserva:**
+   ![Correo de inicio de reserva](img/mail_start.png)
+- **Fin de una reserva:**
+   ![Correo de fin de reserva](img/mail_end.png)
+- **Cambio de disponibilidad de un servidor:**
+   ![Correo de cambio de disponibilidad](img/mail_availability.png)

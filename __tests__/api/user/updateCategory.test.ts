@@ -1,4 +1,4 @@
-import { updateUserCategory, getUserNameById } from "@/features/user/data";
+import { updateUserCategory, getUserNameById, hasMoreThanOneAdmin } from "@/features/user/data";
 import { createEventLog } from "@/features/eventLog/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
@@ -24,6 +24,7 @@ describe("PUT /api/user/update/category", () => {
     jest.clearAllMocks();
     (getServerLanguage as jest.Mock).mockResolvedValue({ t: mockT });
     (getFullName as jest.Mock).mockImplementation((first, second, name) => `${first ?? ""} ${second ?? ""} ${name ?? ""}`.trim());
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
   });
 
   it("returns 403 if user is not ADMIN", async () => {
@@ -42,6 +43,7 @@ describe("PUT /api/user/update/category", () => {
 
   it("returns 500 if updateUserCategory fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (updateUserCategory as jest.Mock).mockResolvedValue({ success: false });
 
     const req = { json: jest.fn().mockResolvedValue({ userId: "user123", category: "RESEARCHER" }) } as unknown as Request;
@@ -57,6 +59,7 @@ describe("PUT /api/user/update/category", () => {
 
   it("returns 404 if getUserNameById fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (updateUserCategory as jest.Mock).mockResolvedValue({ success: true });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: false });
 
@@ -73,6 +76,7 @@ describe("PUT /api/user/update/category", () => {
 
   it("returns 500 if createEventLog fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (updateUserCategory as jest.Mock).mockResolvedValue({ success: true });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: true, data: { name: "Test", firstSurname: "User", secondSurname: "Demo" } });
     (createEventLog as jest.Mock).mockResolvedValue({ error: true });
@@ -90,6 +94,7 @@ describe("PUT /api/user/update/category", () => {
 
   it("returns 200 on successful category update", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (updateUserCategory as jest.Mock).mockResolvedValue({ success: true });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: true, data: { name: "Test", firstSurname: "User", secondSurname: "Demo" } });
     (createEventLog as jest.Mock).mockResolvedValue({ success: true });
@@ -107,6 +112,7 @@ describe("PUT /api/user/update/category", () => {
 
   it("returns 500 on unexpected error", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (updateUserCategory as jest.Mock).mockRejectedValue(new Error("Unexpected"));
 
     const req = { json: jest.fn().mockResolvedValue({ userId: "user123", category: "RESEARCHER" }) } as unknown as Request;

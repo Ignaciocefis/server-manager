@@ -1,7 +1,7 @@
 import { DELETE } from "@/app/api/user/delete/route";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
-import { getUserNameById, deleteUserById } from "@/features/user/data";
+import { getUserNameById, deleteUserById, hasMoreThanOneAdmin } from "@/features/user/data";
 import { createEventLog } from "@/features/eventLog/data";
 import { getFullName } from "@/features/user/utils";
 import { NextResponse } from "next/server";
@@ -24,6 +24,7 @@ describe("DELETE /api/user/delete", () => {
     jest.clearAllMocks();
     (getServerLanguage as jest.Mock).mockResolvedValue({ t: mockT });
     (getFullName as jest.Mock).mockImplementation((first, second, name) => `${name} ${first ?? ""} ${second ?? ""}`.trim());
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
   });
 
   it("returns 400 if userId is missing or invalid", async () => {
@@ -39,6 +40,7 @@ describe("DELETE /api/user/delete", () => {
 
   it("returns 403 if user is not ADMIN", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: false });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     const req = { json: jest.fn().mockResolvedValue({ userId: "user123" }) } as unknown as Request;
 
     const res = await DELETE(req);
@@ -52,6 +54,7 @@ describe("DELETE /api/user/delete", () => {
 
   it("returns 404 if getUserNameById fails or has no data", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: false, data: null, error: "not found" });
 
     const req = { json: jest.fn().mockResolvedValue({ userId: "user123" }) } as unknown as Request;
@@ -66,6 +69,7 @@ describe("DELETE /api/user/delete", () => {
 
   it("returns 500 if createEventLog fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (getUserNameById as jest.Mock).mockResolvedValue({
       success: true,
       data: { firstSurname: "A", secondSurname: "B", name: "Test" },
@@ -90,6 +94,7 @@ describe("DELETE /api/user/delete", () => {
 
   it("returns 500 if deleteUserById fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (getUserNameById as jest.Mock).mockResolvedValue({
       success: true,
       data: { firstSurname: "A", secondSurname: "B", name: "Test" },
@@ -110,6 +115,7 @@ describe("DELETE /api/user/delete", () => {
 
   it("deletes user successfully (happy path)", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (getUserNameById as jest.Mock).mockResolvedValue({
       success: true,
       data: { firstSurname: "A", secondSurname: "B", name: "Test" },
@@ -129,6 +135,7 @@ describe("DELETE /api/user/delete", () => {
 
   it("returns 500 on unexpected error", async () => {
     (hasCategory as jest.Mock).mockRejectedValue(new Error("Unexpected error"));
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     const req = { json: jest.fn().mockResolvedValue({ userId: "user123" }) } as unknown as Request;
     const res = await DELETE(req);
 

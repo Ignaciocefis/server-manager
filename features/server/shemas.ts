@@ -11,6 +11,7 @@ export const createServerFormSchema = (t: (key: string) => string) => z.object({
       .number({ message: t("Server.Schemas.ramGBInvalid") })
       .int(t("Server.Schemas.ramGBInt"))
       .min(1, t("Server.Schemas.ramGBMin"))
+      .max(2048, t("Server.Schemas.ramGBMax"))
   ),
   diskCount: z.preprocess(
     (val) => Number(val),
@@ -18,6 +19,7 @@ export const createServerFormSchema = (t: (key: string) => string) => z.object({
       .number({ message: t("Server.Schemas.diskCountInvalid") })
       .int(t("Server.Schemas.diskCountInt"))
       .min(1, t("Server.Schemas.diskCountMin"))
+      .max(20, t("Server.Schemas.diskCountMax"))
   ),
   gpus: z
     .array(z.object({
@@ -30,6 +32,7 @@ export const createServerFormSchema = (t: (key: string) => string) => z.object({
           .number({ message: t("Server.Schemas.ramGBInvalid") })
           .int(t("Server.Schemas.ramGBInt"))
           .min(1, t("Server.Schemas.ramGBMin"))
+          .max(2048, t("Server.Schemas.gpuRamGBMax"))
       )
     }))
     .min(1, t("Server.CreateServerForm.gpuMin"))
@@ -49,6 +52,7 @@ export const updateServerFormSchema = (t: (key: string) => string) => z.object({
       .number({ message: t("Server.Schemas.ramGBInvalid") })
       .int(t("Server.Schemas.ramGBInt"))
       .min(1, t("Server.Schemas.ramGBMin"))
+      .max(2048, t("Server.Schemas.ramGBMax"))
   ),
   diskCount: z.preprocess(
     (val) => Number(val),
@@ -56,6 +60,7 @@ export const updateServerFormSchema = (t: (key: string) => string) => z.object({
       .number({ message: t("Server.Schemas.diskCountInvalid") })
       .int(t("Server.Schemas.diskCountInt"))
       .min(1, t("Server.Schemas.diskCountMin"))
+      .max(20, t("Server.Schemas.diskCountMax"))
   ),
   available: z.boolean(),
   gpus: z
@@ -71,6 +76,7 @@ export const updateServerFormSchema = (t: (key: string) => string) => z.object({
           .number({ message: t("Server.Schemas.ramGBInvalid") })
           .int(t("Server.Schemas.ramGBInt"))
           .min(1, t("Server.Schemas.ramGBMin"))
+          .max(2048, t("Server.Schemas.gpuRamGBMax"))
       )
     }))
     .min(1, t("Server.CreateServerForm.gpuMin"))

@@ -2,14 +2,15 @@ import { auth } from "@/auth/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/error", "/swagger"];
+const PUBLIC_PATHS = ["/login", "(auth)/login", "/error", "/swagger"];
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
   const { pathname } = request.nextUrl;
 
+
   const isPublic =
-    PUBLIC_PATHS.some((path) => pathname.startsWith(path)) ||
+    PUBLIC_PATHS.some((path) => pathname.includes(path)) ||
     pathname.match(/\.(png|jpg|jpeg|gif|svg|ico)$/);
 
   if (!session && !isPublic) {

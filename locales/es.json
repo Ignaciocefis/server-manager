@@ -174,7 +174,7 @@
       "exampleEmail": "ejemplo@alumn.us.es",
       "sending": "Enviando...",
       "sendRecoveryEmail": "Enviar correo de recuperación",
-      "recoverySuccess": "Correo de recuperación enviado. Revisa tu bandeja de entrada.",
+      "recoverySuccess": "Si la cuenta existe, hemos enviado un correo de recuperación. Revisa tu bandeja de entrada.",
       "recoveryError": "Error al enviar el correo de recuperación."
     }
   },
@@ -210,7 +210,8 @@
       "currentPasswordIncorrect": "Contraseña actual incorrecta",
       "updatePasswordError": "Error al actualizar la contraseña",
       "updateProfileError": "Error al actualizar el perfil",
-      "categoryUpdateFailed": "No se pudo actualizar la categoría del usuario"
+      "categoryUpdateFailed": "No se pudo actualizar la categoría del usuario",
+      "atLeastOneAdmin": "Debe haber al menos un usuario con categoría ADMIN"
     },
     "ProfileSheet": {
       "title": "Mi perfil",
@@ -305,11 +306,13 @@
       "diskCountInvalid": "La cantidad de discos debe ser un número",
       "diskCountInt": "Debe ser un número entero",
       "diskCountMin": "Debe tener al menos un disco",
+      "diskCountMax": "No puede tener más de 20 discos",
       "gpuNameMin": "El nombre de la GPU es obligatorio",
       "gpuTypeMin": "El tipo de GPU es obligatorio",
       "gpuRamGBInvalid": "La RAM de la GPU debe ser un número",
       "gpuRamGBInt": "La RAM de la GPU debe ser un número entero",
       "gpuRamGBMin": "La GPU debe tener al menos 1 GB de RAM",
+      "gpuRamGBMax": "La RAM de la GPU no puede exceder los 2048 GB",
       "gpuMin": "Debe haber al menos una GPU"
     },
     "Route":{
@@ -383,7 +386,7 @@
       "status.extended": "Extendida"
     },
     "Edit":{
-      "button": "Editar servidor",
+      "button": "Actualizar servidor",
       "title": "Editar servidor",
       "description": "Aquí puedes editar la información de tu servidor.",
       "name": "Nombre del servidor",
@@ -449,8 +452,8 @@
       "title": "Crear reserva de GPU",
       "description": "Aquí puedes solicitar el uso de una GPU en uno de tus servidores asignados.",
       "dateRange": "Seleccionar rango de fechas",
-      "startHour": "Fecha de inicio",
-      "endHour": "Fecha de fin",
+      "startHour": "Hora de inicio",
+      "endHour": "Hora de fin",
       "availableGpus": "Seleccionar GPUs disponibles",
       "noAvailableGpus": "No hay GPUs disponibles en el rango seleccionado.",
       "reserve": "Reservar",

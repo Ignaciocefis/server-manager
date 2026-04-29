@@ -19,6 +19,7 @@ import { GpuReservationFormHandler } from "./GpuReservationForm.handlers";
 import { useGpuReservationForm } from "./hooks/useGpuReservationForm";
 import { format } from "date-fns";
 import { useLanguage } from "@/hooks/useLanguage";
+import { getDateWithTime, pad, truncateToMinutes } from "@/features/gpu/utils";
 
 export function GpuReservationForm({
   serverId,
@@ -48,7 +49,8 @@ export function GpuReservationForm({
 
   const handleConfirm = async () => {
     if (!pendingData) return;
-    await GpuReservationFormHandler(pendingData, form, {
+    const currentData = form.getValues();
+    await GpuReservationFormHandler(currentData, form, {
       onSuccess,
       closeDialog,
     });
@@ -56,13 +58,39 @@ export function GpuReservationForm({
     setPendingData(null);
   };
 
+  const watchedRange = form.watch("range");
+  const watchedStartHour = form.watch("startHour");
+  const watchedEndHour = form.watch("endHour");
+  const isValidTime = (value: unknown): value is string =>
+    typeof value === "string" && /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
+
+  const handleStartHourBlur = () => {
+    if (!(watchedRange?.from instanceof Date)) return;
+    if (!isValidTime(watchedStartHour)) return;
+
+    const now = new Date();
+    if (watchedRange.from.toDateString() !== now.toDateString()) return;
+
+    const startDateTime = getDateWithTime(watchedRange.from, watchedStartHour);
+    if (startDateTime < truncateToMinutes(now)) {
+      const nowTime = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      form.setValue("startHour", nowTime, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  };
+
   const dateRangeLabel =
-    pendingData?.range?.from instanceof Date &&
-    pendingData?.range?.to instanceof Date
-      ? `${format(pendingData.range.from, "dd/MM/yyyy HH:mm")} - ${format(
-          pendingData.range.to,
-          "dd/MM/yyyy HH:mm"
-        )}`
+    watchedRange?.from instanceof Date && watchedRange?.to instanceof Date
+      ? `${format(
+          isValidTime(watchedStartHour)
+            ? getDateWithTime(watchedRange.from, watchedStartHour)
+            : watchedRange.from,
+          "dd/MM/yyyy HH:mm",
+        )} - ${format(watchedRange.to, "dd/MM/yyyy")} ${
+          watchedEndHour || "23:59"
+        }`
       : "Sin fecha";
 
   const selectedGpuNames = availableGpus
@@ -82,6 +110,7 @@ export function GpuReservationForm({
               name="startHour"
               label={t("Gpu.createReservation.startHour")}
               selectedHour=""
+              onBlur={handleStartHourBlur}
             />
             <TimePickerField
               name="endHour"

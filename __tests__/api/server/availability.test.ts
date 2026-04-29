@@ -2,6 +2,7 @@ jest.mock("@/features/server/data");
 jest.mock("@/features/eventLog/data");
 jest.mock("@/lib/services/language/getServerLanguage");
 jest.mock("@/lib/auth/hasCategory");
+jest.mock("@/lib/services/resend/serverAvailabilityChange/serverAvailabilityChange");
 jest.mock("next/server", () => ({
   NextResponse: {
     json: jest.fn((data, init) => ({ data, status: init?.status })),
@@ -10,7 +11,7 @@ jest.mock("next/server", () => ({
 
 import { PUT } from "@/app/api/server/availability/route";
 import { hasCategory } from "@/lib/auth/hasCategory";
-import { changeServerAvailability, getServerByIdWithReservations } from "@/features/server/data";
+import { changeServerAvailability, getAllUsersWithAccessToServer, getServerByIdWithReservations } from "@/features/server/data";
 import { createEventLog } from "@/features/eventLog/data";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
 import { NextResponse } from "next/server";
@@ -23,6 +24,7 @@ describe("PUT /api/server/availability", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (NextResponse.json as jest.Mock).mockImplementation((data: any, init?: any) => ({ data, status: init?.status }));
     (getServerLanguage as jest.Mock).mockResolvedValue({ t: mockT });
+    (getAllUsersWithAccessToServer as jest.Mock).mockResolvedValue({ success: true, data: [] });
   });
 
   it("returns 403 if user is not authorized", async () => {
@@ -53,6 +55,7 @@ describe("PUT /api/server/availability", () => {
 
   it("returns 500 if changeServerAvailability fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (getAllUsersWithAccessToServer as jest.Mock).mockResolvedValue({ success: true, data: [] });
     (changeServerAvailability as jest.Mock).mockResolvedValue({ success: false });
 
     const req = { json: jest.fn().mockResolvedValue({ serverId: "srv1" }) } as unknown as Request;
@@ -67,6 +70,7 @@ describe("PUT /api/server/availability", () => {
 
   it("returns 404 if server not found", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (getAllUsersWithAccessToServer as jest.Mock).mockResolvedValue({ success: true, data: [] });
     (changeServerAvailability as jest.Mock).mockResolvedValue({ success: true, data: true });
     (getServerByIdWithReservations as jest.Mock).mockResolvedValue({ success: false });
 
@@ -82,6 +86,7 @@ describe("PUT /api/server/availability", () => {
 
   it("returns 500 if createEventLog fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (getAllUsersWithAccessToServer as jest.Mock).mockResolvedValue({ success: true, data: [] });
     (changeServerAvailability as jest.Mock).mockResolvedValue({ success: true, data: true });
     (getServerByIdWithReservations as jest.Mock).mockResolvedValue({
       success: true,
@@ -101,6 +106,7 @@ describe("PUT /api/server/availability", () => {
 
   it("returns 200 on successful availability change and log creation", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (getAllUsersWithAccessToServer as jest.Mock).mockResolvedValue({ success: true, data: [] });
     (changeServerAvailability as jest.Mock).mockResolvedValue({ success: true, data: true });
     (getServerByIdWithReservations as jest.Mock).mockResolvedValue({
       success: true,
@@ -132,6 +138,7 @@ describe("PUT /api/server/availability", () => {
 
   it("returns 500 on unexpected error", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (getAllUsersWithAccessToServer as jest.Mock).mockResolvedValue({ success: true, data: [] });
     (changeServerAvailability as jest.Mock).mockRejectedValue(new Error("Unexpected"));
 
     const req = { json: jest.fn().mockResolvedValue({ serverId: "srv1" }) } as unknown as Request;

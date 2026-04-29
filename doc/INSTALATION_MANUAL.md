@@ -3,7 +3,9 @@
 ## Server Manager
 
 **Versión del documento:** 1.0
+
 **Proyecto:** Server Manager
+
 **Repositorio:** https://github.com/Ignaciocefis/server-manager
 
 Este manual describe la puesta en marcha real del proyecto tal y como está en este repositorio. Prioriza una instalación local reproducible y deja claro qué partes dependen de servicios externos como PostgreSQL, NextAuth y Resend.

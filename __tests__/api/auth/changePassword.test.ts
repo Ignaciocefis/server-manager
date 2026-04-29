@@ -74,10 +74,10 @@ describe("POST /api/user/recoverPassword", () => {
       const res = await POST(request);
 
       expect(NextResponse.json).toHaveBeenCalledWith(
-        { success: false, data: null, error: "Auth.Route.emailSendError" },
-        { status: 500 }
+        { success: true, data: null, error: null },
+        { status: 201 }
       );
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(201);
     });
 
     it("returns 500 if userRecoverPassword fails", async () => {
@@ -88,10 +88,10 @@ describe("POST /api/user/recoverPassword", () => {
       const res = await POST(request);
 
       expect(NextResponse.json).toHaveBeenCalledWith(
-        { success: false, data: null, error: "Some error" },
-        { status: 500 }
+        { success: true, data: null, error: null },
+        { status: 201 }
       );
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(201);
     });
 
     it("returns 404 if getUserNameById fails", async () => {
@@ -103,10 +103,10 @@ describe("POST /api/user/recoverPassword", () => {
       const res = await POST(request);
 
       expect(NextResponse.json).toHaveBeenCalledWith(
-        { data: null, success: false, error: "User.Route.userNotFound" },
-        { status: 404 }
+        { success: true, data: null, error: null },
+        { status: 201 }
       );
-      expect(res.status).toBe(404);
+      expect(res.status).toBe(201);
     });
 
     it("returns 500 if createEventLog fails", async () => {
@@ -119,10 +119,10 @@ describe("POST /api/user/recoverPassword", () => {
       const res = await POST(request);
 
       expect(NextResponse.json).toHaveBeenCalledWith(
-        { success: false, data: null, error: "User.Route.createEventLogError" },
-        { status: 500 }
+        { success: true, data: null, error: null },
+        { status: 201 }
       );
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(201);
     });
   });
 

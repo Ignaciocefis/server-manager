@@ -439,7 +439,12 @@ export const getAllUsersWithAccessToServer = async (serverId: string): Promise<A
         gpuReservations: {
           where: { serverId, status: { in: ["PENDING", "ACTIVE", "EXTENDED"] } },
           select: {
-            gpu: { select: { name: true } },
+            status: true,
+            startDate: true,
+            endDate: true,
+            gpu: {
+              select: { name: true }
+            },
           }
         }
       },
@@ -447,8 +452,10 @@ export const getAllUsersWithAccessToServer = async (serverId: string): Promise<A
 
     const usersWithGpus: AccessToServerWithEmailAndGpus[] = users.map(user => ({
       email: user.email,
-      gpus: user.gpuReservations.map(reservation => reservation.gpu.name)
+      gpus: user.gpuReservations.map(reservation => reservation.gpu.name + ` (${reservation.status})` + ` (${new Date(reservation.startDate).toLocaleString()})` + ` (${new Date(reservation.endDate).toLocaleString()})`),
     }));
+
+    console.log("Users with access to server:", { usersWithGpus });
 
     return { success: true, data: usersWithGpus, error: null };
   } catch (error) {

@@ -94,19 +94,13 @@ export async function POST(req: Request) {
       );
     }
 
-    if (data.startHour >= data.endHour) {
+    const isSameDay = data.range.from.toDateString() === data.range.to.toDateString();
+    if (isSameDay && data.startHour >= data.endHour) {
       return NextResponse.json(
         { success: false, data: null, error: t("Gpu.Route.theStartHourMustBeBeforeEndHour") },
         { status: 400 }
       );
     }
-
-    const getDateTime = (date: Date, time: string) => {
-      const [h, m] = time.split(":").map(Number);
-      const dt = new Date(date);
-      dt.setHours(h, m, 0, 0);
-      return dt;
-    };
 
     const truncateToMinutes = (date: Date) => {
       const d = new Date(date);
@@ -114,8 +108,8 @@ export async function POST(req: Request) {
       return d;
     };
 
-    const startDate = truncateToMinutes(getDateTime(data.range.from, data.startHour));
-    const endDate = truncateToMinutes(getDateTime(data.range.to, data.endHour));
+    const startDate = truncateToMinutes(data.range.from);
+    const endDate = truncateToMinutes(data.range.to);
     const now = truncateToMinutes(new Date());
 
     if (startDate >= endDate) {
