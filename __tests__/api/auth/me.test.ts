@@ -65,7 +65,7 @@ describe("GET /api/auth/me", () => {
       expect(res.status).toBe(401);
     });
 
-    it("returns 404 if user not found or success is false", async () => {
+    it("returns 401 if user not found or success is false", async () => {
       (hasCategory as jest.Mock).mockResolvedValue({ userId: "user123" });
       (getUserById as jest.Mock).mockResolvedValue({
         success: false,
@@ -80,9 +80,9 @@ describe("GET /api/auth/me", () => {
           success: false,
           error: "Auth.Route.userNotFound",
         },
-        { status: 404 }
+        { status: 401 }
       );
-      expect(res.status).toBe(404);
+      expect(res.status).toBe(401);
     });
   });
 

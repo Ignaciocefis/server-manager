@@ -1,5 +1,5 @@
 import { PATCH } from "@/app/api/user/toggleActive/route";
-import { getUserNameById, toggleUserActiveStatus } from "@/features/user/data";
+import { getUserNameById, hasMoreThanOneAdmin, toggleUserActiveStatus } from "@/features/user/data";
 import { createEventLog } from "@/features/eventLog/data";
 import { hasCategory } from "@/lib/auth/hasCategory";
 import { getServerLanguage } from "@/lib/services/language/getServerLanguage";
@@ -24,6 +24,7 @@ describe("PATCH /api/user/toggleActive", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (getServerLanguage as jest.Mock).mockResolvedValue({ t: mockT });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
   });
 
   it("returns 403 if user is not ADMIN", async () => {
@@ -41,6 +42,7 @@ describe("PATCH /api/user/toggleActive", () => {
 
   it("returns 400 if userId is invalid", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     const req = { json: async () => ({ userId: "" }), method: "PATCH", url: "http://localhost/api/user/toggleActive" } as unknown as Request;
 
     const res = await PATCH(req);
@@ -54,6 +56,7 @@ describe("PATCH /api/user/toggleActive", () => {
 
   it("returns 500 if toggleUserActiveStatus fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (toggleUserActiveStatus as jest.Mock).mockResolvedValue({ success: false });
     const req = { json: async () => ({ userId: "123" }), method: "PATCH", url: "http://localhost/api/user/toggleActive" } as unknown as Request;
 
@@ -68,6 +71,7 @@ describe("PATCH /api/user/toggleActive", () => {
 
   it("returns 404 if user not found after toggle", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (toggleUserActiveStatus as jest.Mock).mockResolvedValue({ success: true, data: true });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: true, data: null });
     const req = { json: async () => ({ userId: "123" }), method: "PATCH", url: "http://localhost/api/user/toggleActive" } as unknown as Request;
@@ -83,6 +87,7 @@ describe("PATCH /api/user/toggleActive", () => {
 
   it("returns 500 if createEventLog fails", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (toggleUserActiveStatus as jest.Mock).mockResolvedValue({ success: true, data: false });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: true, data: { name: "John", firstSurname: "Doe" } });
     (createEventLog as jest.Mock).mockResolvedValue(null);
@@ -100,6 +105,7 @@ describe("PATCH /api/user/toggleActive", () => {
 
   it("returns 200 with data if user reactivated", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (toggleUserActiveStatus as jest.Mock).mockResolvedValue({ success: true, data: true });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: true, data: { name: "John", firstSurname: "Doe" } });
     (createEventLog as jest.Mock).mockResolvedValue({ success: true });
@@ -117,6 +123,7 @@ describe("PATCH /api/user/toggleActive", () => {
 
   it("returns 200 with data if user deactivated", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (toggleUserActiveStatus as jest.Mock).mockResolvedValue({ success: true, data: false });
     (getUserNameById as jest.Mock).mockResolvedValue({ success: true, data: { name: "John", firstSurname: "Doe" } });
     (createEventLog as jest.Mock).mockResolvedValue({ success: true });
@@ -134,6 +141,7 @@ describe("PATCH /api/user/toggleActive", () => {
 
   it("returns 500 on unexpected error", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ isCategory: true });
+    (hasMoreThanOneAdmin as jest.Mock).mockResolvedValue({ data: true });
     (toggleUserActiveStatus as jest.Mock).mockRejectedValue(new Error("Unexpected"));
 
     const req = { json: async () => ({ userId: "123" }), method: "PATCH", url: "http://localhost/api/user/toggleActive" } as unknown as Request;
