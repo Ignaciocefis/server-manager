@@ -58,9 +58,20 @@ export function ChangeCategoryDialog({
       setOpen(false);
     } catch (error) {
       console.error("Error updating category:", error);
+      let errorMessage: string | undefined;
+      if (axios.isAxiosError(error)) {
+        const data = error.response?.data;
+        if (data && typeof data === "object" && "error" in data) {
+          const maybeError = (data as { error?: unknown }).error;
+          if (typeof maybeError === "string") {
+            errorMessage = maybeError;
+          }
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
       toast.error(
-        error.response?.data?.error ||
-          t("User.management.categoryUpdatedError"),
+        errorMessage || t("User.management.categoryUpdatedError"),
       );
     } finally {
       setLoading(false);
