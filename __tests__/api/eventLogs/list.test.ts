@@ -36,7 +36,7 @@ describe("GET /api/eventLogs/list", () => {
 
     expect(updateGpuReservationStatuses).toHaveBeenCalledTimes(1);
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { success: false, data: null, error: mockT("EventLog.route.unauthorized") },
+      { success: false, data: null, error: mockT("EventLog.Route.unauthorized") },
       { status: 401 }
     );
     expect(res.status).toBe(401);
