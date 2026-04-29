@@ -158,7 +158,7 @@
       "passwordTooShort": "La contraseña debe tener al menos 6 caracteres."
     },
     "Route": {
-      "unauthorized": "No autorizado",
+      "unauthorized": "No tienes permisos",
       "userNotFound": "Usuario no encontrado",
       "internalServerError": "Error interno del servidor",
       "invalidEmail": "Email inválido",
@@ -196,7 +196,7 @@
       "researcherIdRequired": "El ID del investigador es requerido"
     },
     "Route": {
-      "unauthorized": "No tienes permisos para editar usuarios",
+      "unauthorized": "No tienes permisos",
       "userNotFound": "Usuario no encontrado",
       "unassignedToResearcher": "Error al asignar investigador",
       "createEventLogError": "Error al crear el registro de evento",
@@ -316,7 +316,7 @@
       "gpuMin": "Debe haber al menos una GPU"
     },
     "Route":{
-      "unauthorized": "No tienes permisos para gestionar servidores",
+      "unauthorized": "No tienes permisos",
       "invalidValues": "Datos inválidos",
       "createServerError": "No se pudo crear el servidor",
       "fetchServersError": "Error al obtener los servidores",
@@ -402,7 +402,7 @@
       "selectGpu": "Debes seleccionar al menos una GPU"
     },
     "Route":{
-      "unauthorized":"Usuario no autorizado",
+      "unauthorized":"Usuario No tienes permisos",
       "fetchReservationsError":"Error al obtener las reservas",
       "missingReservationId":"El ID de la reserva es obligatorio",
       "reservationNotFound":"Reserva no encontrada",
@@ -478,7 +478,7 @@
   },
   "EventLog": {
     "Route":{
-      "unauthorized": "No tienes permisos para ver los registros",
+      "unauthorized": "No tienes permisos",
       "fetchNotificationsError": "Error al obtener notificaciones",
       "missingNotificationData": "Faltan datos de la notificación",
       "markNotificationError": "Error al marcar notificación como leída"

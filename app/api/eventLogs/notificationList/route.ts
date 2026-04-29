@@ -22,7 +22,7 @@ export async function GET() {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: t("EventLogs.Route.unauthorized") },
+        { success: false, data: null, error: t("EventLog.Route.unauthorized") },
         { status: 401 }
       );
     }
@@ -32,7 +32,7 @@ export async function GET() {
     if (!notifications.success) {
       console.error("Error al obtener notificaciones:", notifications.error);
       return NextResponse.json(
-        { success: false, data: null, error: t("EventLogs.Route.fetchNotificationsError") },
+        { success: false, data: null, error: t("EventLog.Route.fetchNotificationsError") },
         { status: 500 }
       );
     }

@@ -92,7 +92,7 @@ export async function GET(request: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: t("EventLogs.Route.unauthorized") },
+        { success: false, data: null, error: t("EventLog.Route.unauthorized") },
         { status: 401 }
       );
     }

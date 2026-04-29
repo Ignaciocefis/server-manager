@@ -158,7 +158,7 @@
       "passwordTooShort": "Password must be at least 6 characters long."
     },
     "Route": {
-      "unauthorized": "Unauthorized",
+      "unauthorized": "You do not have permission",
       "userNotFound": "User not found",
       "internalServerError": "Internal server error",
       "invalidEmail": "Invalid email",
@@ -196,7 +196,7 @@
       "researcherIdRequired": "The Researcher ID is required"
     },
     "Route": {
-      "unauthorized": "You do not have permission to edit users",
+      "unauthorized": "You do not have permission",
       "userNotFound": "User not found",
       "unassignedToResearcher": "Error assigning researcher",
       "createEventLogError": "Error creating event log",
@@ -316,7 +316,7 @@
       "gpuMin": "At least one GPU is required"
     },
     "Route": {
-      "unauthorized": "You do not have permission to manage servers",
+      "unauthorized": "You do not have permission",
       "invalidValues": "Invalid data",
       "createServerError": "Could not create server",
       "fetchServersError": "Error fetching servers",
@@ -402,7 +402,7 @@
       "selectGpu": "You must select at least one GPU"
     },
     "Route": {
-      "unauthorized": "Unauthorized user",
+      "unauthorized": "You do not have permission",
       "fetchReservationsError": "Error fetching reservations",
       "missingReservationId": "Reservation ID is required",
       "reservationNotFound": "Reservation not found",
@@ -478,10 +478,10 @@
   },
   "EventLog": {
     "Route":{
-      "unauthorized": "No tienes permisos para ver los registros",
-      "fetchNotificationsError": "Error al obtener notificaciones",
-      "missingNotificationData": "Faltan datos de la notificación",
-      "markNotificationError": "Error al marcar notificación como leída"
+      "unauthorized": "You do not have permission",
+      "fetchNotificationsError": "Error fetching notifications",
+      "missingNotificationData": "Missing notification data",
+      "markNotificationError": "Error marking notification as read"
     },
     "logType": {
       "user_created": "User created",

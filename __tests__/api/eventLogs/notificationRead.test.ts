@@ -32,7 +32,7 @@ describe("PATCH /api/eventLogs/notificationRead", () => {
     const res = await PATCH(req);
 
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { success: false, data: null, error: mockT("EventLogs.Route.unauthorized") },
+      { success: false, data: null, error: mockT("EventLog.route.unauthorized") },
       { status: 401 }
     );
     expect(res.status).toBe(401);
@@ -45,7 +45,7 @@ describe("PATCH /api/eventLogs/notificationRead", () => {
     const res = await PATCH(req);
 
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { success: false, data: null, error: mockT("EventLogs.Route.missingNotificationData") },
+      { success: false, data: null, error: mockT("EventLog.Route.missingNotificationData") },
       { status: 400 }
     );
     expect(res.status).toBe(400);
@@ -60,7 +60,7 @@ describe("PATCH /api/eventLogs/notificationRead", () => {
 
     expect(markNotificationAsRead).toHaveBeenCalledWith("n1", "user1");
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { success: false, data: null, error: mockT("EventLogs.Route.markNotificationError") },
+      { success: false, data: null, error: mockT("EventLog.Route.markNotificationError") },
       { status: 500 }
     );
     expect(res.status).toBe(500);

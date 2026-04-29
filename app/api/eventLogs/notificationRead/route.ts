@@ -41,7 +41,7 @@ export async function PATCH(request: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: t("EventLogs.Route.unauthorized") },
+        { success: false, data: null, error: t("EventLog.Route.unauthorized") },
         { status: 401 }
       );
     }
@@ -50,7 +50,7 @@ export async function PATCH(request: Request) {
 
     if (!id || typeof id !== "string") {
       return NextResponse.json(
-        { success: false, data: null, error: t("EventLogs.Route.missingNotificationData") },
+        { success: false, data: null, error: t("EventLog.Route.missingNotificationData") },
         { status: 400 }
       );
     }
@@ -59,7 +59,7 @@ export async function PATCH(request: Request) {
 
     if (!markNotificationsAsRead || !markNotificationsAsRead.success) {
       return NextResponse.json(
-        { success: false, data: null, error: t("EventLogs.Route.markNotificationError") },
+        { success: false, data: null, error: t("EventLog.Route.markNotificationError") },
         { status: 500 }
       );
     }
