@@ -1,6 +1,5 @@
 import { auth } from "@/auth/auth";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 const PUBLIC_PATHS = [
   "/login",
@@ -11,36 +10,26 @@ const PUBLIC_PATHS = [
   "/api/swagger",
 ];
 
-export async function middleware(request: NextRequest) {
-  const session = await auth();
-  const { pathname } = request.nextUrl;
+export default auth((req) => {
+  const { pathname } = req.nextUrl;
 
   const isPublic =
     PUBLIC_PATHS.some(
-      (path) =>
-        pathname === path || pathname.startsWith(`${path}/`)
-    ) ||
-    /\.(png|jpg|jpeg|gif|svg|ico)$/.test(pathname);
+      (path) => pathname === path || pathname.startsWith(path + "/")
+    );
 
-  if (!session && !isPublic) {
-    if (pathname.startsWith("/api")) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+  const isLoggedIn = !!req.auth;
 
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", request.url);
+  if (!isLoggedIn && !isPublic) {
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", req.url);
 
     return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
