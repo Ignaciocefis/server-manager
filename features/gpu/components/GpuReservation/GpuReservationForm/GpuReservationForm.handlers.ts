@@ -1,6 +1,6 @@
 import { RawGpuReservationFormData, SubmitHandlerOptionsProps } from "./GpuReservationForm.types";
 import { UseFormReturn } from "react-hook-form";
-import { getDateWithTime, truncateToMinutes } from "@/features/gpu/utils";
+import { getDateWithTime, pad, truncateToMinutes } from "@/features/gpu/utils";
 import { toast } from "sonner";
 import axios from "axios";
 import { handleApiError } from "@/lib/services/errors/errors";
@@ -12,11 +12,7 @@ export async function GpuReservationFormHandler(
 ) {
   const from = new Date(data.range.from as string | number | Date);
   const to = new Date(data.range.to as string | number | Date);
-  const start = getDateWithTime(from, data.startHour);
-  const end = getDateWithTime(to, data.endHour);
   const now = new Date();
-
-  const truncatedStart = truncateToMinutes(start);
   const truncatedNow = truncateToMinutes(now);
 
   if (from > to) {
@@ -26,30 +22,29 @@ export async function GpuReservationFormHandler(
     return;
   }
 
-  if (
-    truncatedStart < truncatedNow ||
-    truncateToMinutes(end) <= truncatedNow
-  ) {
+  let startHour = data.startHour;
+  if (from.toDateString() === now.toDateString()) {
+    const testStart = truncateToMinutes(getDateWithTime(from, startHour));
+    if (testStart < truncatedNow) {
+      startHour = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      form.setValue("startHour", startHour);
+    }
+  }
+
+  const start = getDateWithTime(from, startHour);
+  const end = getDateWithTime(to, data.endHour);
+
+  if (truncateToMinutes(end) <= truncatedNow) {
     toast.error("No puedes crear reservas en el pasado");
     return;
   }
 
   if (
     from.toDateString() === to.toDateString() &&
-    data.startHour >= data.endHour
+    startHour >= data.endHour
   ) {
     form.setError("endHour", {
       message: "La hora de fin debe ser posterior a la de inicio si es el mismo día",
-    });
-    return;
-  }
-
-  if (
-    from.toDateString() === now.toDateString() &&
-    truncateToMinutes(start) < truncateToMinutes(now)
-  ) {
-    form.setError("startHour", {
-      message: "La hora de inicio no puede estar en el pasado",
     });
     return;
   }
@@ -70,9 +65,11 @@ export async function GpuReservationFormHandler(
     return;
   }
 
+
   await axios.post("/api/gpu/reservation", {
     ...data,
-    range: { from, to },
+    startHour,
+    range: { from: start, to: end },
   }).then(() => {
     toast.success("Reserva creada correctamente");
     closeDialog();

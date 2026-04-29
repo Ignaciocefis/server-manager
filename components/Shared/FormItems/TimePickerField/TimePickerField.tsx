@@ -12,6 +12,7 @@ export function TimePickerField({
   name,
   label,
   selectedHour,
+  onBlur,
 }: TimePickerFieldProps) {
   return (
     <FormField
@@ -25,6 +26,10 @@ export function TimePickerField({
               {...field}
               value={field.value ?? selectedHour}
               onChange={field.onChange}
+              onBlur={(event) => {
+                field.onBlur();
+                onBlur?.(event);
+              }}
             />
           </FormControl>
           <FormMessage />

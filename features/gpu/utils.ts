@@ -37,7 +37,7 @@ export function sortReservations(reservations: GpuReservationListProps[]) {
   return [...reservations].sort((a, b) => {
     const getFinalEnd = (res: GpuReservationListProps) => {
       const end = res.endDate ? new Date(res.endDate) : new Date(0);
-      const extended = res.extendedAt ? new Date(res.extendedAt) : null;
+      const extended = res.extendedUntil ? new Date(res.extendedUntil) : null;
       return extended && extended > end ? extended : end;
     };
 
