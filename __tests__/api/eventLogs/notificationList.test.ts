@@ -31,7 +31,7 @@ describe("GET /api/eventLogs/notificationList", () => {
     const res = await GET();
 
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { success: false, data: null, error: mockT("EventLogs.Route.unauthorized") },
+      { success: false, data: null, error: mockT("EventLog.Route.unauthorized") },
       { status: 401 }
     );
     expect(res.status).toBe(401);
@@ -45,7 +45,7 @@ describe("GET /api/eventLogs/notificationList", () => {
 
     expect(getAllUnreadNotifications).toHaveBeenCalledWith("user1");
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { success: false, data: null, error: mockT("EventLogs.Route.fetchNotificationsError") },
+      { success: false, data: null, error: mockT("EventLog.Route.fetchNotificationsError") },
       { status: 500 }
     );
     expect(res.status).toBe(500);
