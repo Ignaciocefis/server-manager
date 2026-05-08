@@ -153,7 +153,7 @@
   },
   "Auth": {
     "Schema": {
-      "emailInvalid": "Debe ser un email válido.",
+      "invalidEmail": "Debe ser un email válido.",
       "emailTooShort": "El email es muy corto.",
       "passwordTooShort": "La contraseña debe tener al menos 6 caracteres."
     },
@@ -303,6 +303,7 @@
       "ramGBInvalid": "La RAM debe ser un número",
       "ramGBInt": "La RAM debe ser un número entero",
       "ramGBMin": "Debe tener al menos 1 GB de RAM",
+      "ramGBMax": "La RAM no puede exceder los 2048 GB",
       "diskCountInvalid": "La cantidad de discos debe ser un número",
       "diskCountInt": "Debe ser un número entero",
       "diskCountMin": "Debe tener al menos un disco",

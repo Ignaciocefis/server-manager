@@ -51,7 +51,7 @@ export function CreateServerForm({
               <FormItem>
                 <FormLabel>RAM (GB)</FormLabel>
                 <FormControl>
-                  <Input type="number" min="1" {...field} />
+                  <Input type="number" min="1" max="2048" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -65,7 +65,7 @@ export function CreateServerForm({
               <FormItem>
                 <FormLabel>{t("Server.CreateServer.diskCount")}</FormLabel>
                 <FormControl>
-                  <Input type="number" min="1" {...field} />
+                  <Input type="number" min="1" max="20" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

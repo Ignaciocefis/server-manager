@@ -100,8 +100,8 @@ export default function Heatmap({ serverId }: HeatmapProps) {
   const weekDays = language === "es" ? weekDays_es : weekDays_en;
 
   return (
-    <div>
-      <div className="w-full border rounded-xl shadow-md bg-white p-5 flex flex-col gap-4 mt-4">
+    <div className="w-full">
+      <div className="border rounded-xl shadow-md bg-white p-5 flex flex-col gap-4 mt-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 rounded-lg border border-gray-app-200 shadow-sm bg-white mb-4">
           <div className="flex items-center gap-3">
             <CalendarCheck className="w-6 h-6 text-blue-app" />

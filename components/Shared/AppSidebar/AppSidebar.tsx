@@ -103,7 +103,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="flex items-center gap-3 w-56 text-base font-medium peer cursor-pointer transition-colors hover:bg-gray-app-200-transparent"
+                  className="flex items-center gap-4 w-56 text-base font-medium peer cursor-pointer transition-colors hover:bg-gray-app-200-transparent"
                 >
                   <LogOut className="mr-2 w-6 h-6" />
                   <span>{t("Shared.AppSidebar.logout")}</span>

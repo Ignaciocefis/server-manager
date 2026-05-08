@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const createUserSchema = (t: (path: string) => string) => z.object({
-  email: z.string().min(1, t("User.Schemas.emailRequired")).email(t("User.Schemas.emailInvalid")),
+  email: z.string().min(1, t("User.Schemas.emailRequired")).email(t("User.Schemas.invalidEmail")),
   name: z.string().min(1, t("User.Schemas.nameRequired")).max(50, t("User.Schemas.nameTooLong")),
   firstSurname: z.string().min(1, t("User.Schemas.firstSurnameRequired")).max(50, t("User.Schemas.firstSurnameTooLong")),
   secondSurname: z.string().max(50, t("User.Schemas.secondSurnameTooLong")).optional(),
