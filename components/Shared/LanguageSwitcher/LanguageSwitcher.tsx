@@ -35,7 +35,7 @@ export function LanguageSwitcher() {
     <Button
       disabled={isSwitching}
       onClick={handleLanguageChange}
-      className="flex items-center justify-baseline shadow-none text-base font-medium cursor-pointer rounded-md -ml-2 gap-3 text-gray-app-600 bg-gray-app-100-transparent transition-colors hover:bg-gray-app-200-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex items-center justify-baseline shadow-none text-base font-medium cursor-pointer rounded-md -ml-2 gap-4 text-gray-app-600 bg-gray-app-100-transparent transition-colors hover:bg-gray-app-200-transparent disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <Image src={flagSrc} alt={altText} width={18} height={18} />
       {currentLanguage}
