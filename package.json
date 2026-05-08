@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "test:ci": "jest --ci --coverage",
     "postinstall": "prisma generate",
-    "reset-db": "npx tsx prisma/resetDB.ts"
+    "reset-db": "npx tsx prisma/resetDB.ts",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d --build --force-recreate --remove-orphans"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.0",

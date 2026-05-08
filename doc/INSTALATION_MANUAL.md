@@ -221,7 +221,6 @@ Ejemplo de variables:
 ```env
 RESEND_API_KEY=re_xxxxxxxxxxxxxx
 EMAIL_FROM=Server Manager <no-reply@tu-dominio.com>
-EMAIL_USER=no-reply@tu-dominio.com
 ```
 
 ## 15. Despliegue en producción
@@ -235,7 +234,6 @@ La vía más directa es Vercel.
 - `DATABASE_URL`
 - `RESEND_API_KEY`
 - `EMAIL_FROM`
-- `EMAIL_USER`
 - `SEED_USER_PASSWORD` solo si vas a volver a sembrar datos en ese entorno
 
 ### Flujo recomendado
