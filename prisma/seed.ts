@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 const passwordPromise = process.env.SEED_USER_PASSWORD
-  ? Promise.resolve(process.env.SEED_USER_PASSWORD)
+  ? bcrypt.hash(process.env.SEED_USER_PASSWORD, 10)
   : bcrypt.hash('defaultPassword', 10);
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
