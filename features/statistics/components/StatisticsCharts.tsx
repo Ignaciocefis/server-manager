@@ -55,7 +55,7 @@ export function StatisticsCharts({
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <Card className="border border-gray-app-200 shadow-md bg-white">
+      <Card className="border border-gray-app-200 shadow-md bg-white min-w-0">
         <CardHeader className="pb-2">
           <CardTitle className="text-xl font-bold text-gray-app-700">
             {t("app.statistics.reservationStatusTitle")}
@@ -105,7 +105,7 @@ export function StatisticsCharts({
         </CardContent>
       </Card>
 
-      <Card className="border border-gray-app-200 shadow-md bg-white">
+      <Card className="border border-gray-app-200 shadow-md bg-white min-w-0">
         <CardHeader className="pb-2">
           <CardTitle className="text-xl font-bold text-gray-app-700">
             {activityTitle}
@@ -121,8 +121,12 @@ export function StatisticsCharts({
                 dataKey="label"
                 tickLine={false}
                 axisLine={false}
-                tickMargin={10}
-                interval={0}
+                tickMargin={8}
+                interval="preserveStartEnd"
+                tick={{ fontSize: 11 }}
+                angle={-30}
+                textAnchor="end"
+                height={50}
               />
               <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
               <ChartTooltip
