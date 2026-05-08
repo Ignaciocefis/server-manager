@@ -22,7 +22,7 @@ describe("GET /api/server/list", () => {
     (getServerLanguage as jest.Mock).mockResolvedValue({ t: mockT });
   });
 
-  it("returns 400 if userId is missing from hasCategory", async () => {
+  it("returns 401 if userId is missing from hasCategory", async () => {
     (hasCategory as jest.Mock).mockResolvedValue({ userId: null });
 
     const req = {
@@ -32,10 +32,10 @@ describe("GET /api/server/list", () => {
     const res = await GET(req);
 
     expect(NextResponse.json).toHaveBeenCalledWith(
-      { success: false, data: null, error: mockT("Server.Route.userIdRequired") },
-      { status: 400 }
+      { success: false, data: null, error: mockT("Gpu.Route.unauthorized") },
+      { status: 401 }
     );
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(401);
   });
 
   it("uses idParam from query string when provided", async () => {

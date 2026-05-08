@@ -103,13 +103,6 @@ Antes de comenzar con la instalación, asegúrate de contar con los siguientes r
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
-
-**Linux (Fedora/RHEL):**
-```bash
-curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
-sudo dnf install nodejs
-```
-
 **Verificar instalación:**
 ```bash
 node --version
@@ -133,14 +126,6 @@ brew services start postgresql@16
 ```bash
 sudo apt update
 sudo apt install postgresql-16 postgresql-contrib-16
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
-```
-
-**Linux (Fedora/RHEL):**
-```bash
-sudo dnf install postgresql-server postgresql-contrib
-sudo postgresql-setup initdb
 sudo systemctl start postgresql
 sudo systemctl enable postgresql
 ```
@@ -257,7 +242,6 @@ La aplicación requiere configuración mediante variables de entorno para su fun
 | `POSTGRES_DB` | Nombre de la base de datos PostgreSQL | `app` |
 | `RESEND_API_KEY` | Clave de API de Resend | `your_resend_api_key` |
 | `EMAIL_FROM` | Remitente usado por Resend para el campo `from` | `Tu Nombre <hola@tudominio.com>` |
-| `EMAIL_USER` | Correo de la cuenta de Resend | `your_email@outlook.com` |
 | `SEED_USER_PASSWORD` | Contraseña de usuario para pruebas | `admin123` |
 
 ---
@@ -282,6 +266,7 @@ El proyecto incluye una serie de scripts npm para facilitar las tareas comunes d
 - `pnpm dev` - Inicia el servidor de desarrollo con hot-reload
 - `pnpm build` - Compila la aplicación para producción
 - `pnpm start` - Inicia el servidor de producción
+ - `pnpm docker:up` - Levanta Docker con build y recrea contenedores
 
 ### Gestión de Base de Datos
 - `pnpm prisma migrate dev` - Crea una nueva migración basada en cambios del schema
@@ -312,7 +297,12 @@ Docker Compose es la opción preferida para despliegues locales y de desarrollo.
 Construye y levanta todos los servicios necesarios:
 
 ```bash
-docker-compose up -d
+pnpm docker:up
+```
+
+Comando equivalente sin pnpm:
+```bash
+docker-compose -f docker/docker-compose.yml up -d --build --force-recreate --remove-orphans
 ```
 
 El Dockerfile ejecuta automáticamente:
@@ -336,7 +326,7 @@ Para despliegues más personalizados, puedes construir y ejecutar la imagen indi
 
 1. **Construir la Imagen**
 ```bash
-docker build -t server-manager .
+docker build -t server-manager -f docker/Dockerfile .
 ```
 
 2. **Ejecutar el Contenedor**
@@ -344,7 +334,7 @@ docker build -t server-manager .
 docker run -p 3000:3000 --env-file .env server-manager
 ```
 
-**Nota**: El Dockerfile actual está configurado para desarrollo. Para producción, considera modificar el `docker-entrypoint.sh` para usar `pnpm build` y `pnpm start` en lugar de `pnpm dev`.
+**Nota**: El Dockerfile actual está configurado para desarrollo. Para producción, considera modificar el `docker/docker-entrypoint.sh` para usar `pnpm build` y `pnpm start` en lugar de `pnpm dev`.
 
 ---
 
