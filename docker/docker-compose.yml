@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:16
+    container_name: server-manager-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - server-manager-network
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+
+    container_name: server-manager-app
+    restart: unless-stopped
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - ../.env
+
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/app
+
+    volumes:
+      - ..:/app
+      - /app/node_modules
+
+    networks:
+      - server-manager-network
+
+volumes:
+  db_data:
+
+networks:
+  server-manager-network:
+    driver: bridge

@@ -1,0 +1,82 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+.pnpm-debug.log*
+package-lock.json
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Environment files
+.env
+.env*.local
+.env.development
+.env.production
+.env.test
+
+# Testing
+__tests__
+coverage
+.nyc_output
+jest.config.ts
+jest.setup.ts
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# IDE & Editor
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+yarn-debug.log*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+/lib/generated/prisma
+
+# Cache
+.cache
+.parcel-cache
+.turbo
+.eslintcache
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Misc
+*.md
+*.pem
+.vercel
+.prettierrc
+.postcssrc
+.editorconfig
+TODO.md
