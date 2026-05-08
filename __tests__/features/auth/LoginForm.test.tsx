@@ -33,7 +33,7 @@ jest.mock(
   "@/features/auth/components/RecoverPasswordForm/RecoverPasswordForm.tsx",
   () => ({
     RecoverPasswordForm: () => <div>RecoverPasswordForm</div>,
-  })
+  }),
 );
 
 describe("LoginForm", () => {
@@ -48,11 +48,11 @@ describe("LoginForm", () => {
     it("renders email, password and login button", () => {
       render(<LoginForm />);
       expect(
-        screen.getByPlaceholderText("app.auth.exampleEmail")
+        screen.getByPlaceholderText("app.auth.exampleEmail"),
       ).toBeInTheDocument();
       expect(screen.getByPlaceholderText("••••••••")).toBeInTheDocument();
       expect(
-        screen.getByRole("button", { name: "app.auth.login" })
+        screen.getByRole("button", { name: "app.auth.login" }),
       ).toBeInTheDocument();
     });
   });
@@ -153,7 +153,7 @@ describe("LoginForm", () => {
         "credentials",
         expect.objectContaining({
           callbackUrl: "/",
-        })
+        }),
       );
     });
   });
@@ -167,10 +167,10 @@ describe("LoginForm", () => {
       fireEvent.click(screen.getByRole("button", { name: "app.auth.login" }));
 
       expect(
-        await screen.findByText("Auth.Schema.emailInvalid")
+        await screen.findByText("Auth.Schema.emailInvalid"),
       ).toBeInTheDocument();
       expect(
-        await screen.findByText("Auth.Schema.passwordTooShort")
+        await screen.findByText("Auth.Schema.passwordTooShort"),
       ).toBeInTheDocument();
     });
 
@@ -186,7 +186,7 @@ describe("LoginForm", () => {
       fireEvent.click(screen.getByRole("button", { name: "app.auth.login" }));
 
       expect(
-        await screen.findByText("Auth.Schema.emailInvalid")
+        await screen.findByText("Auth.Schema.emailInvalid"),
       ).toBeInTheDocument();
     });
 
@@ -202,7 +202,7 @@ describe("LoginForm", () => {
       fireEvent.click(screen.getByRole("button", { name: "app.auth.login" }));
 
       expect(
-        await screen.findByText("Auth.Schema.passwordTooShort")
+        await screen.findByText("Auth.Schema.passwordTooShort"),
       ).toBeInTheDocument();
     });
 
@@ -247,6 +247,28 @@ describe("LoginForm", () => {
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith("app.auth.invalidCredentials");
         expect(mockPush).not.toHaveBeenCalled();
+      });
+    });
+
+    it("shows invalid credentials on 404 from isActive", async () => {
+      (axios.isAxiosError as jest.Mock).mockReturnValue(true);
+      (axios.get as jest.Mock).mockRejectedValue({
+        response: { status: 404 },
+      });
+
+      render(<LoginForm />);
+      fireEvent.change(screen.getByPlaceholderText("app.auth.exampleEmail"), {
+        target: { value: "missing@example.com" },
+      });
+      fireEvent.change(screen.getByPlaceholderText("••••••••"), {
+        target: { value: "123456" },
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "app.auth.login" }));
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith("app.auth.invalidCredentials");
+        expect(handleApiError).not.toHaveBeenCalled();
       });
     });
 

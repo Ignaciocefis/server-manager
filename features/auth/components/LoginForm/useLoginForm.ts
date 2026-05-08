@@ -43,28 +43,35 @@ export function useLoginForm() {
 
     const { email, password } = result.data;
 
-    await axios.get("/api/auth/isActive", {
-      params: { email },
-    }).then(async (result) => {
-      if (!result?.data?.data?.isActive) {
-        toast.error(t("app.auth.userInactive"));
-        return;
-      }
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-        callbackUrl,
+    await axios
+      .get("/api/auth/isActive", {
+        params: { email },
+      })
+      .then(async (result) => {
+        if (!result?.data?.data?.isActive) {
+          toast.error(t("app.auth.userInactive"));
+          return;
+        }
+        const res = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+          callbackUrl,
+        });
+        if (res?.error) {
+          toast.error(t("app.auth.invalidCredentials"));
+        } else {
+          toast.success(t("app.auth.successLogin"));
+          router.push(res.url || "/");
+        }
+      })
+      .catch((error) => {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          toast.error(t("app.auth.invalidCredentials"));
+          return;
+        }
+        handleApiError(error);
       });
-      if (res?.error) {
-        toast.error(t("app.auth.invalidCredentials"));
-      } else {
-        toast.success(t("app.auth.successLogin"));
-        router.push(res.url || "/");
-      }
-    }).catch((error) => {
-      handleApiError(error);
-    });
   };
 
   return {
