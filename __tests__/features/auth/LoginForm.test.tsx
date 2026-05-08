@@ -167,7 +167,7 @@ describe("LoginForm", () => {
       fireEvent.click(screen.getByRole("button", { name: "app.auth.login" }));
 
       expect(
-        await screen.findByText("Auth.Schema.emailInvalid"),
+        await screen.findByText("Auth.Schema.invalidEmail"),
       ).toBeInTheDocument();
       expect(
         await screen.findByText("Auth.Schema.passwordTooShort"),
@@ -186,7 +186,7 @@ describe("LoginForm", () => {
       fireEvent.click(screen.getByRole("button", { name: "app.auth.login" }));
 
       expect(
-        await screen.findByText("Auth.Schema.emailInvalid"),
+        await screen.findByText("Auth.Schema.invalidEmail"),
       ).toBeInTheDocument();
     });
 
