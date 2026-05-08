@@ -33,6 +33,6 @@ RUN chown -R app:app /app /docker-entrypoint.sh
 
 EXPOSE 3000
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
 USER app
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
