@@ -83,10 +83,10 @@ export function GpuDonutChart({
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="p-0 -mt-15 flex justify-center">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto w-full aspect-square"
+          className="mx-auto w-[250px] h-[250px]"
         >
           <PieChart width={250} height={250}>
             <ChartTooltip
@@ -104,7 +104,7 @@ export function GpuDonutChart({
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="p-0 -mt-13 justify-center">
         <div className="text-muted-foreground leading-none">
           {language === "es"
             ? `${availableGpus} GPUs disponibles de ${installedGpus} instaladas`

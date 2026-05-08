@@ -25,7 +25,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
 
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<() => void>(
-    () => () => {}
+    () => () => {},
   );
   interface ConfirmParams {
     messageKey: ConfirmMessageKey;
@@ -43,7 +43,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
   if (error)
     return (
       <div className="border rounded-xl shadow-md p-5 bg-red-50 mt-4 flex items-stretch gap-4">
-        <div className="flex-shrink-0 flex items-center">
+        <div className="shrink-0 flex items-center">
           <TriangleAlert className="w-10 h-full text-red-700" />
         </div>
 
@@ -82,7 +82,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
       {
         messageKey: "server_availability",
         params: { name: server.name, available: !server.available },
-      }
+      },
     );
   };
 
@@ -99,7 +99,7 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
       {
         messageKey: "delete_server",
         params: { name: server.name },
-      }
+      },
     );
   };
 
@@ -114,12 +114,12 @@ export const ServerDetailsContainer = ({ serverId }: { serverId: string }) => {
         onReservationSuccess={triggerRefresh}
       />
 
-      <div className="flex flex-col 2xl:flex-row items-center justify-between w-11/12 mx-auto">
-        <div className="w-full md:w-auto">
+      <div className="flex flex-col 2xl:flex-row items-center justify-between gap-6 w-11/12 mx-auto">
+        <div className="overflow-x-auto min-w-0 w-full 2xl:w-fit">
           <GpuUsageHeatmap serverId={server.id} />
         </div>
 
-        <div className="flex md:w-auto h-max-[316px] justify-center">
+        <div className="flex w-full max-h-[316px] 2xl:w-auto 2xl:shrink-0 justify-center">
           <GpuDonutChart
             installedGpus={server.installedGpus}
             availableGpus={server.availableGpus}
