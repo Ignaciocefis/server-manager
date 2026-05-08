@@ -302,6 +302,7 @@
       "nameMax": "The server name cannot exceed 100 characters",
       "ramGBInvalid": "RAM must be a number",
       "ramGBInt": "RAM must be an integer",
+      "ramGBMax": "RAM cannot exceed 2048 GB",
       "ramGBMin": "RAM must be at least 1 GB",
       "diskCountInvalid": "Disk count must be a number",
       "diskCountInt": "Disk count must be an integer",
