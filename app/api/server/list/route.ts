@@ -36,8 +36,8 @@ export async function GET(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, data: null, error: t("Server.Route.userIdRequired") },
-        { status: 400 }
+        { success: false, data: null, error: t("Gpu.Route.unauthorized") },
+        { status: 401 }
       );
     }
 
@@ -46,6 +46,12 @@ export async function GET(req: Request) {
     const serverList = await getUserAccessibleServers(userId);
 
     if (!serverList.success) {
+      if (serverList.error === "User not found") {
+        return NextResponse.json(
+          { success: false, data: null, error: t("Gpu.Route.unauthorized") },
+          { status: 401 }
+        );
+      }
       return NextResponse.json(
         { success: false, data: null, error: serverList.error || t("Server.Route.getServerListError") },
         { status: 500 }
