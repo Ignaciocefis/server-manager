@@ -1,5 +1,9 @@
 # Manual de Usuario - Server Manager
 
+> Guía de uso de la plataforma para la gestión de servidores, GPUs y reservas.
+
+**Repositorio:** [https://github.com/Ignaciocefis/server-manager](https://github.com/Ignaciocefis/server-manager)
+
 ## Tabla de Contenidos
 
 1. [Introducción](#introducción)
@@ -11,18 +15,18 @@
 7. [Calendario de Reservas](#calendario-de-reservas)
 8. [Gestión de Usuarios (Solo Administradores)](#gestión-de-usuarios-solo-administradores)
 9. [Logs de Eventos (Solo Administradores)](#logs-de-eventos-solo-administradores)
-10. [Estadísticas](#estadísticas)
+10. [Estadísticas](#estadísticas-administradores-e-investigadores)
 11. [Perfil de Usuario](#perfil-de-usuario)
 12. [Cerrar Sesión](#cerrar-sesión)
-13. [Envio de Correos](#envio-de-correos)
+13. [Envío de Correos](#envío-de-correos)
 
 ---
 
 ## Introducción
 
-Server Manager es una aplicación web diseñada para la gestión integral de servidores y GPUs en entornos de investigación y desarrollo. Permite administrar recursos computacionales, gestionar usuarios con diferentes niveles de acceso, y controlar el uso de GPUs mediante un sistema de reservas eficiente.
+Server Manager es una plataforma web para la gestión de servidores y tarjetas gráficas del departamento de Lenguajes y Sistemas Informáticos de la Universidad de Sevilla. El sistema ha sido deseñado con el objetivo de facilitar la gestión de uso de las gráficas instaladas en los distintos servidores, así como mejorar la organización y monitorear de las reservas a estas. La plataforma incorpora funcionalidades de crear, modificar y eliminar servidores y tarjetas gráficas, gestionar solicitudes de uso, consultar la disponibilidad mediante un calendario, registrar toda actividad a través de un sistema de logs y enviar alertas automáticas por correo electrónico. Además, cuanta con un sistema de roles que diferencia y restringen acceso entre los distintos tipos de usuarios.
 
-La interfaz es responsive y está disponible en español e inglés, facilitando su uso en equipos internacionales.
+La interfaz es responsive y está disponible en español e inglés.
 
 ---
 
@@ -47,7 +51,7 @@ La aplicación cuenta con tres tipos de usuarios con diferentes niveles de acces
 - Tiene acceso a las estadísticas de uso de los servidores a los que tiene acceso
 - No puede gestionar usuarios ni servidores
 
-### Junior Researcher (JUNIOR_RESEARCHER)
+### Junior Researcher (JUNIOR)
 - Puede ver y acceder a servidores asignados
 - Puede reservar GPUs (requiere mentor asignado)
 - Puede ver el calendario de reservas
@@ -84,7 +88,6 @@ Si estás utilizando el entorno de desarrollo, las siguientes credenciales está
 
 ### Recuperación de Contraseña
 
-
 Si olvidaste tu contraseña:
 1. Haz clic en el enlace "¿Olvidaste tu contraseña?" debajo del campo de contraseña
 2. Ingresa tu correo electrónico
@@ -104,7 +107,6 @@ Una vez iniciada la sesión, también puedes cambiar el idioma desde la barra la
 
 ![Captura del selector de idioma](img/idiom2.png)
 
-
 ---
 
 ## Página Principal
@@ -121,11 +123,11 @@ Al iniciar sesión, serás redirigido a la página principal (Home), que muestra
 ### Navegación
 
 La barra lateral izquierda proporciona acceso a todas las secciones de la aplicación:
-- **Home**: Página principal
-- **Calendar**: Calendario de reservas de GPUs
-- **Servers**: Lista de servidores (solo administradores)
-- **Users**: Gestión de usuarios (solo administradores)
-- **Logs**: Registro de eventos (solo administradores)
+- **Listado de servidores**: Página principal
+- **Calendario**: Calendario de reservas de GPUs
+- **Registros**: Lista de logs de eventos de los servidores a los que tienes acceso
+- **Gestión de usuarios**: Gestión de usuarios (solo administradores e investigadores)
+- **Estadísticas**: Registro de eventos (solo administradores e investigadores)
 
 ![Captura de la barra lateral de navegación](img/navigation_sidebar.png)
 
@@ -139,10 +141,9 @@ En la página principal, puedes buscar:
 
 ### Lista de Reservas de GPUs
 
-Esta sección muestra todas las reservas de GPUs activas con:
-- Nombre de la GPU
-- Servidor donde está ubicada
-- Usuario que tiene la reserva
+Esta sección muestra todas tus reservas de GPUs activas con:
+- Nombre de la GPU y sus detalles (RAM, tipo)
+- Servidor donde está ubicada y sus detalles (RAM, cantidad de discos)
 - Fecha y hora de inicio y fin
 - Botón para extender la reserva (si eres el propietario)
 - Estado de la reserva
@@ -189,6 +190,7 @@ La página de detalles muestra:
 - **Tarjetas Gráficas**: Lista de GPUs con su nombre, RAM y tipo
 - **Gráfico de Uso**: Donut chart mostrando el porcentaje de GPUs en uso vs disponibles
 - **Reservas Activas**: Lista de reservas actuales en este servidor con información de usuario y fechas
+- **Registros de Eventos**: Lista de logs relacionados con este servidor
 
 ![Captura de la información general del servidor](img/server_details_1.png)
 ![Captura de la información de las GPUs](img/server_details_2.png)
@@ -207,20 +209,24 @@ Si eres administrador, puedes editar cualquier información del servidor, incluy
 
 Para reservar una GPU:
 
-1. En la página principal, busca la sección "Mis servidores accesibles"
+1. En la página principal, busca la sección "Mis servidores accesibles" o en los detalles de un servidor específico
 2. Haz clic en el botón "Solicitar uso de GPU" para solicitar el uso de la GPU de un servidor
+
    ![Captura del botón de solicitud de reserva](img/GPU_reservations.png)
 3. Se abrirá el formulario de reserva
+
    ![Captura del diálogo de reserva de GPU](img/GPU_reservation.png)
 
 ### Formulario de Reserva
 
 El formulario de reserva requiere:
-- **Seleccionar GPU**: Selecciona la GPU que deseas reservar de la lista de disponibles
 - **Fecha de inicio**: Selecciona la fecha de inicio de la reserva
 - **Fecha de fin**: Selecciona la fecha de fin de la reserva
 - **Hora de inicio**: Selecciona la hora de inicio de la reserva
 - **Hora de fin**: Selecciona la hora de fin de la reserva
+- **Seleccionar GPU**: Selecciona la o las GPUs que deseas reservar de la lista de disponibles
+
+No se podrá realizar reservas que abarquen más de 72 horas de duración o que se solapen con otras reservas existentes. Tampoco se podrán realizar reservas con más de 30 días de antelación.
 
 ![Captura del formulario de reserva](img/GPU_reservation.png)
 
@@ -268,14 +274,14 @@ Para ver el calendario de reservas de GPUs:
 
 ---
 
-## Gestión de Usuarios (Solo Administradores)
+## Gestión de Usuarios (Solo Administradores e Investigadores)
 
 ### Acceder a la Gestión de Usuarios
 
 Para gestionar usuarios:
 
-1. Haz clic en "Users" en la barra lateral (solo visible para administradores)
-2. Se mostrará la lista de todos los usuarios
+1. Haz clic en "Users" en la barra lateral
+2. Se mostrará la lista de todos los usuarios, si eres investigador, solo verás los usuarios que estén bajo tu mentoría
 
 ![Captura de la tabla de usuarios](img/user_list.png)
 
@@ -283,13 +289,15 @@ La tabla de usuarios muestra:
 - Email
 - Nombre completo
 - Categoría (ADMIN, RESEARCHER, JUNIOR)
-- Mentor (para junior researchers)
+- Mentor (para juniors)
 - Servidores asignados
 - Acciones disponibles
 
 Desde la columna de acciones, puedes realizar operaciones como editar la categoría del usuario, asignar o desasignar servidores, asignar un mentor a junior researchers, o eliminar usuarios del sistema.
 
 ![Acciones que se pueden realizar sobre un usuario](img/user_actions.png)
+
+### Crear un Nuevo Usuario
 
 Para crear un nuevo usuario:
 
@@ -302,27 +310,26 @@ Para crear un nuevo usuario:
    - Categoría (ADMIN, RESEARCHER, JUNIOR)
 3. Si la categoría es JUNIOR, selecciona un mentor
 4. Haz clic en "Crear"
+5. Se enviará un correo de bienvenida al nuevo usuario con sus credenciales de acceso
 
 ![Crear usuario](img/create_user.png)
 
 ---
 
-## Logs de Eventos (Solo Administradores)
+## Logs de Eventos
 
 Para ver el registro de eventos:
 
-1. Haz clic en "Logs" en la barra lateral (solo visible para administradores)
-2. Se mostrará el historial completo de eventos con información de fecha, usuario, acción y recurso
+1. Haz clic en "Logs" en la barra lateral
+2. Se mostrará el historial completo de eventos con información de fecha, usuario, acción y recurso de los servidores a los que tienes acceso
 3. Puedes filtrar por fecha, usuario, tipo de acción o recurso
-4. Exporta los logs en CSV o JSON si es necesario
+4. Exporta los logs en CSV usando el botón de descarga (solo administradores)
 
 ![Captura de la página de logs](img/logs.png)
 
 ---
 
 ## Estadísticas (Administradores e Investigadores)
-
-La sección de estadísticas permite analizar el uso de servidores y GPUs a lo largo del tiempo.
 
 Para acceder a estadísticas:
 
@@ -362,11 +369,12 @@ Para cerrar sesión:
 
 1. En la barra lateral, haz clic en el botón "Cerrar Sesión" en la parte inferior
 2. Serás redirigido a la página de login
+
 ![Captura del botón de cerrar sesión](img/close_session.png)
 
 ---
 
-## Envio de Correos
+## Envío de Correos
 
 La aplicación envía correos electrónicos automáticos para diferentes eventos relacionados con el registro, bienvenida y recuperación de contraseña. Estos correos sirven para notificar a los usuarios sobre su proceso de registro, bienvenida y recuperación de contraseña además de informar de la disponibilidad de los servidores.
 

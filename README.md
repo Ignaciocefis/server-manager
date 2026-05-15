@@ -5,10 +5,13 @@
 
 # Server Manager
 
+> Plataforma centralizada para la gestión de servidores y reservas de GPUs en entornos de investigación y desarrollo.
+
 ## Tabla de Contenidos
 
 - [Server Manager](#server-manager)
   - [Tabla de Contenidos](#tabla-de-contenidos)
+  - [Descripción](#descripción)
   - [Características Principales](#características-principales)
     - [Gestión de Usuarios](#gestión-de-usuarios)
     - [Gestión de Servidores](#gestión-de-servidores)
@@ -41,7 +44,12 @@
 
 ---
 
-Server Manager es una aplicación web moderna diseñada para la gestión integral de servidores y GPUs en entornos de investigación y desarrollo. El sistema proporciona una plataforma centralizada para administrar recursos computacionales, gestionar usuarios con diferentes niveles de acceso, y controlar el uso de GPUs mediante un sistema de reservas eficiente.
+## Descripción
+
+Server Manager es una plataforma web para la gestión de servidores y tarjetas gráficas del departamento de Lenguajes y Sistemas Informáticos de la Universidad de Sevilla. El sistema ha sido deseñado con el objetivo de facilitar la gestión de uso de las gráficas instaladas en los distintos servidores, así como mejorar la organización y monitorear de las reservas a estas. La plataforma incorpora funcionalidades de crear, modificar y eliminar servidores y tarjetas gráficas, gestionar solicitudes de uso, consultar la disponibilidad mediante un calendario, registrar toda actividad a través de un sistema de logs y enviar alertas automáticas por correo electrónico. Además, cuanta con un sistema de roles que diferencia y restringen acceso entre los distintos tipos de usuarios.
+
+![Login](doc/img/login.png)
+![Calendar](doc/img/calendar.png)
 
 ## Características Principales
 
@@ -75,8 +83,9 @@ La aplicación está construida sobre tecnologías modernas que garantizan rendi
 - **Autenticación**: NextAuth 5 con estrategia JWT asegura el acceso seguro a la aplicación.
 - **Validación**: Zod proporciona validación de schemas robusta y type-safe.
 - **Comunicación HTTP**: Axios maneja las peticiones API de manera eficiente.
+- **Visualización de datos**: Recharts genera gráficos y heatmaps de uso de recursos.
 - **Email**: Resend facilita el envío de notificaciones por correo electrónico.
-- **Testing**: Jest asegura la calidad del código mediante pruebas automatizadas.
+- **Testing**: Jest con Testing Library asegura la calidad del código mediante pruebas automatizadas.
 - **Despliegue**: Docker y Docker Compose facilitan el despliegue en contenedores, con soporte para Vercel.
 
 ---
@@ -178,6 +187,8 @@ Instala todas las dependencias necesarias del proyecto utilizando tu gestor de p
 pnpm install
 ```
 
+El hook `postinstall` ejecuta `prisma generate` automáticamente al finalizar la instalación.
+
 **Nota adicional**: Para el correcto funcionamiento del seed de la base de datos, el proyecto requiere tsx como dependencia de desarrollo.
 
 ```bash
@@ -219,11 +230,10 @@ Ejecuta las migraciones para crear la estructura de la base de datos, genera el 
 
 ```bash
 pnpm prisma migrate deploy || pnpm prisma migrate dev --name init
-pnpm prisma generate
 pnpm exec tsx prisma/seed.ts
 ```
 
-**Nota**: El comando `pnpm prisma migrate deploy || pnpm prisma migrate dev --name init` intenta aplicar las migraciones primero. Si falla, crea una migración inicial. El comando `pnpm prisma generate` es necesario para generar el cliente Prisma después de aplicar las migraciones. 
+**Nota**: El comando `pnpm prisma migrate deploy || pnpm prisma migrate dev --name init` intenta aplicar las migraciones existentes primero. Si no hay migraciones previas, crea una migración inicial.
 
 ---
 
@@ -302,7 +312,7 @@ pnpm docker:up
 
 Comando equivalente sin pnpm:
 ```bash
-docker-compose -f docker/docker-compose.yml up -d --build --force-recreate --remove-orphans
+docker compose -f docker/docker-compose.yml up -d --build --force-recreate --remove-orphans
 ```
 
 El Dockerfile ejecuta automáticamente:
@@ -351,6 +361,8 @@ El swagger permite iniciar sesión directamente desde la interfaz para probar lo
 
 Es necesario ejecutar la aplicación en modo desarrollo para acceder a esta documentación, ya que en producción esta ruta no estará disponible por razones de seguridad.
 
+![Swagger](doc/img/swagger.png)
+
 ---
 
 ## Documentación Adicional
@@ -361,6 +373,6 @@ Para obtener información más detallada sobre el uso de la aplicación, su API 
 
 - **[Manual de Usuario](doc/USER_MANUAL.md)** - Guía completa para usuarios finales que explica cómo utilizar todas las funcionalidades de la aplicación, incluyendo gestión de servidores, reservas de GPUs, calendario de reservas, gestión de usuarios y más.
 
-- **[Manual de Instalación y Despliegue](doc/MANUAL_INSTALACION.md)** - Guía paso a paso para instalar, configurar y desplegar el proyecto en entornos locales y de producción.
+- **[Manual de Instalación y Despliegue](doc/INSTALLATION_MANUAL.md)** - Guía paso a paso para instalar, configurar y desplegar el proyecto en entornos locales y de producción.
 
 ---

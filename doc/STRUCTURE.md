@@ -1,5 +1,9 @@
 # Estructura del Proyecto - Server Manager
 
+> Documentación técnica de la arquitectura, convenciones y patrones de diseño del proyecto.
+
+**Repositorio:** [https://github.com/Ignaciocefis/server-manager](https://github.com/Ignaciocefis/server-manager)
+
 ## Tabla de Contenidos
 
 - [Estructura del Proyecto - Server Manager](#estructura-del-proyecto---server-manager)
@@ -16,6 +20,9 @@
     - [/locales](#locales)
     - [/public](#public)
     - [/__tests__](#tests)
+    - [/docker](#docker)
+    - [/.github](#github)
+    - [/doc](#doc)
   - [Flujo de datos típico](#flujo-de-datos-típico)
   - [Buenas prácticas en funciones de acceso a datos](#buenas-prácticas-en-funciones-de-acceso-a-datos)
   - [Swagger UI para documentación de API](#swagger-ui-para-documentación-de-api)
@@ -24,6 +31,7 @@
   - [Buenas prácticas en hooks](#buenas-prácticas-en-hooks)
     - [Ejemplo de un hook para listar servidores](#ejemplo-de-un-hook-para-listar-servidores)
   - [Buenas prácticas](#buenas-prácticas)
+
 ---
 
 ## Visión General
@@ -37,7 +45,10 @@
 - **/prisma**: Schema de base de datos, migraciones y seed.
 - **/locales**: Archivos de internacionalización.
 - **/public**: Archivos estáticos.
-- **/__tests__: Tests organizados por dominio.
+- **/__tests__**: Tests organizados por dominio.
+- **/docker**: Dockerfile, Docker Compose y entrypoint para contenedores.
+- **/.github**: Workflows de CI/CD y plantillas de issues.
+- **/doc**: Documentación del proyecto (manuales, imágenes, estructura).
 
 ---
 
@@ -105,6 +116,11 @@ Cada feature contiene su lógica de dominio, componentes, acceso a datos, schema
     schemas.ts                  # Schemas de validación
     types.ts                    # Tipos específicos
     utils.tsx                   # Utilidades específicas
+  /gpu/                         # Gestión de GPUs y reservas
+  /scheduler/                    # Scheduler de tareas
+  /server/                       # Gestión de servidores
+  /statistics/                   # Estadísticas y métricas
+  /user/                         # Gestión de usuarios
   ...
 ```
 
@@ -141,16 +157,16 @@ Utilidades globales, configuraciones y servicios externos.
 
 ```
 /lib
-  /auth/                        # Utilidades de autenticación
-    charsets.ts                 # Conjuntos de caracteres
+  /auth/                        
+    charsets.ts                 # Conjuntos de caracteres para generación de contraseñas
     generatePassword.ts         # Generación de contraseñas
     hasCategory.ts              # Verificación de categorías
   /services/                    # Servicios externos
-    /errors/                    # Manejo de errores
-      errors.ts                 # Utilidades de error
-    /language/                  # Servicio de idiomas
+    /errors/                    
+      errors.ts                 # Manejo de errores
+    /language/                 
       getServerLanguage.ts      # Obtener idioma del servidor
-    /resend/                    # Servicio de email (Resend)
+    /resend/                    
       CreateUser/               # Email de creación de usuario
       recoverPassword/          # Email de recuperación
       resend.ts                 # Cliente de Resend
@@ -158,7 +174,7 @@ Utilidades globales, configuraciones y servicios externos.
       reservationActive/        # Email de reserva activa
       reservationCompleted/      # Email de reserva completada
       serverAvailabilityChange/  # Email de cambio de disponibilidad
-    /reservations/              # Servicio de reservas
+    /reservations/              
       updateStatus.ts           # Actualizar estado de reservas
   /types/                       # Tipos compartidos
     BDResponse.types.ts         # Tipos de respuesta de base de datos
@@ -243,19 +259,82 @@ Tests organizados por dominio.
 
 ```
 /__tests__
-  /api/                        # Tests de API routes
-  /app/                        # Tests de páginas
-  /features/                   # Tests de features
+  /api/                        
+    /auth/                     # changePassword, isActive, me
+    /eventLogs/                # list, notificationList, notificationRead
+    /gpu/                      # calendar, cancelation, extend, heatmap, list, reservation
+    /scheduler/                # route
+    /server/                   # assignServers, availability, create, delete, details, list, update
+    /statistics/               # overview
+    /user/                     # allResearcher, assignResearcher, create, delete, list, password, profile...
+  /app/                        
+    /auth/                     # login
+    /home/                     # app, calendar, logs, servers, users-management
+  /features/                   
+    /auth/                     # LoginForm, RecoverPasswordForm
+    /user/                     # AssignResearcherDialog, AssignServerDialog, ChangeCategoryDialog
+    ...
+```
+
+---
+
+### /docker
+
+Configuración de contenedores para desarrollo y despliegue.
+
+```
+/docker
+  Dockerfile                   # Imagen de la aplicación
+  docker-compose.yml           # Orquestación de servicios (app + db)
+  docker-entrypoint.sh         # Script de arranque: migraciones, seed y servidor
+```
+
+---
+
+### /.github
+
+Automatización de CI/CD y plantillas de issues para GitHub.
+
+```
+/.github
+  /ISSUE_TEMPLATE/             # Plantillas de issues por tipo
+    chore.yml
+    documentation.yml
+    feature.yml
+    fix.yml
+    test.yml
+  /workflows/                  # Pipelines de GitHub Actions
+    ci-cd-pipeline.yml         # Pipeline principal
+    commits.yml                # Validación de conventional commits
+    lint.yml                   # ESLint
+    tests.yml                  # Jest con cobertura
+    codacy.yml                 # Análisis de calidad con Codacy
+    deploy.yml                 # Despliegue a Vercel
+```
+
+---
+
+### /doc
+
+Documentación del proyecto.
+
+```
+/doc
+  STRUCTURE.md                 # Este archivo: arquitectura y convenciones
+  USER_MANUAL.md               # Manual de usuario final
+  INSTALATION_MANUAL.md        # Guía de instalación y despliegue
+  /img/                        # Capturas de pantalla para la documentación
 ```
 
 ---
 
 ## Flujo de datos típico
 
-1. Un componente hace fetch a la API Route correspondiente (por ejemplo, `/api/gpu/list`) usando axios.
-2. La API Route (en `/app/api/gpu/list/route.ts`) llama a la función de acceso a datos (por ejemplo, `/features/gpu/data.ts`).
-3. La función de datos obtiene la información de la base de datos usando Prisma, aplicando caché si está configurada.
-4. El componente utiliza los tipos y helpers importados de su feature correspondiente.
+1. Un componente utiliza un custom hook de su feature (por ejemplo, `useGpuList`) que encapsula el fetch.
+2. El hook llama a la API Route correspondiente (por ejemplo, `/api/gpu/list`) usando axios y expone `data`, `loading` y `error`.
+3. La API Route (en `/app/api/gpu/list/route.ts`) valida la sesión, valida la entrada con Zod y llama a la función de acceso a datos (por ejemplo, `/features/gpu/data.ts`).
+4. La función de datos obtiene la información de la base de datos usando Prisma y devuelve un objeto uniforme `{ success, data, error }`.
+5. El componente utiliza los tipos y helpers importados de su feature correspondiente.
 
 ---
 
@@ -263,7 +342,7 @@ Tests organizados por dominio.
 
 1. **Extraer lógica repetida en helpers para evitar duplicación.**  
 2. **Validar datos antes de operar para evitar errores.**
-3. **Usar try-catch para capturar errores**.
+3. **Usar try-catch para capturar errores.**
 4. **Devolver siempre un objeto uniforme:**  
    ```ts
     return { success: true, data: result, error: null };
@@ -278,6 +357,8 @@ El Swagger UI se encuentra en la ruta `/swagger` y proporciona una interfaz grá
 Para acceder al Swagger UI, simplemente navega a `http://localhost:3000/swagger` durante el desarrollo. Allí podrás ver todos los endpoints disponibles, sus métodos, parámetros y respuestas esperadas, lo que facilita la documentación y pruebas de la API.
 
 En cada endpoint de la API, asegúrate de incluir descripciones claras y ejemplos de request/response para que el Swagger UI sea lo más útil posible para los desarrolladores que interactúan con la API.
+
+![Swagger](img/swagger.png)
 
 ---
 
